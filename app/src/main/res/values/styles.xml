@@ -1,4 +1,7 @@
 <resources>
+    <color name="color_black">#000000</color>
+    <color name="color_insektionen">#44687D</color>
+    <color name="color_insektionen_light">#70AACC</color>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
