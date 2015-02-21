@@ -1,8 +1,8 @@
 TMEIT för Android
 =================
 
-''This app is targeted at members of primarily Swedish-speaking organization, so all documents
-are in Swedish.''
+_This app is targeted at members of primarily Swedish-speaking organization, so all documents
+are in Swedish._
 
 Det här är en mobilapp för medlemmar i [TMEIT](http://tmeit.se). TMEIT är en studiesocial
 nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) för studenter
