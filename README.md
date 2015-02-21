@@ -24,5 +24,10 @@ dator.
 
 Källkoden är öppen så att den som så önskar ska kunna porta appen till andra operativsystem.
 
-## Licens
+## Licensiering
 TMEIT för Android distribueras i enlighet med villkoren i **Apache License version 2.0**.
+
+## Bibliotek
+TMEIT för Android använder följande tredjeparts-bibliotek utöver de som ingår i Android SDK:
+
+* [Barcode Scanner Libraries for Android](https://github.com/dm77/barcodescanner)
