@@ -48,31 +48,22 @@ public final class MainActivity extends ActionBarActivity implements NavigationD
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        // Handles clicks from the action bar, which we don't currently use.
+        // The menu used is populated from menu/main.xml or menu/global.xml
 
-        //noinspection SimplifiableIfStatement
+        /*
+        int id = item.getItemId();
         if (id == R.id.action_settings) {
+            // DO STUFF
             return true;
         }
+        */
 
         return super.onOptionsItemSelected(item);
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+        // Set title
     }
 
     public void restoreActionBar() {

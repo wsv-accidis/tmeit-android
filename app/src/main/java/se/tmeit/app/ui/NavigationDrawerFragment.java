@@ -93,9 +93,8 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
+                        getString(R.string.notifications_title),
+                        getString(R.string.about_title),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -113,11 +112,8 @@ public class NavigationDrawerFragment extends Fragment {
             return true;
         }
 
-        if (item.getItemId() == R.id.action_example) {
-            // ...
-            return true;
-        }
-
+        // Note - it's possible to handle action bar menu items here as well, but the call
+        // will go to MainActivity first before falling down here.
         return super.onOptionsItemSelected(item);
     }
 

@@ -1,6 +1,9 @@
-<menu>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
     <!--
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-        -->
+        This menu is displayed when the action drawer is open. Not currently used.
+
+    <item android:id="@+id/action_settings" android:orderInCategory="100"
+        android:title="@string/action_settings" app:showAsAction="never" />
+    -->
 </menu>

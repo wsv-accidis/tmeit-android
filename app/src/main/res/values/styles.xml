@@ -3,9 +3,8 @@
     <color name="color_insektionen">#44687D</color>
     <color name="color_insektionen_light">#70AACC</color>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <!-- Global app theme -->
     </style>
 
     <style name="OnboardingLabel" parent="TextAppearance.AppCompat.Medium">
