@@ -22,7 +22,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:adjustViewBounds="true"
-            android:maxHeight="400dp"
+            android:maxHeight="@dimen/tmeit_logo_max_height"
             android:src="@drawable/logo_tmeit" />
 
         <TextView

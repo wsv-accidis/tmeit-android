@@ -1,4 +1,4 @@
-package se.tmeit.app;
+package se.tmeit.app.ui;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import se.tmeit.app.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

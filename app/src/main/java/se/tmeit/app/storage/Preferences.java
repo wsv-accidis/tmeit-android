@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Created by Wilhelm Svenselius on 2015-02-21.
+ * Wrapper for Android shared preferences. Used to store application data between launches.
  */
 public final class Preferences {
     private static final String PREFERENCES_FILE = "TmeitPreferences";

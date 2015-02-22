@@ -1,4 +1,4 @@
-package se.tmeit.app;
+package se.tmeit.app.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,8 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import se.tmeit.app.onboarding.OnboardingActivity;
+import se.tmeit.app.R;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.ui.onboarding.OnboardingActivity;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {

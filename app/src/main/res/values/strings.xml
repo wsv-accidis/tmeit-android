@@ -1,20 +1,22 @@
 <resources>
     <string name="app_name">TMEIT</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_example">Example action</string>
-
-    <string name="action_settings">Settings</string>
+    <string name="auth_error_qr_code_denied">The one-time code was rejected by the server. It may have expired. Try generating a new code. Also, make sure you have the latest version of this app.</string>
+    <string name="auth_error_qr_code_not_valid">This one-time code is not valid. Try scanning the code again. Also, make sure that you have the latest version of this app.</string>
+    <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
 
     <string name="scanning_emu_continue">Continue</string>
 
     <string name="welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. Please have your one-time code ready to scan.</string>
     <string name="welcome_got_it_lets_go">Got it, let\'s go!</string>
     <string name="welcome_im_daft">I\'m daft, what is this even?</string>
+
+    <!-- Fluff from Android template -->
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
 </resources>

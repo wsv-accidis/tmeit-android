@@ -1,33 +1,34 @@
-TMEIT för Android
+TMEIT for Android
 =================
 
-_This app is targeted at members of primarily Swedish-speaking organization, so all documents
-are in Swedish._
+This is a mobile application for members of [TMEIT](http://tmeit.se). TMEIT is a social group
+and part of the [Chapter for Information- and Nanotechnology](http://insektionen.se) for
+students at The Royal Institute of Technology (KTH).
 
-Det här är en mobilapp för medlemmar i [TMEIT](http://tmeit.se). TMEIT är en studiesocial
+_Det här är en mobilapp för medlemmar i [TMEIT](http://tmeit.se). TMEIT är en studiesocial
 nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) för studenter
-på Kungliga Tekniska Högskolan, KTH.
+på Kungliga Tekniska Högskolan, KTH._
 
-## Utvecklingplan
-Appen är under utveckling men planen ser ut ungefär så här.
+## Development plan
+This app is still under development and not in a usable state. The plan is essentially this:
 
-1. Visa notifieringar om nya aktiviteter som publiceras på TMEIT:s hemsida
-2. Visa generell TMEIT-information såsom medlemslistan
-3. Hantera anmälningar till externa evenemang
-4. Hantera anmälningar till arbetspass
-5. Hantera avstämningar av genomförda arbetspass
-6. Mer saker!
+1. Show push notifications regarding new activities being published on the TMEIT web site
+2. Show general information for TMEIT members, such as the member list
+3. Handle signups for external events
+4. Handle signups for working at TMEIT events
+5. Handle reporting of TMEIT events for team leaders
+6. More stuff.
 
-Syftet är att appen ska fungera som ett komplement till TMEIT.se men så småningom potentiellt
-också en ersättare för den som föredrar att använda en telefon eller surfplatta istället för en
-dator.
+This app is intended to function as a complement to TMEIT.se but eventually, it could be
+a full replacement for those who prefer a smartphone or tablet instead of a computer.
 
-Källkoden är öppen så att den som så önskar ska kunna porta appen till andra operativsystem.
+This project is open-source to facilitate porting to other platforms.
 
-## Licensiering
-TMEIT för Android distribueras i enlighet med villkoren i **Apache License version 2.0**.
+## Licensing
+TMEIT for Android is distributed according to the terms of the **Apache License version 2.0**.
 
-## Bibliotek
-TMEIT för Android använder följande tredjeparts-bibliotek utöver de som ingår i Android SDK:
+## Acknowledgements
+TMEIT for Android uses the following third-party libraries, besides the Android SDK:
 
 * [Barcode Scanner Libraries for Android](https://github.com/dm77/barcodescanner)
+* [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)

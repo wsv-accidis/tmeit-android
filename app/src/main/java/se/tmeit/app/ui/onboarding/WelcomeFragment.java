@@ -1,4 +1,4 @@
-package se.tmeit.app.onboarding;
+package se.tmeit.app.ui.onboarding;
 
 import android.content.Intent;
 import android.net.Uri;

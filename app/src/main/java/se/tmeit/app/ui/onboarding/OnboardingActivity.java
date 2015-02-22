@@ -1,4 +1,4 @@
-package se.tmeit.app.onboarding;
+package se.tmeit.app.ui.onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import android.util.Log;
 
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
-import se.tmeit.app.MainActivity;
 import se.tmeit.app.R;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.utils.AndroidUtils;
 
 
@@ -65,8 +65,6 @@ public final class OnboardingActivity extends FragmentActivity {
             String contents = rawResult.getContents();
             Log.v(TAG, contents);
 
-            // TODO Validate that rawResult.getBarcodeFormat() is QRCODE
-            // TODO Validate code contents
 
             mPrefs.setServiceAuthentication(contents);
 
