@@ -9,14 +9,13 @@
     tools:context=".onboarding.WaitingFragment">
 
     <LinearLayout
-        android:id="@+id/waiting_layout"
+        android:id="@+id/onboarding_waiting_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
 
         <ProgressBar
-            android:id="@+id/spinner"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,6 +27,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/welcome_authenticating_please_wait" />
+            android:text="@string/onboarding_authenticating_please_wait" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/onboarding_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/onboarding_error_text"
+            style="@style/OnboardingLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/onboarding_try_again_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="@string/onboarding_lets_try_that_again" />
     </LinearLayout>
 </FrameLayout>

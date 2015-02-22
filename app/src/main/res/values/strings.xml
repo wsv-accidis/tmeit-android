@@ -6,12 +6,12 @@
     <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
     <string name="auth_error_unspecified_network">There was an error contacting the server. Please ensure you have Internet connectivity, then try again.</string>
 
-    <string name="scanning_emu_continue">Continue</string>
-
-    <string name="welcome_authenticating_please_wait">Authenticating, please wait.</string>
-    <string name="welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. Please have your one-time code ready to scan.</string>
-    <string name="welcome_got_it_lets_go">Got it, let\'s go!</string>
-    <string name="welcome_im_daft">I\'m daft, what is this even?</string>
+    <string name="onboarding_authenticating_please_wait">Authenticating, please wait.</string>
+    <string name="onboarding_got_it_lets_go">Got it, let\'s go!</string>
+    <string name="onboarding_im_daft_what_is_this">I\'m daft, what is this even?</string>
+    <string name="onboarding_lets_try_that_again">Let\'s try that again</string>
+    <string name="onboarding_scanning_emu_continue">Continue</string>
+    <string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. Please have your one-time code ready to scan.</string>
 
     <!-- Fluff from Android template -->
     <string name="title_section1">Section 1</string>

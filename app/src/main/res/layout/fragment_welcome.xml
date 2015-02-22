@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="@string/welcome_this_seems_to_be_the_first_time" />
+            android:text="@string/onboarding_welcome_this_seems_to_be_the_first_time" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,20 +43,20 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/welcome_continue_button"
+                android:id="@+id/onboarding_continue_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/welcome_got_it_lets_go"
+                android:text="@string/onboarding_got_it_lets_go"
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/welcome_quit_button"
+                android:id="@+id/onboarding_quit_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:text="@string/welcome_im_daft"
+                android:text="@string/onboarding_im_daft_what_is_this"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>

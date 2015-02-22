@@ -6,10 +6,10 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_horizontal_margin">
+    android:paddingTop="20dp">
 
     <EditText
-        android:id="@+id/scanning_emu_text"
+        android:id="@+id/onboarding_scanemu_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
@@ -18,9 +18,9 @@
         android:minHeight="100dp" />
 
     <Button
-        android:id="@+id/scanning_emu_button"
+        android:id="@+id/onboarding_scanemu_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="@string/scanning_emu_continue" />
+        android:text="@string/onboarding_scanning_emu_continue" />
 </LinearLayout>

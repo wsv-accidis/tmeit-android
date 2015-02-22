@@ -1,7 +1,8 @@
 package se.tmeit.app.ui.onboarding;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -11,11 +12,13 @@ import me.dm7.barcodescanner.zbar.ZBarScannerView;
 import se.tmeit.app.R;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.utils.AndroidUtils;
 
 
 public final class OnboardingActivity extends FragmentActivity {
     private final static String TAG = OnboardingActivity.class.getSimpleName();
+    private final Handler mHandler = new Handler();
     private final ScanResultHandler mScanResultHandler = new ScanResultHandler();
     private AuthenticationResultHandler mAuthResultHandler;
     private FragmentManager mFragmentManager;
@@ -61,29 +64,17 @@ public final class OnboardingActivity extends FragmentActivity {
 
         @Override
         public void onAuthenticationError(int errorMessage) {
-            if (mAbandoned) {
-                return;
-            }
-
-            // TODO
+            showErrorMessage(errorMessage);
         }
 
         @Override
         public void onNetworkError(int errorMessage) {
-            if (mAbandoned) {
-                return;
-            }
-
-            // TODO
+            showErrorMessage(errorMessage);
         }
 
         @Override
         public void onProtocolError(int errorMessage) {
-            if (mAbandoned) {
-                return;
-            }
-
-            // TODO
+            showErrorMessage(errorMessage);
         }
 
         @Override
@@ -92,10 +83,32 @@ public final class OnboardingActivity extends FragmentActivity {
                 return;
             }
 
-            // TODO
-            Log.d(TAG, "Onboarding flow is complete!");
+            Log.i(TAG, "Completed onboarding flow.");
             mPrefs.setServiceAuthentication(serviceAuth);
-            finish();
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(OnboardingActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+
+        private void showErrorMessage(final int errorMessage) {
+            if (mAbandoned) {
+                return;
+            }
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mWaitingFragment.isVisible()) {
+                        mWaitingFragment.showErrorMessage(errorMessage);
+                    }
+                }
+            });
         }
     }
 
@@ -120,18 +133,15 @@ public final class OnboardingActivity extends FragmentActivity {
     private final class WelcomeFragmentCallbacks implements WelcomeFragment.WelcomeFragmentCallbacks {
         @Override
         public void onContinueClicked() {
-            Fragment fragment;
+            ScanningFragment fragment;
 
             if (AndroidUtils.isInEmulator()) {
-                EmulatedScanningFragment scanFragment = new EmulatedScanningFragment();
-                scanFragment.setResultHandler(mScanResultHandler);
-                fragment = scanFragment;
+                fragment = new EmulatedScanningFragment();
             } else {
-                ScanningFragment scanFragment = new ScanningFragment();
-                scanFragment.setResultHandler(mScanResultHandler);
-                fragment = scanFragment;
+                fragment = new CameraScanningFragment();
             }
 
+            fragment.setResultHandler(mScanResultHandler);
             mFragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .addToBackStack(null)

@@ -12,7 +12,7 @@ import android.widget.Button;
 import se.tmeit.app.R;
 
 /**
- * First fragment displayed to sparkly new users.
+ * First screen displayed to sparkly new users.
  */
 public final class WelcomeFragment extends Fragment {
     private static final String TMEIT_URL = "http://tmeit.se";
@@ -22,7 +22,7 @@ public final class WelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_welcome, container, false);
 
-        Button quitButton = (Button) view.findViewById(R.id.welcome_quit_button);
+        Button quitButton = (Button) view.findViewById(R.id.onboarding_quit_button);
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +33,7 @@ public final class WelcomeFragment extends Fragment {
             }
         });
 
-        Button continueButton = (Button) view.findViewById(R.id.welcome_continue_button);
+        Button continueButton = (Button) view.findViewById(R.id.onboarding_continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
