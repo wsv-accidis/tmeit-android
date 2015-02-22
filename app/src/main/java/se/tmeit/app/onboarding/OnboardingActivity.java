@@ -2,6 +2,7 @@ package se.tmeit.app.onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -11,6 +12,7 @@ import me.dm7.barcodescanner.zbar.ZBarScannerView;
 import se.tmeit.app.MainActivity;
 import se.tmeit.app.R;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.utils.AndroidUtils;
 
 
 public final class OnboardingActivity extends FragmentActivity {
@@ -37,10 +39,20 @@ public final class OnboardingActivity extends FragmentActivity {
     private class WelcomeFragmentCallbacks implements WelcomeFragment.WelcomeFragmentCallbacks {
         @Override
         public void onContinueClicked() {
-            ScanningFragment scanFragment = new ScanningFragment();
-            scanFragment.setResultHandler(mScanResultHandler);
+            Fragment fragment;
+
+            if (AndroidUtils.isInEmulator()) {
+                EmulatedScanningFragment scanFragment = new EmulatedScanningFragment();
+                scanFragment.setResultHandler(mScanResultHandler);
+                fragment = scanFragment;
+            } else {
+                ScanningFragment scanFragment = new ScanningFragment();
+                scanFragment.setResultHandler(mScanResultHandler);
+                fragment = scanFragment;
+            }
+
             mFragmentManager.beginTransaction()
-                    .replace(R.id.container, scanFragment)
+                    .replace(R.id.container, fragment)
                     .addToBackStack(null)
                     .commit();
         }

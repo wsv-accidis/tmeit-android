@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_insektionen"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     tools:context=".onboarding.WelcomeFragment">
 
     <LinearLayout
@@ -40,6 +42,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
+
             <Button
                 android:id="@+id/welcome_continue_button"
                 android:layout_width="match_parent"
