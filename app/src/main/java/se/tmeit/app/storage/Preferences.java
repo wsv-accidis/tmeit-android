@@ -14,12 +14,28 @@ public final class Preferences {
         mPrefs = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
     }
 
-    public String getServiceAuthentication() {
-        return mPrefs.getString(Keys.SERVICE_AUTHENTICATION, "");
+    public String getGcmRegistrationId() {
+        return mPrefs.getString(Keys.GCM_REGISTRATION_ID, "");
     }
 
-    public boolean hasServiceAuthentication() {
-        return !getServiceAuthentication().isEmpty();
+    public void setGcmRegistrationId(String registrationId) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putString(Keys.GCM_REGISTRATION_ID, registrationId);
+        editor.commit();
+    }
+
+    public int getGcmRegistrationVersion() {
+        return mPrefs.getInt(Keys.GCM_REGISTRATION_VERSION, 0);
+    }
+
+    public void setGcmRegistrationVersion(int registrationVersion) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putInt(Keys.GCM_REGISTRATION_VERSION, registrationVersion);
+        editor.commit();
+    }
+
+    public String getServiceAuthentication() {
+        return mPrefs.getString(Keys.SERVICE_AUTHENTICATION, "");
     }
 
     public void setServiceAuthentication(String serviceAuth) {
@@ -28,7 +44,17 @@ public final class Preferences {
         editor.commit();
     }
 
+    public boolean hasGcmRegistrationId() {
+        return !getGcmRegistrationId().isEmpty();
+    }
+
+    public boolean hasServiceAuthentication() {
+        return !getServiceAuthentication().isEmpty();
+    }
+
     private static interface Keys {
+        public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
+        public static final String GCM_REGISTRATION_VERSION = "gcmRegistrationVersion";
         public static final String SERVICE_AUTHENTICATION = "serviceAuthentication";
     }
 }

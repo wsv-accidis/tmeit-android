@@ -79,7 +79,7 @@ public final class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPrefs = new Preferences(MainActivity.this);
+        mPrefs = new Preferences(this);
         mTitle = getTitle();
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);

@@ -1,17 +1,33 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ui.notifications.NotificationsFragment">
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             android:paddingTop="@dimen/activity_vertical_margin"
+             android:stretchColumns="0"
+             tools:context=".ui.notifications.NotificationsFragment">
 
-<!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <TableRow>
 
-</FrameLayout>
+        <TextView
+            style="@style/SettingsLabel"
+            android:text="@string/notifications_receive_notifications"/>
+
+        <Switch
+            android:id="@+id/notifications_enable"
+            android:layout_width="100dp"
+            android:layout_column="1"
+            android:textOff="@string/global_no"
+            android:textOn="@string/global_yes"/>
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_span="2"
+            android:text="@string/notifications_in_the_future"/>
+    </TableRow>
+</TableLayout>
