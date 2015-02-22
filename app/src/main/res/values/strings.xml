@@ -19,4 +19,7 @@
     <string name="onboarding_lets_try_that_again">Let\'s try that again</string>
     <string name="onboarding_scanning_emu_continue">Continue</string>
     <string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. Please have your one-time code ready to scan.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

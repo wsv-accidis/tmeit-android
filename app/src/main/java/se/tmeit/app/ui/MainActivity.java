@@ -5,21 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import se.tmeit.app.R;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
 
-
-public final class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public final class MainActivity extends ActionBarActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Preferences mPrefs;
     private CharSequence mTitle;
@@ -38,15 +38,6 @@ public final class MainActivity extends ActionBarActivity implements NavigationD
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles clicks from the action bar, which we don't currently use.
         // The menu used is populated from menu/main.xml or menu/global.xml
@@ -62,15 +53,11 @@ public final class MainActivity extends ActionBarActivity implements NavigationD
         return super.onOptionsItemSelected(item);
     }
 
-    public void onSectionAttached(int number) {
-        // Set title
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+    public void setMainTitle(int resId) {
+        if (0 == resId) {
+            resId = R.string.app_name;
+        }
+        mTitle = getString(resId);
     }
 
     @Override
@@ -78,12 +65,11 @@ public final class MainActivity extends ActionBarActivity implements NavigationD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPrefs = new Preferences(this);
-
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mNavigationDrawerFragment.setNavigationDrawerCallbacks(this);
+        mPrefs = new Preferences(MainActivity.this);
         mTitle = getTitle();
 
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment.setNavigationDrawerCallbacks(new NavigationDrawerCallbacks());
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
@@ -92,50 +78,56 @@ public final class MainActivity extends ActionBarActivity implements NavigationD
         super.onResume();
 
         if (!mPrefs.hasServiceAuthentication()) {
-            Intent intent = new Intent(this, OnboardingActivity.class);
+            Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
             startActivity(intent);
             finish();
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    private void restoreActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
 
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
+    public static abstract class MainActivityFragment extends Fragment {
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+
+            if (activity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) activity;
+                mainActivity.setMainTitle(getTitle());
+            }
         }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
+        protected abstract int getTitle();
     }
 
+    private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        @Override
+        public void onNavigationDrawerItemSelected(NavigationDrawerFragment.Items item) {
+            Fragment nextFragment = getFragment(item);
+            if (null != nextFragment) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, nextFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+            }
+        }
+
+        Fragment getFragment(NavigationDrawerFragment.Items item) {
+            switch (item) {
+                case ABOUT_ITEM:
+                    return new AboutFragment();
+                case NOTIFICATIONS_ITEM:
+                    return new NotificationsFragment();
+            }
+
+            Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+            return null;
+        }
+    }
 }
