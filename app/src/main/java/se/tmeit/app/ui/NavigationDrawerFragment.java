@@ -2,7 +2,6 @@ package se.tmeit.app.ui;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -27,10 +26,10 @@ import se.tmeit.app.R;
  * Manages the navigation drawer which is part of the main application UI.
  */
 public class NavigationDrawerFragment extends Fragment {
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private static final String PREF_USER_LEARNED_DRAWER = "navigationDrawerLearned";
+    private static final String STATE_SELECTED_POSITION = "selectedNavigationDrawerPosition";
     private NavigationDrawerCallbacks mCallbacks;
-    private Items mCurrentSelectedPosition = Items.getDefault();
+    private NavigationItem mCurrentSelectedPosition = NavigationItem.getDefault();
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -58,14 +57,13 @@ public class NavigationDrawerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // First app launch always shows the drawer so the user knows it exists
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = Items.fromPosition(savedInstanceState.getInt(STATE_SELECTED_POSITION));
+            mCurrentSelectedPosition = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_SELECTED_POSITION));
             if (null == mCurrentSelectedPosition) {
-                mCurrentSelectedPosition = Items.getDefault();
+                mCurrentSelectedPosition = NavigationItem.getDefault();
             }
             mFromSavedInstanceState = true;
         }
@@ -89,18 +87,17 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Items item = Items.fromPosition(position);
+                NavigationItem item = NavigationItem.fromPosition(position);
                 selectItem(item);
             }
         });
+
         mDrawerListView.setAdapter(new ArrayAdapter<>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                new String[]{
-                        getString(R.string.notifications_title),
-                        getString(R.string.about_title),
-                }));
+                NavigationItem.asTitles(getResources())));
+
         mDrawerListView.setItemChecked(mCurrentSelectedPosition.getPosition(), true);
         return mDrawerListView;
     }
@@ -178,6 +175,7 @@ public class NavigationDrawerFragment extends Fragment {
             }
         };
 
+        // First app launch always shows the drawer so the user knows it exists
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(mFragmentContainerView);
         }
@@ -188,7 +186,6 @@ public class NavigationDrawerFragment extends Fragment {
                 mDrawerToggle.syncState();
             }
         });
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
@@ -196,7 +193,7 @@ public class NavigationDrawerFragment extends Fragment {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
-    private void selectItem(Items item) {
+    private void selectItem(NavigationItem item) {
         mCurrentSelectedPosition = item;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(item.getPosition(), true);
@@ -216,44 +213,7 @@ public class NavigationDrawerFragment extends Fragment {
         actionBar.setTitle(R.string.app_name);
     }
 
-    public static enum Items {
-        NOTIFICATIONS_ITEM(0),
-        ABOUT_ITEM(1);
-
-        private final int mPosition;
-
-        private Items(int position) {
-            mPosition = position;
-        }
-
-        public static String[] asTitles(Resources resources) {
-            // The index of each item in this array _MUST_ match its position in the enum
-            return new String[]{
-                    resources.getString(R.string.notifications_title),
-                    resources.getString(R.string.about_title)
-            };
-        }
-
-        public static Items fromPosition(int position) {
-            for (Items item : Items.values()) {
-                if (position == item.getPosition()) {
-                    return item;
-                }
-            }
-
-            return null;
-        }
-
-        public static Items getDefault() {
-            return NOTIFICATIONS_ITEM;
-        }
-
-        public int getPosition() {
-            return mPosition;
-        }
-    }
-
     public static interface NavigationDrawerCallbacks {
-        void onNavigationDrawerItemSelected(Items item);
+        void onNavigationDrawerItemSelected(NavigationItem item);
     }
 }

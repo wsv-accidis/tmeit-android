@@ -19,8 +19,10 @@ import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
 
 public final class MainActivity extends ActionBarActivity {
+    private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
     private static final String TAG = MainActivity.class.getSimpleName();
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private NavigationItem mOpenFragmentItem;
     private Preferences mPrefs;
     private CharSequence mTitle;
 
@@ -60,6 +62,18 @@ public final class MainActivity extends ActionBarActivity {
         mTitle = getString(resId);
     }
 
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
+        }
+
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +85,17 @@ public final class MainActivity extends ActionBarActivity {
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setNavigationDrawerCallbacks(new NavigationDrawerCallbacks());
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        if (null != savedInstanceState) {
+            mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT));
+            if (null == mOpenFragmentItem) {
+                mOpenFragmentItem = NavigationItem.getDefault();
+            }
+        } else {
+            mOpenFragmentItem = NavigationItem.getDefault();
+        }
+
+        openFragment(mOpenFragmentItem);
     }
 
     @Override
@@ -81,6 +106,24 @@ public final class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
             startActivity(intent);
             finish();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_LAST_OPENED_FRAGMENT, mOpenFragmentItem.getPosition());
+    }
+
+    private void openFragment(NavigationItem item) {
+        Fragment nextFragment = getFragmentByDrawerItem(item);
+        if (null != nextFragment) {
+            mOpenFragmentItem = item;
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, nextFragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
         }
     }
 
@@ -107,27 +150,8 @@ public final class MainActivity extends ActionBarActivity {
 
     private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
         @Override
-        public void onNavigationDrawerItemSelected(NavigationDrawerFragment.Items item) {
-            Fragment nextFragment = getFragment(item);
-            if (null != nextFragment) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, nextFragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
-            }
-        }
-
-        Fragment getFragment(NavigationDrawerFragment.Items item) {
-            switch (item) {
-                case ABOUT_ITEM:
-                    return new AboutFragment();
-                case NOTIFICATIONS_ITEM:
-                    return new NotificationsFragment();
-            }
-
-            Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-            return null;
+        public void onNavigationDrawerItemSelected(NavigationItem item) {
+            openFragment(item);
         }
     }
 }
