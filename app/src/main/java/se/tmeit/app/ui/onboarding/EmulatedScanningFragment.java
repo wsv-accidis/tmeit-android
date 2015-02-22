@@ -17,7 +17,7 @@ import se.tmeit.app.R;
  * Pretends to be the ScanningFragment, but actually reads data from a textbox. For development.
  * Use this to paste the code into the textbox: adb -s {emulator id} shell input text {one-time code}
  */
-public class EmulatedScanningFragment extends ScanningFragment {
+public final class EmulatedScanningFragment extends ScanningFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_emu_scanning, container, false);

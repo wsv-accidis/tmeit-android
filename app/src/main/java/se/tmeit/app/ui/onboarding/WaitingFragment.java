@@ -13,7 +13,7 @@ import se.tmeit.app.R;
 /**
  * Displayed while waiting for a request to complete.
  */
-public class WaitingFragment extends Fragment {
+public final class WaitingFragment extends Fragment {
     private View mErrorLayout;
     private TextView mErrorText;
     private View mWaitLayout;

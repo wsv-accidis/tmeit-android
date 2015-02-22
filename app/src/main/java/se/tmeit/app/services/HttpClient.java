@@ -7,6 +7,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Singleton wrapper for the HTTP client. This is in accordance with documented
@@ -21,7 +22,7 @@ public final class HttpClient {
 
     static {
         mInstance = new OkHttpClient();
-        // TODO Configure client here
+        mInstance.setSslSocketFactory(HttpsURLConnection.getDefaultSSLSocketFactory());
     }
 
     public static Call enqueueRequest(Request request, Callback callback) {

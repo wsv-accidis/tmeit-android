@@ -95,7 +95,7 @@ public final class ServiceAuthenticator {
         return json.toString();
     }
 
-    public interface AuthenticationResultHandler {
+    public static interface AuthenticationResultHandler {
         public void onAuthenticationError(int errorMessage);
 
         public void onNetworkError(int errorMessage);
