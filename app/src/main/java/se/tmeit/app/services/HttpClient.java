@@ -14,17 +14,18 @@ import com.squareup.okhttp.Request;
  */
 public final class HttpClient {
     private static final String TAG = HttpClient.class.getSimpleName();
-    private static final OkHttpClient mInstance = new OkHttpClient();
+    private static final OkHttpClient mInstance;
 
     private HttpClient() {
     }
 
     static {
-        String sslSocketFactory = mInstance.getSslSocketFactory().getClass().getName();
-        Log.d(TAG, "SSL socket factory in use is " + sslSocketFactory);
+        mInstance = new OkHttpClient();
+        // TODO Configure client here
     }
 
     public static Call enqueueRequest(Request request, Callback callback) {
+        Log.d(TAG, "Queueing request for URL = " + request.urlString());
         Call call = mInstance.newCall(request);
         call.enqueue(callback);
         return call;

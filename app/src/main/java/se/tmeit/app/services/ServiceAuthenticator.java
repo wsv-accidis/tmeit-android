@@ -8,6 +8,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,16 +20,18 @@ import se.tmeit.app.R;
  * Handles authentication of the service auth code against TMEIT web services.
  */
 public final class ServiceAuthenticator {
-    private static final String TAG = ServiceAuthenticator.class.getSimpleName();
-    private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
     private static final String BASE_URL = "https://tmeit-se.loopiasecure.com/w/tmeit-ws/";
-    private static final char SERVICE_AUTH_SEPARATOR = '%';
-    private static final int SERVICE_AUTH_LENGTH_MIN = 48;
-    private static final int SERVICE_AUTH_LENGTH_MAX = 96;
-    private static final int USERNAME_LENGTH_MIN = 3;
-    private static final int USERNAME_LENGTH_MAX = 16;
+    private static final String ERROR_MESSAGE_KEY = "errorMessage";
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
     private static final String SERVICE_AUTH_KEY = "serviceAuth";
+    private static final int SERVICE_AUTH_LENGTH_MAX = 96;
+    private static final int SERVICE_AUTH_LENGTH_MIN = 48;
+    private static final char SERVICE_AUTH_SEPARATOR = '%';
+    private static final String SUCCESS_KEY = "success";
+    private static final String TAG = ServiceAuthenticator.class.getSimpleName();
     private static final String USERNAME_KEY = "username";
+    private static final int USERNAME_LENGTH_MAX = 16;
+    private static final int USERNAME_LENGTH_MIN = 3;
 
     public void authenticateFromQr(String qrCode, AuthenticationResultHandler resultHandler) {
         if (!checkSanity(qrCode)) {
@@ -46,7 +49,7 @@ public final class ServiceAuthenticator {
                     .post(RequestBody.create(JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
 
-            HttpClient.enqueueRequest(request, new AuthenticateFromQrCallback(resultHandler));
+            HttpClient.enqueueRequest(request, new AuthenticateFromQrCallback(resultHandler, serviceAuth));
 
         } catch (Exception ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
@@ -55,14 +58,7 @@ public final class ServiceAuthenticator {
         }
     }
 
-    private String createJsonForValidateAuth(String username, String serviceAuth) throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put(SERVICE_AUTH_KEY, serviceAuth);
-        json.put(USERNAME_KEY, username);
-        return json.toString();
-    }
-
-    private boolean checkSanity(String qrCode) {
+    private static boolean checkSanity(String qrCode) {
         // Expected format is {username 3-16 chars)%{service auth 48-96 chars}
 
         // This is mainly to ensure that someone doesn't go scanning random QR codes off the web,
@@ -77,7 +73,7 @@ public final class ServiceAuthenticator {
         }
 
         int indexOfSeparator = qrCode.indexOf(SERVICE_AUTH_SEPARATOR);
-        if (-1 == indexOfSeparator || indexOfSeparator <= USERNAME_LENGTH_MIN || indexOfSeparator > USERNAME_LENGTH_MAX) {
+        if (-1 == indexOfSeparator || indexOfSeparator < USERNAME_LENGTH_MIN || indexOfSeparator >= USERNAME_LENGTH_MAX) {
             Log.d(TAG, "Failed sanity checks: Separator not found or not in expected range.");
             return false;
         }
@@ -92,37 +88,82 @@ public final class ServiceAuthenticator {
         return true;
     }
 
+    private static String createJsonForValidateAuth(String username, String serviceAuth) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put(SERVICE_AUTH_KEY, serviceAuth);
+        json.put(USERNAME_KEY, username);
+        return json.toString();
+    }
+
     public interface AuthenticationResultHandler {
-        public void onSuccess();
+        public void onAuthenticationError(int errorMessage);
 
         public void onNetworkError(int errorMessage);
 
         public void onProtocolError(int errorMessage);
 
-        public void onAuthenticationError(int errorMessage);
+        public void onSuccess(String serviceAuth);
     }
 
     private static class AuthenticateFromQrCallback implements Callback {
         private final AuthenticationResultHandler mResultHandler;
+        private final String mServiceAuth;
 
-        public AuthenticateFromQrCallback(AuthenticationResultHandler resultHandler) {
+        public AuthenticateFromQrCallback(AuthenticationResultHandler resultHandler, String serviceAuth) {
             mResultHandler = resultHandler;
+            mServiceAuth = serviceAuth;
         }
 
         @Override
         public void onFailure(Request request, IOException e) {
-            // TODO Check response
-            Log.w(TAG, "Authentication failed.", e);
-
-            mResultHandler.onAuthenticationError(R.string.auth_error_qr_code_denied);
+            Log.e(TAG, "Authentication failed due to an IO error.", e);
+            mResultHandler.onNetworkError(R.string.auth_error_unspecified_network);
         }
 
         @Override
         public void onResponse(Response response) throws IOException {
-            Log.w(TAG, "Authentication response received.");
+            Log.i(TAG, "Authentication response received with HTTP status = " + response.code());
 
-            // TODO Check response
-            mResultHandler.onSuccess();
+            JSONObject responseBody = getBody(response);
+            if (null == responseBody) {
+                mResultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
+            } else if (HttpStatus.SC_OK == response.code() && isSuccessful(responseBody)) {
+                mResultHandler.onSuccess(mServiceAuth);
+            } else if (HttpStatus.SC_FORBIDDEN == response.code()) {
+                mResultHandler.onAuthenticationError(R.string.auth_error_qr_code_denied);
+            } else {
+                String errorMessage = getErrorMessage(responseBody);
+                Log.e(TAG, "Protocol error in authentication response. Error message = " + errorMessage);
+                mResultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
+            }
+        }
+
+        private static JSONObject getBody(Response response) {
+            if (null == response || null == response.body()) {
+                return null;
+            }
+
+            String str = null;
+            try {
+                str = response.body().string();
+                return new JSONObject(str);
+
+            } catch (JSONException ex) {
+                Log.e(TAG, "Error parsing JSON from body of authentication response.", ex);
+                Log.d(TAG, "Response = " + str);
+                return null;
+            } catch (IOException ex) {
+                Log.e(TAG, "Error reading authentication response.", ex);
+                return null;
+            }
+        }
+
+        private static String getErrorMessage(JSONObject body) {
+            return body.optString(ERROR_MESSAGE_KEY);
+        }
+
+        private static boolean isSuccessful(JSONObject body) {
+            return body.optBoolean(SUCCESS_KEY);
         }
     }
 }

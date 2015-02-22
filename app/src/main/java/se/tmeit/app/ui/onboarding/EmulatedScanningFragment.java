@@ -1,10 +1,12 @@
 package se.tmeit.app.ui.onboarding;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,6 +33,10 @@ public class EmulatedScanningFragment extends Fragment {
             public void onClick(View v) {
                 String text = scanText.getText().toString();
 
+                // Shouldn't be needed - but Android's not smart enough to hide it
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(scanText.getWindowToken(), 0);
+
                 if (null != mScanResultHandler) {
                     Result result = new Result();
                     result.setBarcodeFormat(BarcodeFormat.QRCODE);
@@ -40,7 +46,7 @@ public class EmulatedScanningFragment extends Fragment {
             }
         });
 
-        scanText.requestFocus();
+        view.requestFocus();
         return view;
     }
 
