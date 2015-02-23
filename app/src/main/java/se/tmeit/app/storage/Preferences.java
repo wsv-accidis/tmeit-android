@@ -14,6 +14,16 @@ public final class Preferences {
         mPrefs = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
     }
 
+    public String getAuthenticatedUser() {
+        return mPrefs.getString(Keys.AUTHENTICATED_USER, "");
+    }
+
+    public void setAuthenticatedUser(String username) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putString(Keys.AUTHENTICATED_USER, username);
+        editor.commit();
+    }
+
     public String getGcmRegistrationId() {
         return mPrefs.getString(Keys.GCM_REGISTRATION_ID, "");
     }
@@ -53,6 +63,7 @@ public final class Preferences {
     }
 
     private static interface Keys {
+        public static final String AUTHENTICATED_USER = "authenticatedUser";
         public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
         public static final String GCM_REGISTRATION_VERSION = "gcmRegistrationVersion";
         public static final String SERVICE_AUTHENTICATION = "serviceAuthentication";

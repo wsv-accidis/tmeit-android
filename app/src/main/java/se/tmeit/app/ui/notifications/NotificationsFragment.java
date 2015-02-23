@@ -4,6 +4,7 @@ package se.tmeit.app.ui.notifications;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
-import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
 
 /**
@@ -23,25 +23,24 @@ import se.tmeit.app.ui.MainActivity;
  */
 public class NotificationsFragment extends MainActivity.MainActivityFragment {
     private static final String TAG = NotificationsFragment.class.getSimpleName();
+    private final Handler mHandler = new Handler();
     private final RegistrationResultHandler mResultHandler = new RegistrationResultHandler();
     private Switch mNotificationsSwitch;
-    private Preferences mPrefs;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPrefs = new Preferences(getActivity());
-    }
+    private boolean mSuppressSwitchListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
 
         mNotificationsSwitch = (Switch) view.findViewById(R.id.notifications_enable);
-        mNotificationsSwitch.setChecked(mPrefs.hasGcmRegistrationId());
+        mNotificationsSwitch.setChecked(GcmRegistration.getInstance(getActivity()).isRegistered());
         mNotificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mSuppressSwitchListener) {
+                    return;
+                }
+
                 Context context = getActivity();
                 GcmRegistration gcmRegistration = GcmRegistration.getInstance(context);
 
@@ -53,9 +52,9 @@ public class NotificationsFragment extends MainActivity.MainActivityFragment {
                 }
 
                 if (isChecked) {
-                    gcmRegistration.unregister(mResultHandler);
-                } else {
                     gcmRegistration.register(mResultHandler);
+                } else {
+                    gcmRegistration.unregister(mResultHandler);
                 }
             }
         });
@@ -72,20 +71,64 @@ public class NotificationsFragment extends MainActivity.MainActivityFragment {
         private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
         @Override
-        public void onGoogleServicesError(int resultCode, boolean canRecover) {
-            Activity activity = getActivity();
-            if (null == activity) {
-                return;
-            }
+        public void onError(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null == activity || !isVisible()) {
+                        return;
+                    }
 
-            mNotificationsSwitch.setChecked(false);
+                    mSuppressSwitchListener = true;
+                    mNotificationsSwitch.setChecked(false);
+                    mSuppressSwitchListener = false;
 
-            if (canRecover) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Toast toast = Toast.makeText(activity, R.string.notifications_your_device_does_not_support, Toast.LENGTH_SHORT);
-                toast.show();
-            }
+                    Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+        }
+
+        @Override
+        public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null == activity || !isVisible()) {
+                        return;
+                    }
+
+                    mSuppressSwitchListener = true;
+                    mNotificationsSwitch.setChecked(false);
+                    mSuppressSwitchListener = false;
+
+                    if (canRecover) {
+                        GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                    } else {
+                        Toast toast = Toast.makeText(activity, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+                }
+            });
+        }
+
+        @Override
+        public void onSuccess() {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null == activity || !isVisible()) {
+                        return;
+                    }
+
+                    Toast toast = Toast.makeText(activity, R.string.notifications_success, Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
         }
     }
 }
