@@ -17,9 +17,10 @@
 
     <string name="notifications_error_unspecified_gcm">There was an error registering with Google\'s messaging service. Please ensure you have Internet connectivity, then try again.</string>
     <string name="notifications_error_unspecified_tmeit">There was an error registering with the notification service. Please ensure you have Internet connectivity, then try again.</string>
-    <string name="notifications_title">Notifications</string>
-    <string name="notifications_receive_notifications">Receive notifications</string>
     <string name="notifications_in_the_future">In the future, there will be more options here for what types of notifications you will receive.</string>
+    <string name="notifications_notification_from_tmeit">Notification from TMEIT</string>
+    <string name="notifications_receive_notifications">Receive notifications</string>
+    <string name="notifications_title">Notifications</string>
     <string name="notifications_server_is_still_processing">The server is still processing your request, please try again in a moment.</string>
     <string name="notifications_success">Success!</string>
     <string name="notifications_your_device_does_not_support">Your device does not support Google Play Services. Notifications are unavailable.</string>

@@ -31,6 +31,12 @@
 
         <activity android:name=".ui.onboarding.OnboardingActivity"/>
 
+        <receiver android:name=".notifications.NotificationDeletedReceiver">
+            <intent-filter>
+                <action android:name="se.tmeit.app.NOTIFICATION_DELETED"/>
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".notifications.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
