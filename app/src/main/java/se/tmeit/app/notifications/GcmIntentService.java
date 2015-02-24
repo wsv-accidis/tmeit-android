@@ -54,7 +54,7 @@ public final class GcmIntentService extends IntentService {
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                     .setAutoCancel(true)
-                    .setContentText("Placeholder")
+                    .setContentText(getString(R.string.notifications_message_has_no_content))
                     .setContentTitle(getString(R.string.notifications_notification_from_tmeit))
                     .setDeleteIntent(deletePendingIntent)
                     .setStyle(new NotificationCompat.InboxStyle())
