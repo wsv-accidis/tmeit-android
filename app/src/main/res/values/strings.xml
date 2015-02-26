@@ -19,6 +19,8 @@
     <string name="notifications_error_unspecified_tmeit">There was an error registering with the notification service. Please ensure you have Internet connectivity, then try again.</string>
     <string name="notifications_in_the_future">In the future, there will be more options here for what types of notifications you will receive.</string>
     <string name="notifications_message_has_no_content">This message has no content.</string>
+    <string name="notifications_x_notifications_from_tmeit">%d notifications from TMEIT</string>
+    <string name="notifications_go_to_tmeit_se">Go to TMEIT.se to check them out.</string>
     <string name="notifications_notification_from_tmeit">Notification from TMEIT</string>
     <string name="notifications_receive_notifications">Receive notifications</string>
     <string name="notifications_title">Notifications</string>

@@ -20,10 +20,14 @@ public final class NotificationDeletedReceiver extends BroadcastReceiver {
 
         NotificationStorage storage = NotificationStorage.getInstance(context);
         int[] notificationsToDelete = intent.getIntArrayExtra(NOTIFICATION_ID_EXTRA);
-        for(int notificationId : notificationsToDelete) {
-            Log.v(TAG, "Removing notification with ID " + notificationId);
-            storage.remove(notificationId);
+        if (null != notificationsToDelete) {
+            for (int notificationId : notificationsToDelete) {
+                Log.v(TAG, "Removing notification. id = " + notificationId);
+                storage.remove(notificationId);
+            }
+            storage.commit();
+        } else {
+            Log.w(TAG, "Notifications to delete was null. This is probably a bug!");
         }
-        storage.commit();
     }
 }

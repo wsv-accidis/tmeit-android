@@ -18,7 +18,7 @@ public final class DateTimeUtils {
         if (null == calendar) {
             return "";
         }
-        return new SimpleDateFormat(ISO_8601_DATETIME).format(calendar);
+        return new SimpleDateFormat(ISO_8601_DATETIME).format(calendar.getTime());
     }
 
     public static Calendar parseIso8601(String str) {

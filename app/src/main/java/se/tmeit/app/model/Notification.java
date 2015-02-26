@@ -85,4 +85,9 @@ public final class Notification {
         json.put(CREATED, DateTimeUtils.formatIso8601(mCreated));
         return json;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%d] %s (%s)", mId, mBody, DateTimeUtils.formatIso8601(mCreated));
+    }
 }
