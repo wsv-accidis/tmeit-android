@@ -35,6 +35,9 @@ public final class GcmIntentService extends IntentService {
         if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             Log.i(TAG, "Message received from GCM.");
 
+            NotificationManager notificationManager = new NotificationManager(this);
+            notificationManager.updateFromServer();
+
             // TODO Create notifications based on the actual notifications received
             // See http://developer.android.com/training/notify-user/managing.html
             // See https://developer.android.com/training/wearables/notifications/stacks.html#AddSummary
@@ -71,4 +74,6 @@ public final class GcmIntentService extends IntentService {
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
+
+
 }

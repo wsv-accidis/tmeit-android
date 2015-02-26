@@ -3,10 +3,15 @@ package se.tmeit.app.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Calendar;
+
+import se.tmeit.app.utils.DateTimeUtils;
+
 /**
  * Wrapper for Android shared preferences. Used to store application data between launches.
  */
 public final class Preferences {
+
     private static final String PREFERENCES_FILE = "TmeitPreferences";
     private final SharedPreferences mPrefs;
 
@@ -44,6 +49,17 @@ public final class Preferences {
         editor.commit();
     }
 
+    public Calendar getLatestNotification() {
+        String str = mPrefs.getString(Keys.LATEST_NOTIFICATION, "");
+        return DateTimeUtils.parseIso8601(str);
+    }
+
+    public void setLatestNotification(Calendar date) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putString(Keys.LATEST_NOTIFICATION, DateTimeUtils.formatIso8601(date));
+        editor.commit();
+    }
+
     public String getServiceAuthentication() {
         return mPrefs.getString(Keys.SERVICE_AUTHENTICATION, "");
     }
@@ -66,6 +82,7 @@ public final class Preferences {
         public static final String AUTHENTICATED_USER = "authenticatedUser";
         public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
         public static final String GCM_REGISTRATION_VERSION = "gcmRegistrationVersion";
+        public static final String LATEST_NOTIFICATION = "latestNotification";
         public static final String SERVICE_AUTHENTICATION = "serviceAuthentication";
     }
 }

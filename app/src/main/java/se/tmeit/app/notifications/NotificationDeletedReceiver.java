@@ -5,16 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import se.tmeit.app.storage.NotificationStorage;
+
 /**
  * Cleans up notifications that are deleted by the user.
  */
 public final class NotificationDeletedReceiver extends BroadcastReceiver {
+    public static final String NOTIFICATION_ID_EXTRA = "NotificationId";
     private static final String TAG = NotificationDeletedReceiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Notification cleared.");
+        Log.d(TAG, "Got notification deleted broadcast.");
 
-        // TODO
+        NotificationStorage storage = NotificationStorage.getInstance(context);
+        int[] notificationsToDelete = intent.getIntArrayExtra(NOTIFICATION_ID_EXTRA);
+        for(int notificationId : notificationsToDelete) {
+            Log.v(TAG, "Removing notification with ID " + notificationId);
+            storage.remove(notificationId);
+        }
+        storage.commit();
     }
 }
