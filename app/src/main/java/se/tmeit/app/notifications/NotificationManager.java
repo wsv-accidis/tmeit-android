@@ -119,6 +119,16 @@ public final class NotificationManager {
         deleteIntent.putExtra(NotificationDeletedReceiver.NOTIFICATION_ID_EXTRA, new int[]{notif.getId()});
         PendingIntent deletePendingIntent = PendingIntent.getBroadcast(mContext, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            /*
+             * To attach an action to the notification - we don't currently use this.
+             * Attach to builder with .setContentIntent(resultPendingIntent)
+             *
+            Intent resultIntent = new Intent(this, MainActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            */
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                 .setAutoCancel(true)
                 .setContentText(getContentTextFromNotification(notif))

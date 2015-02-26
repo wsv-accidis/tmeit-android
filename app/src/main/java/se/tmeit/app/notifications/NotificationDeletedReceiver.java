@@ -27,7 +27,7 @@ public final class NotificationDeletedReceiver extends BroadcastReceiver {
             }
             storage.commit();
         } else {
-            Log.w(TAG, "Notifications to delete was null. This is probably a bug!");
+            Log.w(TAG, "Notifications to delete was null. The notification probably wasn't created properly.");
         }
     }
 }

@@ -28,20 +28,6 @@ public final class GcmIntentService extends IntentService {
             NotificationManager notificationFetcher = new NotificationManager(this);
             notificationFetcher.updateFromServer();
             notificationFetcher.createNotifications();
-
-            // TODO Create notifications based on the actual notifications received
-            // See http://developer.android.com/training/notify-user/managing.html
-            // See https://developer.android.com/training/wearables/notifications/stacks.html#AddSummary
-
-            /*
-             * To attach an action to the notification - we don't currently use this.
-             * Attach to builder with .setContentIntent(resultPendingIntent)
-             *
-            Intent resultIntent = new Intent(this, MainActivity.class);
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            */
         }
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
