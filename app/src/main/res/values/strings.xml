@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">TMEIT</string>
+    <string name="app_name" translatable="false">TMEIT</string>
 
-    <string name="about_title">About</string>
     <string name="about_text_intro">TMEIT for Android is developed by <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> for <a href="http://tmeit.se">TMEIT</a>. You can check out the source code, report bugs and feedback on <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
+    <string name="about_title">About</string>
 
     <string name="auth_error_qr_code_denied">The one-time code was rejected by the server. It may have expired. Try generating a new code. Also, make sure you have the latest version of this app.</string>
     <string name="auth_error_qr_code_not_valid">This one-time code is not valid. Try scanning the code again. Also, make sure that you have the latest version of this app.</string>
-    <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
     <string name="auth_error_unspecified_network">There was an error contacting the server. Please ensure you have Internet connectivity, then try again.</string>
+    <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
 
     <string name="global_yes">Yes</string>
     <string name="global_no">No</string>

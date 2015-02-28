@@ -9,10 +9,13 @@ _Det här är en mobilapp för medlemmar i [TMEIT](http://tmeit.se). TMEIT är e
 nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) för studenter
 på Kungliga Tekniska Högskolan, KTH._
 
+## Status
+Version 1.0 has been published to Google Play. Only push notifications are supported so far.
+
 ## Development plan
 This app is still under development and not in a usable state. The plan is essentially this:
 
-1. Show push notifications regarding new activities being published on the TMEIT web site
+1. DONE - Show push notifications regarding new activities being published on the TMEIT web site
 2. Show general information for TMEIT members, such as the member list
 3. Handle signups for external events
 4. Handle signups for working at TMEIT events
