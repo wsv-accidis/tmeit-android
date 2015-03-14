@@ -7,19 +7,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-import me.dm7.barcodescanner.zbar.Result;
-import me.dm7.barcodescanner.zbar.ZBarScannerView;
 import se.tmeit.app.R;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.utils.AndroidUtils;
 
 
 public final class OnboardingActivity extends FragmentActivity {
     private final static String TAG = OnboardingActivity.class.getSimpleName();
     private final Handler mHandler = new Handler();
-    private final ScanResultHandler mScanResultHandler = new ScanResultHandler();
+    private final ScanResultHandler mResultHandler = new ScanResultHandler();
     private AuthenticationResultHandler mAuthResultHandler;
     private FragmentManager mFragmentManager;
     private Preferences mPrefs;
@@ -113,12 +110,9 @@ public final class OnboardingActivity extends FragmentActivity {
         }
     }
 
-    private final class ScanResultHandler implements ZBarScannerView.ResultHandler {
+    private final class ScanResultHandler implements WebOnboardingFragment.OnboardingResultHandler {
         @Override
-        public void handleResult(Result rawResult) {
-            String qrCode = rawResult.getContents();
-            Log.d(TAG, "Read from QR code: " + qrCode);
-
+        public void handleResult(String authCode) {
             WaitingFragment waitingFragment = new WaitingFragment();
             mFragmentManager.beginTransaction()
                     .replace(R.id.container, waitingFragment)
@@ -127,22 +121,24 @@ public final class OnboardingActivity extends FragmentActivity {
 
             ServiceAuthenticator authenticator = new ServiceAuthenticator();
             mAuthResultHandler = new AuthenticationResultHandler(waitingFragment);
-            authenticator.authenticateFromQr(qrCode, mAuthResultHandler);
+            authenticator.authenticateFromCode(authCode, mAuthResultHandler);
         }
     }
 
     private final class WelcomeFragmentCallbacks implements WelcomeFragment.WelcomeFragmentCallbacks {
         @Override
-        public void onContinueClicked() {
-            ScanningFragment fragment;
+        public void onLogInWithKthClicked() {
+            continueOnboarding(true);
+        }
 
-            if (AndroidUtils.isInEmulator()) {
-                fragment = new EmulatedScanningFragment();
-            } else {
-                fragment = new CameraScanningFragment();
-            }
+        @Override
+        public void onLogInWithoutKthClicked() {
+            continueOnboarding(false);
+        }
 
-            fragment.setResultHandler(mScanResultHandler);
+        private void continueOnboarding(boolean usingSaml) {
+            WebOnboardingFragment fragment = WebOnboardingFragment.newInstance(usingSaml);
+            fragment.setResultHandler(mResultHandler);
             mFragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .addToBackStack(null)
@@ -150,4 +146,3 @@ public final class OnboardingActivity extends FragmentActivity {
         }
     }
 }
-

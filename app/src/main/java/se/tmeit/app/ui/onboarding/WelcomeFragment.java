@@ -1,7 +1,5 @@
 package se.tmeit.app.ui.onboarding;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,30 +13,28 @@ import se.tmeit.app.R;
  * First screen displayed to sparkly new users.
  */
 public final class WelcomeFragment extends Fragment {
-    private static final String TMEIT_URL = "http://tmeit.se";
     private WelcomeFragmentCallbacks mWelcomeFragmentCallbacks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_welcome, container, false);
 
-        Button quitButton = (Button) view.findViewById(R.id.onboarding_quit_button);
-        quitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(TMEIT_URL));
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
-
-        Button continueButton = (Button) view.findViewById(R.id.onboarding_continue_button);
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        Button logInWithKthButton = (Button) view.findViewById(R.id.onboarding_log_in_kth_button);
+        logInWithKthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mWelcomeFragmentCallbacks) {
-                    mWelcomeFragmentCallbacks.onContinueClicked();
+                    mWelcomeFragmentCallbacks.onLogInWithKthClicked();
+                }
+            }
+        });
+
+        Button logInWithoutKthButton = (Button) view.findViewById(R.id.onboarding_log_in_without_kth_button);
+        logInWithoutKthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mWelcomeFragmentCallbacks) {
+                    mWelcomeFragmentCallbacks.onLogInWithoutKthClicked();
                 }
             }
         });
@@ -51,6 +47,8 @@ public final class WelcomeFragment extends Fragment {
     }
 
     public static interface WelcomeFragmentCallbacks {
-        public void onContinueClicked();
+        public void onLogInWithKthClicked();
+
+        public void onLogInWithoutKthClicked();
     }
 }

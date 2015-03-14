@@ -4,8 +4,8 @@
     <string name="about_text_intro">TMEIT for Android is developed by <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> for <a href="http://tmeit.se">TMEIT</a>. You can check out the source code, report bugs and feedback on <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
     <string name="about_title">About</string>
 
-    <string name="auth_error_qr_code_denied">The one-time code was rejected by the server. It may have expired. Try generating a new code. Also, make sure you have the latest version of this app.</string>
-    <string name="auth_error_qr_code_not_valid">This one-time code is not valid. Try scanning the code again. Also, make sure that you have the latest version of this app.</string>
+    <string name="auth_error_code_denied">The authorization code was rejected by the server. It may have expired. Try logging in again. Also, make sure you have the latest version of this app.</string>
+    <string name="auth_error_code_not_valid">This authorization time code is not valid. Try logging in again. Also, make sure that you have the latest version of this app.</string>
     <string name="auth_error_unspecified_network">There was an error contacting the server. Please ensure you have Internet connectivity, then try again.</string>
     <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
 
@@ -29,9 +29,9 @@
     <string name="notifications_your_device_does_not_support">Your device does not support Google Play Services. Notifications are unavailable.</string>
 
     <string name="onboarding_authenticating_please_wait">Authenticating, please wait.</string>
-    <string name="onboarding_got_it_lets_go">Got it, let\'s go!</string>
-    <string name="onboarding_im_daft_what_is_this">I\'m daft, what is this even?</string>
+    <string name="onboarding_log_in_using_kth_id">Log in using KTH ID</string>
+    <string name="onboarding_log_in_without_kth_id">I don\'t have a KTH ID</string>
     <string name="onboarding_lets_try_that_again">Let\'s try that again</string>
     <string name="onboarding_scanning_emu_continue">Continue</string>
-    <string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. Please have your one-time code ready to scan.</string>
+    <string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. You will need to log in to an existing account.</string>
 </resources>

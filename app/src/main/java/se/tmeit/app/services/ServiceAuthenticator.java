@@ -26,15 +26,15 @@ public final class ServiceAuthenticator {
     private static final int USERNAME_LENGTH_MAX = 16;
     private static final int USERNAME_LENGTH_MIN = 3;
 
-    public void authenticateFromQr(String qrCode, AuthenticationResultHandler resultHandler) {
-        if (!checkSanity(qrCode)) {
-            resultHandler.onAuthenticationError(R.string.auth_error_qr_code_not_valid);
+    public void authenticateFromCode(String authCode, AuthenticationResultHandler resultHandler) {
+        if (!checkSanity(authCode)) {
+            resultHandler.onAuthenticationError(R.string.auth_error_code_not_valid);
             return;
         }
 
-        int indexOfSeparator = qrCode.indexOf(SERVICE_AUTH_SEPARATOR);
-        String username = qrCode.substring(0, indexOfSeparator).toLowerCase();
-        String serviceAuth = qrCode.substring(indexOfSeparator + 1);
+        int indexOfSeparator = authCode.indexOf(SERVICE_AUTH_SEPARATOR);
+        String username = authCode.substring(0, indexOfSeparator).toLowerCase();
+        String serviceAuth = authCode.substring(indexOfSeparator + 1);
 
         try {
             Request request = new Request.Builder()
@@ -126,7 +126,7 @@ public final class ServiceAuthenticator {
             } else if (HttpStatus.SC_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
                 mResultHandler.onSuccess(mServiceAuth, mUsername);
             } else if (HttpStatus.SC_FORBIDDEN == response.code()) {
-                mResultHandler.onAuthenticationError(R.string.auth_error_qr_code_denied);
+                mResultHandler.onAuthenticationError(R.string.auth_error_code_denied);
             } else {
                 String errorMessage = TmeitServiceConfig.getErrorMessage(responseBody);
                 Log.e(TAG, "Protocol error in authentication response. Error message = " + errorMessage);
