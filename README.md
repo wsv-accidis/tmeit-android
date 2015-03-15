@@ -33,5 +33,4 @@ TMEIT for Android is distributed according to the terms of the **Apache License 
 ## Acknowledgements
 TMEIT for Android uses the following third-party libraries, in addition to SDKs provided by Google:
 
-* [Barcode Scanner Libraries for Android](https://github.com/dm77/barcodescanner)
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)

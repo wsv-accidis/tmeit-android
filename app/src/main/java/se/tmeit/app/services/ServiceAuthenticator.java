@@ -42,7 +42,7 @@ public final class ServiceAuthenticator {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
 
-            HttpClient.enqueueRequest(request, new AuthenticateFromQrCallback(resultHandler, serviceAuth, username));
+            HttpClient.enqueueRequest(request, new AuthenticateFromServiceAuthCallback(resultHandler, serviceAuth, username));
 
         } catch (Exception ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
@@ -51,27 +51,24 @@ public final class ServiceAuthenticator {
         }
     }
 
-    private static boolean checkSanity(String qrCode) {
+    private static boolean checkSanity(String authCode) {
         // Expected format is {username 3-16 chars)%{service auth 48-96 chars}
 
-        // This is mainly to ensure that someone doesn't go scanning random QR codes off the web,
-        // we don't want to waste resources sending codes to the server that will never actually
-        // validate to anything. The actual validation happens on the server side, so the fact
-        // that it would be trivial to construct a QR code that passes the sanity checking is
-        // not a security concern.
+        // The actual validation happens on the server side, so the fact that it would be trivial to construct
+        // code that passes the sanity checking is not a security concern.
 
-        if (null == qrCode || qrCode.isEmpty()) {
-            Log.d(TAG, "Failed sanity checks: QR code is null or empty.");
+        if (null == authCode || authCode.isEmpty()) {
+            Log.d(TAG, "Failed sanity checks: Code code is null or empty.");
             return false;
         }
 
-        int indexOfSeparator = qrCode.indexOf(SERVICE_AUTH_SEPARATOR);
+        int indexOfSeparator = authCode.indexOf(SERVICE_AUTH_SEPARATOR);
         if (-1 == indexOfSeparator || indexOfSeparator < USERNAME_LENGTH_MIN || indexOfSeparator >= USERNAME_LENGTH_MAX) {
             Log.d(TAG, "Failed sanity checks: Separator not found or not in expected range.");
             return false;
         }
 
-        int lengthOfServiceAuth = qrCode.length() - indexOfSeparator;
+        int lengthOfServiceAuth = authCode.length() - indexOfSeparator;
         if (lengthOfServiceAuth < SERVICE_AUTH_LENGTH_MIN || lengthOfServiceAuth > SERVICE_AUTH_LENGTH_MAX) {
             Log.d(TAG, "Failed sanity checks: Service auth key length is not in expected range.");
             return false;
@@ -98,12 +95,12 @@ public final class ServiceAuthenticator {
         public void onSuccess(String serviceAuth, String authenticatedUser);
     }
 
-    private static class AuthenticateFromQrCallback implements Callback {
+    private static class AuthenticateFromServiceAuthCallback implements Callback {
         private final AuthenticationResultHandler mResultHandler;
         private final String mServiceAuth;
         private final String mUsername;
 
-        public AuthenticateFromQrCallback(AuthenticationResultHandler resultHandler, String serviceAuth, String username) {
+        public AuthenticateFromServiceAuthCallback(AuthenticationResultHandler resultHandler, String serviceAuth, String username) {
             mResultHandler = resultHandler;
             mServiceAuth = serviceAuth;
             mUsername = username;
