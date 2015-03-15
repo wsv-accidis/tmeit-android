@@ -16,7 +16,10 @@ public final class TmeitApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        installProviderIfNeeded();
+    }
 
+    private void installProviderIfNeeded() {
         // See https://developer.android.com/training/articles/security-gms-provider.html
         ProviderInstaller.installIfNeededAsync(getApplicationContext(), new ProviderInstaller.ProviderInstallListener() {
             @Override

@@ -3,6 +3,7 @@ package se.tmeit.app.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,8 +13,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import se.tmeit.app.R;
+import se.tmeit.app.notifications.GcmRegistration;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
@@ -21,6 +26,7 @@ import se.tmeit.app.ui.onboarding.OnboardingActivity;
 public final class MainActivity extends ActionBarActivity {
     private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
     private static final String TAG = MainActivity.class.getSimpleName();
+    private final Handler mHandler = new Handler();
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private NavigationItem mOpenFragmentItem;
     private Preferences mPrefs;
@@ -29,9 +35,7 @@ public final class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
+            // Only show items in the action bar relevant to this screen if the drawer is not showing. Otherwise, let the drawer decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
             restoreActionBar();
             return true;
@@ -60,18 +64,6 @@ public final class MainActivity extends ActionBarActivity {
             resId = R.string.app_name;
         }
         mTitle = getString(resId);
-    }
-
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
-        }
-
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
     }
 
     @Override
@@ -106,6 +98,8 @@ public final class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            validateAndRegisterServicesIfNeeded();
         }
     }
 
@@ -113,6 +107,18 @@ public final class MainActivity extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_LAST_OPENED_FRAGMENT, mOpenFragmentItem.getPosition());
+    }
+
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
+        }
+
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
     }
 
     private void openFragment(NavigationItem item) {
@@ -134,6 +140,11 @@ public final class MainActivity extends ActionBarActivity {
         actionBar.setTitle(mTitle);
     }
 
+    private void validateAndRegisterServicesIfNeeded() {
+        // TODO Validate auth to make sure it hasn't expired
+        GcmRegistration.getInstance(this).registerIfRegistrationExpired(new RegistrationResultHandler());
+    }
+
     public static abstract class MainActivityFragment extends Fragment {
         @Override
         public void onAttach(Activity activity) {
@@ -152,6 +163,54 @@ public final class MainActivity extends ActionBarActivity {
         @Override
         public void onNavigationDrawerItemSelected(NavigationItem item) {
             openFragment(item);
+        }
+    }
+
+    private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
+        @Override
+        public void onError(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshNotificationsFragment();
+                    Toast toast = Toast.makeText(MainActivity.this, getString(errorMessage), Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+        }
+
+        @Override
+        public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshNotificationsFragment();
+                    if (canRecover) {
+                        GooglePlayServicesUtil.getErrorDialog(resultCode, MainActivity.this, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                    } else {
+                        Toast toast = Toast.makeText(MainActivity.this, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onSuccess() {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshNotificationsFragment();
+                }
+            });
+        }
+
+        private void refreshNotificationsFragment() {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            if (fragment instanceof NotificationsFragment) {
+                NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;
+                notificationsFragment.refreshNotificationsState();
+            }
         }
     }
 }

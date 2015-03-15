@@ -27,6 +27,7 @@ import se.tmeit.app.utils.AndroidUtils;
  * Handles registering/unregistering with GCM and the TMEIT backend to receive notifications.
  */
 public final class GcmRegistration {
+    public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = GcmRegistration.class.getSimpleName();
     private final Context mContext;
     private final Preferences mPrefs;
