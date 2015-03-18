@@ -14,13 +14,12 @@ public final class AndroidUtils {
     private AndroidUtils() {
     }
 
-    public static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException("Could not get package name: " + e);
-        }
+    public static int getAppVersionCode(Context context) {
+        return getPackageInfo(context).versionCode;
+    }
+
+    public static String getAppVersionName(Context context) {
+        return getPackageInfo(context).versionName;
     }
 
     public static boolean hasApiLevel(int apiLevel) {
@@ -36,5 +35,13 @@ public final class AndroidUtils {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return (netInfo != null && netInfo.isConnectedOrConnecting());
+    }
+
+    private static PackageInfo getPackageInfo(Context context) {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException("Could not get package name: " + e);
+        }
     }
 }

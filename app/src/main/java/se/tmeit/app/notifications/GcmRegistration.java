@@ -54,7 +54,7 @@ public final class GcmRegistration {
     public boolean isRegistered() {
         if (mPrefs.hasGcmRegistrationId()) {
             int registeredAppVersion = mPrefs.getGcmRegistrationVersion();
-            int actualAppVersion = AndroidUtils.getAppVersion(mContext);
+            int actualAppVersion = AndroidUtils.getAppVersionCode(mContext);
             return (registeredAppVersion == actualAppVersion);
         } else {
             return false;
@@ -154,7 +154,7 @@ public final class GcmRegistration {
                 return null;
             }
 
-            int appVersion = AndroidUtils.getAppVersion(mContext);
+            int appVersion = AndroidUtils.getAppVersionCode(mContext);
             Log.d(TAG, "Registered successfully! RegistrationId = " + registrationId + ", appVersion = " + appVersion + ".");
             mPrefs.setGcmRegistrationId(registrationId);
             mPrefs.setGcmRegistrationVersion(appVersion);

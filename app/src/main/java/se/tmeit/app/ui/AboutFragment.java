@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import se.tmeit.app.R;
+import se.tmeit.app.utils.AndroidUtils;
 
 /**
  * Fragment which displays information about the app.
@@ -21,6 +22,9 @@ public final class AboutFragment extends MainActivity.MainActivityFragment {
 
         TextView aboutText = (TextView) view.findViewById(R.id.about_text);
         aboutText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView versionText = (TextView) view.findViewById(R.id.version_text);
+        versionText.setText("v" + AndroidUtils.getAppVersionName(getActivity()));
 
         return view;
     }

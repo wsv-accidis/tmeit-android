@@ -9,6 +9,9 @@
     <string name="auth_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
+    <string name="error_network_not_available">Det finns inget tillgängligt nätverk. Appen kommer inte att fungera utan nätåtkomst.</string>
+    <string name="error_network_not_available_title">Ej ansluten</string>
+
     <string name="navigation_drawer_close">Stäng navigation</string>
     <string name="navigation_drawer_open">Öppna navigation</string>
 
