@@ -1,5 +1,6 @@
 package se.tmeit.app.services;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.squareup.okhttp.Callback;
@@ -36,13 +37,26 @@ public final class ServiceAuthenticator {
         String username = authCode.substring(0, indexOfSeparator).toLowerCase();
         String serviceAuth = authCode.substring(indexOfSeparator + 1);
 
+        authenticate(username, serviceAuth, resultHandler);
+    }
+
+    public void authenticateFromCredentials(String username, String serviceAuth, AuthenticationResultHandler resultHandler) {
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(serviceAuth)) {
+            resultHandler.onAuthenticationError(R.string.auth_error_invalid_data);
+            return;
+        }
+
+        authenticate(username, serviceAuth, resultHandler);
+    }
+
+    private void authenticate(String username, String serviceAuth, AuthenticationResultHandler resultHandler) {
         try {
             Request request = new Request.Builder()
                     .url(TmeitServiceConfig.BASE_URL + "ValidateAuth.php")
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
 
-            HttpClient.enqueueRequest(request, new AuthenticateFromServiceAuthCallback(resultHandler, serviceAuth, username));
+            HttpClient.enqueueRequest(request, new AuthenticationCallback(resultHandler, serviceAuth, username));
 
         } catch (Exception ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
@@ -95,12 +109,12 @@ public final class ServiceAuthenticator {
         public void onSuccess(String serviceAuth, String authenticatedUser);
     }
 
-    private static class AuthenticateFromServiceAuthCallback implements Callback {
+    private static class AuthenticationCallback implements Callback {
         private final AuthenticationResultHandler mResultHandler;
         private final String mServiceAuth;
         private final String mUsername;
 
-        public AuthenticateFromServiceAuthCallback(AuthenticationResultHandler resultHandler, String serviceAuth, String username) {
+        public AuthenticationCallback(AuthenticationResultHandler resultHandler, String serviceAuth, String username) {
             mResultHandler = resultHandler;
             mServiceAuth = serviceAuth;
             mUsername = username;

@@ -19,8 +19,8 @@
             android:id="@+id/notifications_enable"
             android:layout_width="100dp"
             android:layout_column="1"
-            android:textOff="@string/global_no"
-            android:textOn="@string/global_yes"/>
+            android:textOff="@android:string/no"
+            android:textOn="@android:string/yes"/>
     </TableRow>
 
     <TableRow>

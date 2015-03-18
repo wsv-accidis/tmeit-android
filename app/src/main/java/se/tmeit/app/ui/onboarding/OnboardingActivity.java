@@ -11,6 +11,7 @@ import se.tmeit.app.R;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.utils.AndroidUtils;
 
 
 public final class OnboardingActivity extends FragmentActivity {
@@ -19,6 +20,7 @@ public final class OnboardingActivity extends FragmentActivity {
     private final ScanResultHandler mResultHandler = new ScanResultHandler();
     private AuthenticationResultHandler mAuthResultHandler;
     private FragmentManager mFragmentManager;
+    private boolean mHasShownNetworkAlert;
     private Preferences mPrefs;
 
     @Override
@@ -44,6 +46,16 @@ public final class OnboardingActivity extends FragmentActivity {
         mFragmentManager.beginTransaction()
                 .replace(R.id.container, welcomeFragment)
                 .commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!mHasShownNetworkAlert && !AndroidUtils.isNetworkConnected(this)) {
+            mHasShownNetworkAlert = true;
+            MainActivity.showNoNetworkAlert(this);
+        }
     }
 
     private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {

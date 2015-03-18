@@ -3,6 +3,8 @@ package se.tmeit.app.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 
 /**
@@ -28,5 +30,11 @@ public final class AndroidUtils {
     public static boolean isInEmulator() {
         // This is extremely unlikely to detect all emulators. For development use only.
         return Build.PRODUCT.equals("sdk_google_phone_x86");
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return (netInfo != null && netInfo.isConnectedOrConnecting());
     }
 }

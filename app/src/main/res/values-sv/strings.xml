@@ -7,9 +7,7 @@
     <string name="auth_error_code_not_valid">Koden är ogiltig. Prova att logga in igen. Kontrollera också att du har senaste versionen av appen.</string>
     <string name="auth_error_unspecified_network">Det gick inte att kontakta servern. Kontrollera att du har nätåtkomst och försök sedan igen.</string>
     <string name="auth_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
-
-    <string name="global_no">Nej</string>
-    <string name="global_yes">Ja</string>
+    <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
     <string name="navigation_drawer_close">Stäng navigation</string>
     <string name="navigation_drawer_open">Öppna navigation</string>

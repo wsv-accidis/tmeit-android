@@ -1,6 +1,8 @@
 package se.tmeit.app.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,18 +21,29 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
+import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
+import se.tmeit.app.utils.AndroidUtils;
 
 public final class MainActivity extends ActionBarActivity {
     private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
     private static final String TAG = MainActivity.class.getSimpleName();
     private final Handler mHandler = new Handler();
+    private boolean mHasShownNetworkAlert;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private NavigationItem mOpenFragmentItem;
     private Preferences mPrefs;
     private CharSequence mTitle;
+
+    public static void showNoNetworkAlert(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(R.string.error_network_not_available)
+                .setTitle(R.string.error_network_not_available_title)
+                .setPositiveButton(android.R.string.ok, null);
+        builder.create().show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,6 +79,18 @@ public final class MainActivity extends ActionBarActivity {
         mTitle = getString(resId);
     }
 
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
+        }
+
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +120,13 @@ public final class MainActivity extends ActionBarActivity {
         super.onResume();
 
         if (!mPrefs.hasServiceAuthentication()) {
-            Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
-            startActivity(intent);
-            finish();
+            startOnboardingActivity();
         } else {
+            if (!mHasShownNetworkAlert && !AndroidUtils.isNetworkConnected(this)) {
+                mHasShownNetworkAlert = true;
+                showNoNetworkAlert(this);
+            }
+
             validateAndRegisterServicesIfNeeded();
         }
     }
@@ -107,18 +135,6 @@ public final class MainActivity extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_LAST_OPENED_FRAGMENT, mOpenFragmentItem.getPosition());
-    }
-
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
-        }
-
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
     }
 
     private void openFragment(NavigationItem item) {
@@ -140,9 +156,56 @@ public final class MainActivity extends ActionBarActivity {
         actionBar.setTitle(mTitle);
     }
 
+    private void startOnboardingActivity() {
+        Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void validateAndRegisterServicesIfNeeded() {
-        // TODO Validate auth to make sure it hasn't expired
-        GcmRegistration.getInstance(this).registerIfRegistrationExpired(new RegistrationResultHandler());
+        String userName = mPrefs.getAuthenticatedUser(), authCode = mPrefs.getServiceAuthentication();
+
+        ServiceAuthenticator authenticator = new ServiceAuthenticator();
+        authenticator.authenticateFromCredentials(userName, authCode, new AuthenticationResultHandler());
+    }
+
+    private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
+        @Override
+        public void onAuthenticationError(int errorMessage) {
+            showErrorMessage(errorMessage);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    startOnboardingActivity();
+                }
+            });
+        }
+
+        @Override
+        public void onNetworkError(final int errorMessage) {
+            showErrorMessage(errorMessage);
+        }
+
+        @Override
+        public void onProtocolError(int errorMessage) {
+            showErrorMessage(errorMessage);
+        }
+
+        @Override
+        public void onSuccess(String serviceAuth, String authenticatedUser) {
+            GcmRegistration.getInstance(MainActivity.this)
+                    .registerIfRegistrationExpired(new RegistrationResultHandler());
+        }
+
+        private void showErrorMessage(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+        }
     }
 
     public static abstract class MainActivityFragment extends Fragment {
