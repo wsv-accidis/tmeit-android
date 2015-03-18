@@ -10,7 +10,8 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.0 has been published to Google Play. Only push notifications are supported so far.
+Version 1.1 has been published to Google Play. Only push notifications are supported so far. Version
+1.1 was a bug fix and general improvements release with no significant new features.
 
 ## Development plan
 This app is still under development and not in a usable state. The plan is essentially this:
