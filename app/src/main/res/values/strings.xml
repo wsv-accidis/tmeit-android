@@ -13,6 +13,8 @@
     <string name="error_network_not_available">There is no network available. This app won\'t work without a network connection.</string>
     <string name="error_network_not_available_title">No network</string>
 
+    <string name="members_title">Members</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

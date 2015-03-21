@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +24,7 @@ import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.ui.members.MembersListFragment;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
 import se.tmeit.app.utils.AndroidUtils;
@@ -79,18 +81,6 @@ public final class MainActivity extends ActionBarActivity {
         mTitle = getString(resId);
     }
 
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
-        }
-
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +127,20 @@ public final class MainActivity extends ActionBarActivity {
         outState.putInt(STATE_LAST_OPENED_FRAGMENT, mOpenFragmentItem.getPosition());
     }
 
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case MEMBERS_ITEM:
+                return new MembersListFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
+        }
+
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
+    }
+
     private void openFragment(NavigationItem item) {
         Fragment nextFragment = getFragmentByDrawerItem(item);
         if (null != nextFragment) {
@@ -156,6 +160,13 @@ public final class MainActivity extends ActionBarActivity {
         actionBar.setTitle(mTitle);
     }
 
+    private static void setTitleOnMainActivity(Activity activity, int title) {
+        if (activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            mainActivity.setMainTitle(title);
+        }
+    }
+
     private void startOnboardingActivity() {
         Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
         startActivity(intent);
@@ -163,10 +174,9 @@ public final class MainActivity extends ActionBarActivity {
     }
 
     private void validateAndRegisterServicesIfNeeded() {
-        String userName = mPrefs.getAuthenticatedUser(), authCode = mPrefs.getServiceAuthentication();
-
+        String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         ServiceAuthenticator authenticator = new ServiceAuthenticator();
-        authenticator.authenticateFromCredentials(userName, authCode, new AuthenticationResultHandler());
+        authenticator.authenticateFromCredentials(username, serviceAuth, new AuthenticationResultHandler());
     }
 
     private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
@@ -212,11 +222,17 @@ public final class MainActivity extends ActionBarActivity {
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
+            setTitleOnMainActivity(activity, getTitle());
+        }
 
-            if (activity instanceof MainActivity) {
-                MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.setMainTitle(getTitle());
-            }
+        protected abstract int getTitle();
+    }
+
+    public static abstract class MainActivityListFragment extends ListFragment {
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            setTitleOnMainActivity(activity, getTitle());
         }
 
         protected abstract int getTitle();

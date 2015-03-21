@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 
+import se.tmeit.app.services.HttpClient;
+
 /**
  * Application class.
  */
@@ -17,6 +19,7 @@ public final class TmeitApplication extends Application {
     public void onCreate() {
         super.onCreate();
         installProviderIfNeeded();
+        HttpClient.initializeCache(getApplicationContext());
     }
 
     private void installProviderIfNeeded() {
@@ -31,6 +34,7 @@ public final class TmeitApplication extends Application {
             @Override
             public void onProviderInstalled() {
                 Log.i(TAG, "Google Play Services security provider was updated successfully.");
+                HttpClient.initializeSslSocketFactory();
             }
         });
     }
