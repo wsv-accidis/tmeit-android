@@ -12,7 +12,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
@@ -21,6 +22,8 @@ import se.tmeit.app.model.Member;
  * Downloads data entities from TMEIT web services.
  */
 public final class Repository {
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_TITLE = "title";
     private static final String HEADER_SERVICE_AUTH = "X-TMEIT-Service-Auth";
     private static final String HEADER_USERNAME = "X-TMEIT-Username";
     private static final String TAG = Repository.class.getSimpleName();
@@ -32,14 +35,23 @@ public final class Repository {
         mServiceAuth = serviceAuth;
     }
 
-    public void getMembers(RepositoryResultHandler<List<Member>> resultHandler) {
+    public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
         Request request = getRequestBuilder("GetMembers.php").build();
         HttpClient.enqueueRequest(request, new GetMembersCallback(resultHandler));
     }
 
+    Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {
+        HashMap<Integer, String> result = new HashMap<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            result.put(obj.getInt(FIELD_ID), obj.getString(FIELD_TITLE));
+        }
+        return result;
+    }
+
     private Request.Builder getRequestBuilder(String relativeUrl) {
         return new Request.Builder()
-                .url(TmeitServiceConfig.BASE_URL + relativeUrl)
+                .url(TmeitServiceConfig.SERVICE_BASE_URL + relativeUrl)
                 .addHeader(HEADER_USERNAME, mUsername)
                 .addHeader(HEADER_SERVICE_AUTH, mServiceAuth)
                 .get();
@@ -51,15 +63,22 @@ public final class Repository {
         public void onSuccess(TResult result);
     }
 
-    private final class GetMembersCallback extends GetResultCallback<List<Member>> {
+    private final class GetMembersCallback extends GetResultCallback<Member.RepositoryData> {
+        private static final String GROUPS = "groups";
+        private static final String TEAMS = "teams";
+        private static final String TITLES = "titles";
         private static final String USERS = "users";
 
-        public GetMembersCallback(RepositoryResultHandler<List<Member>> resultHandler) {
+        public GetMembersCallback(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
         @Override
-        protected List<Member> getResult(JSONObject responseBody) throws JSONException {
+        protected Member.RepositoryData getResult(JSONObject responseBody) throws JSONException {
+            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(GROUPS));
+            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(TEAMS));
+            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(TITLES));
+
             JSONArray jsonUsers = responseBody.getJSONArray(USERS);
 
             ArrayList<Member> members = new ArrayList<>();
@@ -68,7 +87,7 @@ public final class Repository {
                 members.add(Member.fromJson(jsonUser));
             }
 
-            return members;
+            return new Member.RepositoryData(members, groups, teams, titles);
         }
     }
 

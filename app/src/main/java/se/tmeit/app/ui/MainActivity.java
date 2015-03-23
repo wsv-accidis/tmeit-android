@@ -98,7 +98,7 @@ public final class MainActivity extends ActionBarActivity {
             if (null == mOpenFragmentItem) {
                 mOpenFragmentItem = NavigationItem.getDefault();
             }
-        } else {
+        } else if (null == mOpenFragmentItem) {
             mOpenFragmentItem = NavigationItem.getDefault();
         }
 

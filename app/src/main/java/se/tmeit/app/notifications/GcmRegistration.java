@@ -189,7 +189,7 @@ public final class GcmRegistration {
 
         private boolean execute(String relativeUrl, String registrationId, String serviceAuth, String authenticatedUser) throws IOException, JSONException {
             Request request = new Request.Builder()
-                    .url(TmeitServiceConfig.BASE_URL + relativeUrl)
+                    .url(TmeitServiceConfig.SERVICE_BASE_URL + relativeUrl)
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForRegisterGcm(registrationId, serviceAuth, authenticatedUser)))
                     .build();
 

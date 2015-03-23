@@ -44,6 +44,10 @@ public final class HttpClient {
         return mInstance.newCall(request).execute();
     }
 
+    public static OkHttpClient getOkHttpClient() {
+        return mInstance;
+    }
+
     public static void initializeCache(Context context) {
         try {
             File cacheDirectory = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");

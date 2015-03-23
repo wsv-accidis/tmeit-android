@@ -82,7 +82,7 @@ public final class NotificationManager {
             String json = createJsonForGetNotifications(mPrefs.getAuthenticatedUser(), mPrefs.getServiceAuthentication(), lastNotif, MAX_COUNT);
 
             Request request = new Request.Builder()
-                    .url(TmeitServiceConfig.BASE_URL + "GetNotifications.php")
+                    .url(TmeitServiceConfig.SERVICE_BASE_URL + "GetNotifications.php")
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, json))
                     .build();
 

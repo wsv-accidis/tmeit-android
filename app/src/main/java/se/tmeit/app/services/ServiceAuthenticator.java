@@ -52,7 +52,7 @@ public final class ServiceAuthenticator {
     private void authenticate(String username, String serviceAuth, AuthenticationResultHandler resultHandler) {
         try {
             Request request = new Request.Builder()
-                    .url(TmeitServiceConfig.BASE_URL + "ValidateAuth.php")
+                    .url(TmeitServiceConfig.SERVICE_BASE_URL + "ValidateAuth.php")
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
 
