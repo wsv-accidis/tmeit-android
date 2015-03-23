@@ -58,7 +58,7 @@ public final class ServiceAuthenticator {
 
             HttpClient.enqueueRequest(request, new AuthenticationCallback(resultHandler, serviceAuth, username));
 
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
             Log.e(TAG, "Unexpected exception while authenticating.", ex);
             resultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);

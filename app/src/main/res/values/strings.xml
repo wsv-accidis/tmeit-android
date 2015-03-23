@@ -10,10 +10,10 @@
     <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
     <string name="auth_error_invalid_data">The authentication data is no longer valid. Try logging in again.</string>
 
-    <string name="error_network_not_available">There is no network available. This app won\'t work without a network connection.</string>
-    <string name="error_network_not_available_title">No network</string>
-
     <string name="members_title">Members</string>
+
+    <string name="network_error_not_available">There is no network available. This app won\'t work without a network connection.</string>
+    <string name="network_error_not_available_title">No network</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -37,4 +37,7 @@
     <string name="onboarding_lets_try_that_again">Let\'s try that again</string>
     <string name="onboarding_scanning_emu_continue">Continue</string>
     <string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. You will need to log in to an existing account.</string>
+
+    <string name="repository_error_unspecified_network">There was an error contacting the server. Please ensure you have Internet connectivity, then try again.</string>
+    <string name="repository_error_unspecified_protocol">An unexpected error occurred while downloading. Make sure you have the latest version of this app.</string>
 </resources>

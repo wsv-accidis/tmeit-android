@@ -41,8 +41,8 @@ public final class MainActivity extends ActionBarActivity {
 
     public static void showNoNetworkAlert(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(R.string.error_network_not_available)
-                .setTitle(R.string.error_network_not_available_title)
+        builder.setMessage(R.string.network_error_not_available)
+                .setTitle(R.string.network_error_not_available_title)
                 .setPositiveButton(android.R.string.ok, null);
         builder.create().show();
     }

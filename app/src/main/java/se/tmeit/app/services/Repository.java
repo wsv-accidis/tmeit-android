@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
@@ -15,12 +14,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 
 /**
  * Downloads data entities from TMEIT web services.
  */
 public final class Repository {
+    private static final String HEADER_SERVICE_AUTH = "X-TMEIT-Service-Auth";
+    private static final String HEADER_USERNAME = "X-TMEIT-Username";
     private static final String TAG = Repository.class.getSimpleName();
     private final String mServiceAuth;
     private final String mUsername;
@@ -31,71 +33,76 @@ public final class Repository {
     }
 
     public void getMembers(RepositoryResultHandler<List<Member>> resultHandler) {
-        try {
-            Request request = new Request.Builder()
-                    .url(TmeitServiceConfig.BASE_URL + "GetMembers.php")
-                    .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJson()))
-                    .build();
+        Request request = getRequestBuilder("GetMembers.php").build();
+        HttpClient.enqueueRequest(request, new GetMembersCallback(resultHandler));
+    }
 
-            HttpClient.enqueueRequest(request, new GetMembersCallback(resultHandler));
+    private Request.Builder getRequestBuilder(String relativeUrl) {
+        return new Request.Builder()
+                .url(TmeitServiceConfig.BASE_URL + relativeUrl)
+                .addHeader(HEADER_USERNAME, mUsername)
+                .addHeader(HEADER_SERVICE_AUTH, mServiceAuth)
+                .get();
+    }
 
-        } catch (Exception ex) {
-            // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
-            Log.e(TAG, "Unexpected exception while downloading the list of members.", ex);
-            resultHandler.onError(0); // TODO
+    public static interface RepositoryResultHandler<TResult> {
+        public void onError(int errorMessage);
+
+        public void onSuccess(TResult result);
+    }
+
+    private final class GetMembersCallback extends GetResultCallback<List<Member>> {
+        private static final String USERS = "users";
+
+        public GetMembersCallback(RepositoryResultHandler<List<Member>> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected List<Member> getResult(JSONObject responseBody) throws JSONException {
+            JSONArray jsonUsers = responseBody.getJSONArray(USERS);
+
+            ArrayList<Member> members = new ArrayList<>();
+            for (int i = 0; i < jsonUsers.length(); i++) {
+                JSONObject jsonUser = jsonUsers.getJSONObject(i);
+                members.add(Member.fromJson(jsonUser));
+            }
+
+            return members;
         }
     }
 
-    private String createJson() throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, mServiceAuth);
-        json.put(TmeitServiceConfig.USERNAME_KEY, mUsername);
-        return json.toString();
-    }
+    private abstract class GetResultCallback<TResult> implements Callback {
+        protected final RepositoryResultHandler<TResult> mResultHandler;
 
-    public static interface RepositoryResultHandler<T> {
-        public void onError(int errorMessage);
-
-        public void onSuccess(T result);
-    }
-
-    private final class GetMembersCallback implements Callback {
-        private static final String USERS = "users";
-        private final RepositoryResultHandler<List<Member>> mResultHandler;
-
-        public GetMembersCallback(RepositoryResultHandler<List<Member>> resultHandler) {
+        protected GetResultCallback(RepositoryResultHandler<TResult> resultHandler) {
             mResultHandler = resultHandler;
         }
 
         @Override
         public void onFailure(Request request, IOException e) {
-            Log.e(TAG, "Downloading the list of members failed due to an IO error.", e);
-            mResultHandler.onError(0); // TODO
+            Log.e(TAG, "Downloading data failed due to an IO error.", e);
+            mResultHandler.onError(R.string.repository_error_unspecified_network);
         }
 
         @Override
         public void onResponse(Response response) throws IOException {
-            Log.i(TAG, "List of members response received with HTTP status = " + response.code());
+            Log.i(TAG, "Download response received with HTTP status = " + response.code() + ", cached = " + (null == response.networkResponse()) + ".");
 
             try {
                 JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
                 if (null != responseBody) {
-                    JSONArray jsonUsers = responseBody.getJSONArray(USERS);
-
-                    ArrayList<Member> members = new ArrayList<>();
-                    for (int i = 0; i < jsonUsers.length(); i++) {
-                        JSONObject jsonUser = jsonUsers.getJSONObject(i);
-                        members.add(Member.fromJson(jsonUser));
-                    }
-
-                    mResultHandler.onSuccess(members);
+                    TResult result = getResult(responseBody);
+                    mResultHandler.onSuccess(result);
                 } else {
-                    mResultHandler.onError(0); // TODO (same as JSONException)
+                    mResultHandler.onError(R.string.repository_error_unspecified_protocol);
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "Downloading the list of members failed due to a JSON error.", e);
-                mResultHandler.onError(0); // TODO
+                Log.e(TAG, "Downloading data failed due to a JSON error.", e);
+                mResultHandler.onError(R.string.repository_error_unspecified_protocol);
             }
         }
+
+        protected abstract TResult getResult(JSONObject responseBody) throws JSONException;
     }
 }
