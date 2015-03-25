@@ -11,6 +11,8 @@
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
     <string name="members_title">Medlemmar</string>
+    <string name="members_no_title_placeholder">(ingen)</string>
+    <string name="members_no_team_placeholder">(inget)</string>
 
     <string name="network_error_not_available">Det finns inget tillgängligt nätverk. Appen kommer inte att fungera utan nätåtkomst.</string>
     <string name="network_error_not_available_title">Ej ansluten</string>

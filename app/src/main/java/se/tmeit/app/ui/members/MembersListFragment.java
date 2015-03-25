@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.OkHttpDownloader;
@@ -20,8 +21,8 @@ import java.util.Random;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
-import se.tmeit.app.services.HttpClient;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.TmeitHttpClient;
 import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
@@ -40,7 +41,7 @@ public final class MembersListFragment extends MainActivity.MainActivityListFrag
         super.onAttach(activity);
 
         mPicasso = new Picasso.Builder(activity)
-                .downloader(new OkHttpDownloader(HttpClient.getOkHttpClient()))
+                .downloader(new OkHttpDownloader(TmeitHttpClient.getInstance()))
                 .build();
 
         if (null == mMembers) {
@@ -90,7 +91,9 @@ public final class MembersListFragment extends MainActivity.MainActivityListFrag
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+        Member member = mMembers.getMembers().get(position);
+        Toast toast = Toast.makeText(getActivity(), member.getUsername(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     @Override
@@ -111,23 +114,56 @@ public final class MembersListFragment extends MainActivity.MainActivityListFrag
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
+            Member member = mMembers.getMembers().get(position);
 
             ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
-            Member member = getItem(position);
-
-            // TODO Lots of other props here
-
             List<String> faces = member.getFaces();
             if (!faces.isEmpty()) {
                 String face = faces.get(mRandom.nextInt(faces.size()));
-                mPicasso.load(Uri.withAppendedPath(Uri.parse(TmeitServiceConfig.ROOT_URL), face))
+                mPicasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(face).build())
                         .resizeDimen(R.dimen.tmeit_members_list_face_size, R.dimen.tmeit_members_list_face_size)
                         .centerInside()
                         .placeholder(R.drawable.member_placeholder)
                         .into(imageView);
+            } else {
+                imageView.setImageResource(R.drawable.member_placeholder);
+            }
+
+            TextView titleTextView = (TextView) view.findViewById(R.id.member_title);
+            titleTextView.setText(getTitle(member));
+
+            TextView teamTextView = (TextView) view.findViewById(R.id.member_team);
+            teamTextView.setText(getTeam(member));
+
+            TextView phoneTextView = (TextView) view.findViewById(R.id.member_phone);
+            if (null != phoneTextView) {
+                phoneTextView.setText(member.getPhone());
+            }
+
+            TextView emailTextView = (TextView) view.findViewById(R.id.member_email);
+            if (null != emailTextView) {
+                emailTextView.setText(member.getEmail());
             }
 
             return view;
+        }
+
+        private String getTeam(Member member) {
+            if (member.getTeamId() > 0) {
+                return mMembers.getTeams().get(member.getTeamId());
+            } else {
+                return getString(R.string.members_no_team_placeholder);
+            }
+        }
+
+        private String getTitle(Member member) {
+            if (member.getTitleId() > 0) {
+                return mMembers.getTitles().get(member.getTitleId());
+            } else if (member.getGroupId() > 0) {
+                return mMembers.getGroups().get(member.getGroupId());
+            } else {
+                return getString(R.string.members_no_title_placeholder);
+            }
         }
     }
 }

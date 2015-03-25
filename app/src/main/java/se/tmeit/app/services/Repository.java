@@ -37,7 +37,7 @@ public final class Repository {
 
     public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
         Request request = getRequestBuilder("GetMembers.php").build();
-        HttpClient.enqueueRequest(request, new GetMembersCallback(resultHandler));
+        TmeitHttpClient.getInstance().enqueueRequest(request, new GetMembersCallback(resultHandler));
     }
 
     Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {

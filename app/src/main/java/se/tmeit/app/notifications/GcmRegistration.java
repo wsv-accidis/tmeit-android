@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import se.tmeit.app.R;
-import se.tmeit.app.services.HttpClient;
+import se.tmeit.app.services.TmeitHttpClient;
 import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.utils.AndroidUtils;
@@ -193,7 +193,7 @@ public final class GcmRegistration {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForRegisterGcm(registrationId, serviceAuth, authenticatedUser)))
                     .build();
 
-            Response response = HttpClient.executeRequest(request);
+            Response response = TmeitHttpClient.getInstance().executeRequest(request);
             JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
 
             if (null == responseBody) {

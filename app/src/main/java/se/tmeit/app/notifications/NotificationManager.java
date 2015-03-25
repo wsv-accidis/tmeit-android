@@ -29,7 +29,7 @@ import java.util.List;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.Notification;
-import se.tmeit.app.services.HttpClient;
+import se.tmeit.app.services.TmeitHttpClient;
 import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.storage.NotificationStorage;
 import se.tmeit.app.storage.Preferences;
@@ -86,7 +86,7 @@ public final class NotificationManager {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, json))
                     .build();
 
-            response = HttpClient.executeRequest(request);
+            response = TmeitHttpClient.getInstance().executeRequest(request);
         } catch (Exception ex) {
             Log.e(TAG, "Unexpected exception while getting notifications.", ex);
             return;

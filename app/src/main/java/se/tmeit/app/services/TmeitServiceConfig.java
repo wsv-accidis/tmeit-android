@@ -21,6 +21,7 @@ public final class TmeitServiceConfig {
     public static final String REGISTRATION_ID_KEY = "registrationId";
     public static final String ROOT_URL = "https://tmeit-se.loopiasecure.com/";
     public static final String SERVICE_BASE_URL = ROOT_URL + "w/tmeit-ws/";
+    public static final String ROOT_URL_INSECURE = "http://tmeit.se/";
     public static final String SERVICE_AUTH_KEY = "serviceAuth";
     public static final String SUCCESS_KEY = "success";
     public static final String USERNAME_KEY = "username";

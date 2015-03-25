@@ -11,6 +11,8 @@
     <string name="auth_error_invalid_data">The authentication data is no longer valid. Try logging in again.</string>
 
     <string name="members_title">Members</string>
+    <string name="members_no_title_placeholder">(none)</string>
+    <string name="members_no_team_placeholder">(none)</string>
 
     <string name="network_error_not_available">There is no network available. This app won\'t work without a network connection.</string>
     <string name="network_error_not_available_title">No network</string>

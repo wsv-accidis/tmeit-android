@@ -20,31 +20,19 @@ import javax.net.ssl.SSLSocketFactory;
  * Static wrapper for the HTTP client. This is in accordance with documented
  * best practices for OkHttpClient, which suggests using the same instance everywhere.
  */
-public final class HttpClient {
+public final class TmeitHttpClient extends OkHttpClient {
     private static final int CACHE_SIZE = 10 * 1024 * 1024;
-    private static final String TAG = HttpClient.class.getSimpleName();
-    private static final OkHttpClient mInstance;
+    private static final String TAG = TmeitHttpClient.class.getSimpleName();
+    private static final TmeitHttpClient mInstance;
 
-    private HttpClient() {
+    private TmeitHttpClient() {
     }
 
     static {
-        mInstance = new OkHttpClient();
+        mInstance = new TmeitHttpClient();
     }
 
-    public static Call enqueueRequest(Request request, Callback callback) {
-        Log.d(TAG, "Queueing request for URL = " + request.urlString());
-        Call call = mInstance.newCall(request);
-        call.enqueue(callback);
-        return call;
-    }
-
-    public static Response executeRequest(Request request) throws IOException {
-        Log.d(TAG, "Executing request for URL = " + request.urlString());
-        return mInstance.newCall(request).execute();
-    }
-
-    public static OkHttpClient getOkHttpClient() {
+    public static TmeitHttpClient getInstance() {
         return mInstance;
     }
 
@@ -63,5 +51,21 @@ public final class HttpClient {
         SSLSocketFactory sslSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
         Log.d(TAG, "SSL socket factory is now " + sslSocketFactory.getClass().getName());
         mInstance.setSslSocketFactory(sslSocketFactory);
+    }
+
+    public Call enqueueRequest(Request request, Callback callback) {
+        Call call = newCall(request);
+        call.enqueue(callback);
+        return call;
+    }
+
+    public Response executeRequest(Request request) throws IOException {
+        return newCall(request).execute();
+    }
+
+    @Override
+    public Call newCall(Request request) {
+        Log.d(TAG, "Created a call for URL = " + request.urlString());
+        return super.newCall(request);
     }
 }

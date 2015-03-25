@@ -7,6 +7,17 @@
         <!-- Global app theme -->
     </style>
 
+    <style name="MembersListPrimary" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="MembersListSecondary" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="MembersListTertiary" parent="TextAppearance.AppCompat.Small">
+    </style>
+
     <style name="OnboardingLabel" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>

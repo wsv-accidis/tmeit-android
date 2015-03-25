@@ -56,7 +56,7 @@ public final class ServiceAuthenticator {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
 
-            HttpClient.enqueueRequest(request, new AuthenticationCallback(resultHandler, serviceAuth, username));
+            TmeitHttpClient.getInstance().enqueueRequest(request, new AuthenticationCallback(resultHandler, serviceAuth, username));
 
         } catch (JSONException ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
