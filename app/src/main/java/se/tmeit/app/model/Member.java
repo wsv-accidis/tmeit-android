@@ -12,15 +12,6 @@ import java.util.Map;
  * Model object for members.
  */
 public final class Member {
-    private static final String EMAIL = "email";
-    private static final String FACES = "faces";
-    private static final String GROUP_ID = "group_id";
-    private static final String ID = "id";
-    private static final String PHONE = "phone";
-    private static final String REAL_NAME = "realname";
-    private static final String TEAM_ID = "team_id";
-    private static final String TITLE_ID = "title_id";
-    private static final String USERNAME = "username";
     private String mEmail;
     private List<String> mFaces;
     private int mGroupId;
@@ -33,17 +24,17 @@ public final class Member {
 
     public static Member fromJson(JSONObject obj) throws JSONException {
         Member member = new Member();
-        member.setEmail(obj.getString(EMAIL));
-        member.setGroupId(obj.optInt(GROUP_ID));
-        member.setId(obj.getInt(ID));
-        member.setPhone(obj.getString(PHONE));
-        member.setRealName(obj.getString(REAL_NAME));
-        member.setTeamId(obj.optInt(TEAM_ID));
-        member.setTitleId(obj.optInt(TITLE_ID));
-        member.setUsername(obj.getString(USERNAME));
+        member.setEmail(obj.getString(Keys.EMAIL));
+        member.setGroupId(obj.optInt(Keys.GROUP_ID));
+        member.setId(obj.getInt(Keys.ID));
+        member.setPhone(obj.getString(Keys.PHONE));
+        member.setRealName(obj.getString(Keys.REAL_NAME));
+        member.setTeamId(obj.optInt(Keys.TEAM_ID));
+        member.setTitleId(obj.optInt(Keys.TITLE_ID));
+        member.setUsername(obj.getString(Keys.USERNAME));
 
         ArrayList<String> faces = new ArrayList<>();
-        JSONArray jsonFaces = obj.optJSONArray(FACES);
+        JSONArray jsonFaces = obj.optJSONArray(Keys.FACES);
         if (null != jsonFaces) {
             for (int i = 0; i < jsonFaces.length(); i++) {
                 faces.add(jsonFaces.getString(i));
@@ -129,6 +120,21 @@ public final class Member {
     @Override
     public String toString() {
         return getRealName();
+    }
+
+    public static class Keys {
+        public static final String EMAIL = "email";
+        public static final String FACES = "faces";
+        public static final String GROUP_ID = "group_id";
+        public static final String ID = "id";
+        public static final String PHONE = "phone";
+        public static final String REAL_NAME = "realname";
+        public static final String TEAM_ID = "team_id";
+        public static final String TITLE_ID = "title_id";
+        public static final String USERNAME = "username";
+
+        private Keys() {
+        }
     }
 
     public static class RepositoryData {

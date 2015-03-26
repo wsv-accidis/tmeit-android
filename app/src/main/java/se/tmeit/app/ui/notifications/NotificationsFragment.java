@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for configuring notification settings.
  */
-public class NotificationsFragment extends MainActivity.MainActivityFragment {
+public class NotificationsFragment extends Fragment implements MainActivity.HasTitle {
     private static final String TAG = NotificationsFragment.class.getSimpleName();
     private final Handler mHandler = new Handler();
     private final RegistrationResultHandler mResultHandler = new RegistrationResultHandler();
@@ -67,7 +68,7 @@ public class NotificationsFragment extends MainActivity.MainActivityFragment {
     }
 
     @Override
-    protected int getTitle() {
+    public int getTitle() {
         return R.string.notifications_title;
     }
 

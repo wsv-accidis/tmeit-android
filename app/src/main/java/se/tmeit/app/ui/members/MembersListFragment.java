@@ -2,8 +2,14 @@ package se.tmeit.app.ui.members;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -12,37 +18,37 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.OkHttpDownloader;
-import com.squareup.picasso.Picasso;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.services.Repository;
-import se.tmeit.app.services.TmeitHttpClient;
-import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
 
 /**
- * A fragment representing a list of Items.
+ * Fragment for the list of members.
  */
-public final class MembersListFragment extends MainActivity.MainActivityListFragment {
-    private static final Random mRandom = new Random();
+public final class MembersListFragment extends ListFragment implements MainActivity.HasTitle {
+    private static final String STATE_LISTVIEW = "membersListState";
     private final Handler mHandler = new Handler();
+    private MemberFaceHelper mFaceHelper;
+    private Parcelable mListState;
     private Member.RepositoryData mMembers;
-    private Picasso mPicasso;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable(STATE_LISTVIEW);
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        mPicasso = new Picasso.Builder(activity)
-                .downloader(new OkHttpDownloader(TmeitHttpClient.getInstance()))
-                .build();
+        mFaceHelper = MemberFaceHelper.getInstance(activity);
 
         if (null == mMembers) {
             Preferences prefs = new Preferences(activity);
@@ -84,26 +90,38 @@ public final class MembersListFragment extends MainActivity.MainActivityListFrag
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mPicasso = null;
-    }
-
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Member member = mMembers.getMembers().get(position);
-        Toast toast = Toast.makeText(getActivity(), member.getUsername(), Toast.LENGTH_SHORT);
-        toast.show();
+        if (position < mMembers.getMembers().size()) {
+            Fragment memberInfoFragment = MemberInfoFragment.createInstance(mMembers, position);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container, memberInfoFragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        }
     }
 
     @Override
-    protected int getTitle() {
+    public void onSaveInstanceState(Bundle outState) {
+        if (getView() != null) {
+            outState.putParcelable(STATE_LISTVIEW, getListView().onSaveInstanceState());
+        }
+    }
+
+    @Override
+    public int getTitle() {
         return R.string.members_title;
     }
 
     private void initializeList() {
         List<Member> members = (null != mMembers ? mMembers.getMembers() : Collections.<Member>emptyList());
         setListAdapter(new MembersListAdapter(getActivity(), R.layout.list_item_member, R.id.member_real_name, members));
+
+        if (null != mListState) {
+            getListView().onRestoreInstanceState(mListState);
+            mListState = null;
+        }
     }
 
     private class MembersListAdapter extends ArrayAdapter<Member> {
@@ -119,8 +137,7 @@ public final class MembersListFragment extends MainActivity.MainActivityListFrag
             ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
             List<String> faces = member.getFaces();
             if (!faces.isEmpty()) {
-                String face = faces.get(mRandom.nextInt(faces.size()));
-                mPicasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(face).build())
+                mFaceHelper.picasso(faces)
                         .resizeDimen(R.dimen.tmeit_members_list_face_size, R.dimen.tmeit_members_list_face_size)
                         .centerInside()
                         .placeholder(R.drawable.member_placeholder)

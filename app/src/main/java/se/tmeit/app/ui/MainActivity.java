@@ -1,6 +1,5 @@
 package se.tmeit.app.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -31,6 +29,7 @@ import se.tmeit.app.utils.AndroidUtils;
 
 public final class MainActivity extends ActionBarActivity {
     private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
+    private static final String STATE_LAST_OPENED_FRAGMENT_POS = "openMainActivityFragmentPos";
     private static final String TAG = MainActivity.class.getSimpleName();
     private final Handler mHandler = new Handler();
     private boolean mHasShownNetworkAlert;
@@ -81,6 +80,20 @@ public final class MainActivity extends ActionBarActivity {
         mTitle = getString(resId);
     }
 
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case MEMBERS_ITEM:
+                return new MembersListFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
+        }
+
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,20 +102,24 @@ public final class MainActivity extends ActionBarActivity {
         mPrefs = new Preferences(this);
         mTitle = getTitle();
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setNavigationDrawerCallbacks(new NavigationDrawerCallbacks());
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
         if (null != savedInstanceState) {
-            mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT));
+            mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT_POS));
             if (null == mOpenFragmentItem) {
                 mOpenFragmentItem = NavigationItem.getDefault();
+                openFragment(mOpenFragmentItem);
+            } else {
+                Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
+                replaceCurrentFragment(lastFragment);
             }
         } else if (null == mOpenFragmentItem) {
             mOpenFragmentItem = NavigationItem.getDefault();
+            openFragment(mOpenFragmentItem);
         }
-
-        openFragment(mOpenFragmentItem);
     }
 
     @Override
@@ -124,32 +141,36 @@ public final class MainActivity extends ActionBarActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_LAST_OPENED_FRAGMENT, mOpenFragmentItem.getPosition());
-    }
 
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case MEMBERS_ITEM:
-                return new MembersListFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        if (null != fragment) {
+            fragmentManager.putFragment(outState, STATE_LAST_OPENED_FRAGMENT, fragment);
         }
 
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
+        outState.putInt(STATE_LAST_OPENED_FRAGMENT_POS, mOpenFragmentItem.getPosition());
     }
 
     private void openFragment(NavigationItem item) {
         Fragment nextFragment = getFragmentByDrawerItem(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, nextFragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+            replaceCurrentFragment(nextFragment);
+        }
+    }
+
+    private void replaceCurrentFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+
+        if (fragment instanceof HasTitle) {
+            HasTitle fragmentWithTitle = (HasTitle) fragment;
+            setMainTitle(fragmentWithTitle.getTitle());
+        } else {
+            setMainTitle(R.string.app_name);
         }
     }
 
@@ -158,13 +179,6 @@ public final class MainActivity extends ActionBarActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
-    }
-
-    private static void setTitleOnMainActivity(Activity activity, int title) {
-        if (activity instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity) activity;
-            mainActivity.setMainTitle(title);
-        }
     }
 
     private void startOnboardingActivity() {
@@ -177,6 +191,10 @@ public final class MainActivity extends ActionBarActivity {
         String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         ServiceAuthenticator authenticator = new ServiceAuthenticator();
         authenticator.authenticateFromCredentials(username, serviceAuth, new AuthenticationResultHandler());
+    }
+
+    public static interface HasTitle {
+        int getTitle();
     }
 
     private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
@@ -216,26 +234,6 @@ public final class MainActivity extends ActionBarActivity {
                 }
             });
         }
-    }
-
-    public static abstract class MainActivityFragment extends Fragment {
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            setTitleOnMainActivity(activity, getTitle());
-        }
-
-        protected abstract int getTitle();
-    }
-
-    public static abstract class MainActivityListFragment extends ListFragment {
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            setTitleOnMainActivity(activity, getTitle());
-        }
-
-        protected abstract int getTitle();
     }
 
     private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
