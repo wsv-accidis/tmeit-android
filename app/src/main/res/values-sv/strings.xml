@@ -11,6 +11,9 @@
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
     <string name="member_title">Medlem</string>
+    <string name="member_call">Ring</string>
+    <string name="member_email">Maila</string>
+    <string name="member_message">Sms</string>
 
     <string name="members_title">Medlemmar</string>
     <string name="members_no_title_placeholder">(ingen)</string>

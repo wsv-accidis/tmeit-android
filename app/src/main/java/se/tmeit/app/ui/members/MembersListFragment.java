@@ -7,9 +7,8 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -32,10 +31,17 @@ import se.tmeit.app.ui.MainActivity;
  */
 public final class MembersListFragment extends ListFragment implements MainActivity.HasTitle {
     private static final String STATE_LISTVIEW = "membersListState";
+    private static final String TAG = MembersListFragment.class.getSimpleName();
     private final Handler mHandler = new Handler();
     private MemberFaceHelper mFaceHelper;
     private Parcelable mListState;
     private Member.RepositoryData mMembers;
+    private Preferences mPrefs;
+
+    @Override
+    public int getTitle() {
+        return R.string.members_title;
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -49,12 +55,31 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mFaceHelper = MemberFaceHelper.getInstance(activity);
+        mPrefs = new Preferences(activity);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (position < mMembers.getMembers().size()) {
+            Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), mMembers, position);
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) activity;
+                mainActivity.openFragment(memberInfoFragment, true);
+            } else {
+                Log.e(TAG, "Activity holding fragment is not MainActivity!");
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
+        Repository repository = new Repository(username, serviceAuth);
 
         if (null == mMembers) {
-            Preferences prefs = new Preferences(activity);
-            String username = prefs.getAuthenticatedUser(), serviceAuth = prefs.getServiceAuthentication();
-            Repository repository = new Repository(username, serviceAuth);
-
             repository.getMembers(new Repository.RepositoryResultHandler<Member.RepositoryData>() {
                 @Override
                 public void onError(final int errorMessage) {
@@ -86,32 +111,16 @@ public final class MembersListFragment extends ListFragment implements MainActiv
                     });
                 }
             });
-        }
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position < mMembers.getMembers().size()) {
-            Fragment memberInfoFragment = MemberInfoFragment.createInstance(mMembers, position);
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.container, memberInfoFragment)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+        } else {
+            initializeList();
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (getView() != null) {
+        if (null != getView()) {
             outState.putParcelable(STATE_LISTVIEW, getListView().onSaveInstanceState());
         }
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.members_title;
     }
 
     private void initializeList() {
@@ -147,10 +156,10 @@ public final class MembersListFragment extends ListFragment implements MainActiv
             }
 
             TextView titleTextView = (TextView) view.findViewById(R.id.member_title);
-            titleTextView.setText(getTitle(member));
+            titleTextView.setText(member.getTitleText(getContext(), mMembers));
 
             TextView teamTextView = (TextView) view.findViewById(R.id.member_team);
-            teamTextView.setText(getTeam(member));
+            teamTextView.setText(member.getTeamText(getContext(), mMembers));
 
             TextView phoneTextView = (TextView) view.findViewById(R.id.member_phone);
             if (null != phoneTextView) {
@@ -163,24 +172,6 @@ public final class MembersListFragment extends ListFragment implements MainActiv
             }
 
             return view;
-        }
-
-        private String getTeam(Member member) {
-            if (member.getTeamId() > 0) {
-                return mMembers.getTeams().get(member.getTeamId());
-            } else {
-                return getString(R.string.members_no_team_placeholder);
-            }
-        }
-
-        private String getTitle(Member member) {
-            if (member.getTitleId() > 0) {
-                return mMembers.getTitles().get(member.getTitleId());
-            } else if (member.getGroupId() > 0) {
-                return mMembers.getGroups().get(member.getGroupId());
-            } else {
-                return getString(R.string.members_no_title_placeholder);
-            }
         }
     }
 }

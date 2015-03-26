@@ -14,7 +14,7 @@
     <style name="MemberInfoSubHeader" parent="TextAppearance.AppCompat.Medium">
     </style>
 
-    <style name="MemberInfoLarge" parent="TextAppearance.AppCompat.Large">
+    <style name="MemberInfoMedium" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 

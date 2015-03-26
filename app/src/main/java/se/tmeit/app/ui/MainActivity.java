@@ -73,25 +73,26 @@ public final class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setMainTitle(int resId) {
-        if (0 == resId) {
-            resId = R.string.app_name;
-        }
-        mTitle = getString(resId);
-    }
+    public void openFragment(Fragment fragment, boolean addToBackStack) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case MEMBERS_ITEM:
-                return new MembersListFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
+        if (addToBackStack) {
+            transaction.addToBackStack(null);
         }
 
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
+        transaction.commit();
+
+        if (fragment instanceof HasTitle) {
+            HasTitle fragmentWithTitle = (HasTitle) fragment;
+            setMainTitle(fragmentWithTitle.getTitle());
+        } else {
+            setMainTitle(0);
+        }
+
+        restoreActionBar();
     }
 
     @Override
@@ -111,14 +112,14 @@ public final class MainActivity extends ActionBarActivity {
             mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT_POS));
             if (null == mOpenFragmentItem) {
                 mOpenFragmentItem = NavigationItem.getDefault();
-                openFragment(mOpenFragmentItem);
+                openNavigationItem(mOpenFragmentItem);
             } else {
                 Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
-                replaceCurrentFragment(lastFragment);
+                openFragment(lastFragment, false);
             }
         } else if (null == mOpenFragmentItem) {
             mOpenFragmentItem = NavigationItem.getDefault();
-            openFragment(mOpenFragmentItem);
+            openNavigationItem(mOpenFragmentItem);
         }
     }
 
@@ -151,26 +152,25 @@ public final class MainActivity extends ActionBarActivity {
         outState.putInt(STATE_LAST_OPENED_FRAGMENT_POS, mOpenFragmentItem.getPosition());
     }
 
-    private void openFragment(NavigationItem item) {
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case MEMBERS_ITEM:
+                return new MembersListFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
+        }
+
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
+    }
+
+    private void openNavigationItem(NavigationItem item) {
         Fragment nextFragment = getFragmentByDrawerItem(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
-            replaceCurrentFragment(nextFragment);
-        }
-    }
-
-    private void replaceCurrentFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
-
-        if (fragment instanceof HasTitle) {
-            HasTitle fragmentWithTitle = (HasTitle) fragment;
-            setMainTitle(fragmentWithTitle.getTitle());
-        } else {
-            setMainTitle(R.string.app_name);
+            openFragment(nextFragment, false);
         }
     }
 
@@ -179,6 +179,13 @@ public final class MainActivity extends ActionBarActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+    }
+
+    private void setMainTitle(int resId) {
+        if (0 == resId) {
+            resId = R.string.app_name;
+        }
+        mTitle = getString(resId);
     }
 
     private void startOnboardingActivity() {
@@ -239,7 +246,7 @@ public final class MainActivity extends ActionBarActivity {
     private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
         @Override
         public void onNavigationDrawerItemSelected(NavigationItem item) {
-            openFragment(item);
+            openNavigationItem(item);
         }
     }
 

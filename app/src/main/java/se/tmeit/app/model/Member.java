@@ -1,5 +1,7 @@
 package se.tmeit.app.model;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +9,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import se.tmeit.app.R;
 
 /**
  * Model object for members.
@@ -101,12 +105,30 @@ public final class Member {
         mTeamId = teamId;
     }
 
+    public String getTeamText(Context context, RepositoryData repositoryData) {
+        if (getTeamId() > 0) {
+            return repositoryData.getTeams().get(getTeamId());
+        } else {
+            return context.getString(R.string.members_no_team_placeholder);
+        }
+    }
+
     public int getTitleId() {
         return mTitleId;
     }
 
     private void setTitleId(int titleId) {
         mTitleId = titleId;
+    }
+
+    public String getTitleText(Context context, RepositoryData repositoryData) {
+        if (getTitleId() > 0) {
+            return repositoryData.getTitles().get(getTitleId());
+        } else if (getGroupId() > 0) {
+            return repositoryData.getGroups().get(getGroupId());
+        } else {
+            return context.getString(R.string.members_no_title_placeholder);
+        }
     }
 
     public String getUsername() {
@@ -130,7 +152,9 @@ public final class Member {
         public static final String PHONE = "phone";
         public static final String REAL_NAME = "realname";
         public static final String TEAM_ID = "team_id";
+        public static final String TEAM_TEXT = "team_text"; // bundle only
         public static final String TITLE_ID = "title_id";
+        public static final String TITLE_TEXT = "title_text"; // bundle only
         public static final String USERNAME = "username";
 
         private Keys() {
