@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/member_action_add_contact"
+        android:title="@string/member_add_contact"
+        app:showAsAction="never"/>
+</menu>

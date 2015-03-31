@@ -9,8 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -49,6 +53,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
         if (savedInstanceState != null) {
             mListState = savedInstanceState.getParcelable(STATE_LISTVIEW);
         }
+        registerForContextMenu(getListView());
     }
 
     @Override
@@ -56,6 +61,39 @@ public final class MembersListFragment extends ListFragment implements MainActiv
         super.onAttach(activity);
         mFaceHelper = MemberFaceHelper.getInstance(activity);
         mPrefs = new Preferences(activity);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if (info.position < mMembers.getMembers().size()) {
+            Member member = mMembers.getMembers().get(info.position);
+
+            switch (item.getItemId()) {
+                case R.id.member_action_call:
+                    // call
+                    return true;
+                case R.id.member_action_email:
+                    // email
+                    return true;
+                case R.id.member_action_message:
+                    // message
+                    return true;
+                case R.id.member_action_add_contact:
+                    // do something here
+                    return true;
+            }
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_member_context, menu);
     }
 
     @Override

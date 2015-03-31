@@ -2,13 +2,11 @@ package se.tmeit.app.ui.members;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +23,7 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for an individual member.
  */
-public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle {
+public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu {
     private final static String TAG = MemberInfoFragment.class.getSimpleName();
     private MemberFaceHelper mFaceHelper;
 
@@ -44,6 +42,11 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         MemberInfoFragment instance = new MemberInfoFragment();
         instance.setArguments(bundle);
         return instance;
+    }
+
+    @Override
+    public int getMenu() {
+        return R.menu.menu_member_info;
     }
 
     @Override
@@ -90,12 +93,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             emailButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception while trying to send e-mail.", e);
-                    }
+                    MemberActions.sendEmailTo(email, MemberInfoFragment.this);
                 }
             });
             emailButton.setEnabled(true);
@@ -111,23 +109,13 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             smsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", phoneNo, null));
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception while trying to send message.", e);
-                    }
+                    MemberActions.sendSmsTo(phoneNo, MemberInfoFragment.this);
                 }
             });
             callButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNo, null));
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception while trying to start a call.", e);
-                    }
+                    MemberActions.makeCallTo(phoneNo, MemberInfoFragment.this);
                 }
             });
 
@@ -139,5 +127,10 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         }
 
         return view;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(MenuItem item) {
+        return false;
     }
 }

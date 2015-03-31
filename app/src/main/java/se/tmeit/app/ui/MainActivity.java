@@ -35,6 +35,7 @@ public final class MainActivity extends ActionBarActivity {
     private boolean mHasShownNetworkAlert;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private NavigationItem mOpenFragmentItem;
+    private HasMenu mOptionsMenu;
     private Preferences mPrefs;
     private CharSequence mTitle;
 
@@ -50,7 +51,8 @@ public final class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen if the drawer is not showing. Otherwise, let the drawer decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
+            int menuId = (null == mOptionsMenu ? R.menu.main : mOptionsMenu.getMenu());
+            getMenuInflater().inflate(menuId, menu);
             restoreActionBar();
             return true;
         }
@@ -59,18 +61,7 @@ public final class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handles clicks from the action bar, which we don't currently use.
-        // The menu used is populated from menu/main.xml or menu/global.xml
-
-        /*
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            // DO STUFF
-            return true;
-        }
-        */
-
-        return super.onOptionsItemSelected(item);
+        return (null != mOptionsMenu && mOptionsMenu.onMenuItemSelected(item)) || super.onOptionsItemSelected(item);
     }
 
     public void openFragment(Fragment fragment, boolean addToBackStack) {
@@ -90,6 +81,13 @@ public final class MainActivity extends ActionBarActivity {
             setMainTitle(fragmentWithTitle.getTitle());
         } else {
             setMainTitle(0);
+        }
+
+        if (fragment instanceof HasMenu) {
+            mOptionsMenu = (HasMenu) fragment;
+            fragment.setHasOptionsMenu(true);
+        } else {
+            mOptionsMenu = null;
         }
 
         restoreActionBar();
@@ -198,6 +196,12 @@ public final class MainActivity extends ActionBarActivity {
         String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         ServiceAuthenticator authenticator = new ServiceAuthenticator();
         authenticator.authenticateFromCredentials(username, serviceAuth, new AuthenticationResultHandler());
+    }
+
+    public static interface HasMenu {
+        int getMenu();
+
+        boolean onMenuItemSelected(MenuItem item);
     }
 
     public static interface HasTitle {
