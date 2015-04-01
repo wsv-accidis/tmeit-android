@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +132,20 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
     @Override
     public boolean onMenuItemSelected(MenuItem item) {
+        if (R.id.member_action_add_contact == item.getItemId()) {
+            Bundle args = getArguments();
+            String realName = args.getString(Member.Keys.REAL_NAME);
+            String email = args.getString(Member.Keys.EMAIL);
+            String phoneNo = args.getString(Member.Keys.PHONE);
+            boolean succeeded = MemberActions.addAsContact(realName, phoneNo, email, getActivity().getContentResolver());
+
+            Toast toast = Toast.makeText(getActivity(),
+                    (succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
+                    (succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
+            toast.show();
+            return true;
+        }
+
         return false;
     }
 }

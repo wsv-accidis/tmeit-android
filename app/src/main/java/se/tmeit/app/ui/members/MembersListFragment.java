@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -71,16 +72,35 @@ public final class MembersListFragment extends ListFragment implements MainActiv
 
             switch (item.getItemId()) {
                 case R.id.member_action_call:
-                    // call
+                    if(TextUtils.isEmpty(member.getPhone())) {
+                        Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        MemberActions.makeCallTo(member.getPhone(), this);
+                    }
                     return true;
                 case R.id.member_action_email:
-                    // email
+                    if(TextUtils.isEmpty(member.getEmail())) {
+                        Toast toast = Toast.makeText(getActivity(), R.string.member_no_email, Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        MemberActions.sendEmailTo(member.getEmail(), this);
+                    }
                     return true;
                 case R.id.member_action_message:
-                    // message
+                    if(TextUtils.isEmpty(member.getPhone())) {
+                        Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        MemberActions.sendSmsTo(member.getPhone(), this);
+                    }
                     return true;
                 case R.id.member_action_add_contact:
-                    // do something here
+                    boolean succeeded = MemberActions.addAsContact(member.getRealName(), member.getPhone(), member.getEmail(), getActivity().getContentResolver());
+                    Toast toast = Toast.makeText(getActivity(),
+                            (succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
+                            (succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
+                    toast.show();
                     return true;
             }
         }
