@@ -28,10 +28,25 @@ a full replacement for those who prefer a smartphone or tablet instead of a comp
 
 This project is open-source to facilitate porting to other platforms.
 
+## Permissions
+This app asks for a few Android permissions. While you can browse the source to find out what they
+are used for, here is a brief summary.
+
+* ACCESS_NETWORK_STATE - For checking if we are connected to a network and putting up a warning
+  if we're not, since the app won't work without Internet access.
+* CALL_PHONE - For opening the dialer app when the user tries to call someone in the list of
+  members, or the member info page.
+* INTERNET - For accessing the TMEIT web site and services.
+* WAKE_LOCK - For (very briefly) keeping the phone awake when a push notification is received.
+* WRITE_CONTACTS - For creating a contact in the phone when the user tries to add a contact
+  from someone in the list of members, or the member info page.
+
 ## Licensing
 TMEIT for Android is distributed according to the terms of the **Apache License version 2.0**.
 
 ## Acknowledgements
-TMEIT for Android uses the following third-party libraries, in addition to SDKs provided by Google:
+TMEIT for Android uses the following third-party libraries and resources, in addition to Android
+SDKs provided by Google:
 
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
+* [Material Design Icons by Google](https://github.com/google/material-design-icons)
