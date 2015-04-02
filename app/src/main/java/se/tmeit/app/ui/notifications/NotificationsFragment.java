@@ -31,6 +31,11 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
     private boolean mSuppressSwitchListener;
 
     @Override
+    public int getTitle() {
+        return R.string.notifications_nav_title;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
 
@@ -65,11 +70,6 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
 
     public void refreshNotificationsState() {
         setNotificationsSwitch(mGcmRegistration.isRegistered());
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.notifications_title;
     }
 
     private void setNotificationsSwitch(boolean checked) {

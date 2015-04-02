@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">TMEIT</string>
 
+    <string name="about_nav_title">About</string>
     <string name="about_text_intro">TMEIT for Android is developed by <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> for <a href="http://tmeit.se">TMEIT</a>. You can check out the source code, report bugs and feedback on <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
-    <string name="about_title">About</string>
 
     <string name="auth_error_code_denied">The authorization code was rejected by the server. It may have expired. Try logging in again. Also, make sure you have the latest version of this app.</string>
     <string name="auth_error_code_not_valid">This authorization time code is not valid. Try logging in again. Also, make sure that you have the latest version of this app.</string>
@@ -10,7 +10,6 @@
     <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
     <string name="auth_error_invalid_data">The authentication data is no longer valid. Try logging in again.</string>
 
-    <string name="member_title">Member</string>
     <string name="member_add_contact">Add as contact</string>
     <string name="member_call">Call</string>
     <string name="member_contact_could_not_saved">Could not save contact, something went wrong.</string>
@@ -18,13 +17,19 @@
     <string name="member_email">Mail</string>
     <string name="member_filter_list">Filter list</string>
     <string name="member_make_call">Make call</string>
+    <string name="member_marskalk" translatable="false">Marskalk</string>
     <string name="member_message">SMS</string>
+    <string name="member_nav_title">Member</string>
     <string name="member_no_email">No e-mail address for this member.</string>
     <string name="member_no_phone">No phone number for this member.</string>
+    <string name="member_prao" translatable="false">Prao</string>
     <string name="member_send_email">Send e-mail</string>
     <string name="member_send_message">Send SMS</string>
+    <string name="member_team">Team</string>
+    <string name="member_title">Title</string>
+    <string name="member_vraq" translatable="false">Vraq</string>
 
-    <string name="members_title">Members</string>
+    <string name="members_nav_title">Members</string>
     <string name="members_no_title_placeholder">(none)</string>
     <string name="members_no_team_placeholder">(none)</string>
 
@@ -38,11 +43,11 @@
     <string name="notifications_error_unspecified_tmeit">There was an error registering with the notification service. Please ensure you have Internet connectivity, then try again.</string>
     <string name="notifications_in_the_future">In the future, there will be more options here for what types of notifications you will receive.</string>
     <string name="notifications_message_has_no_content">This message has no content.</string>
+    <string name="notifications_nav_title">Notifications</string>
     <string name="notifications_x_notifications_from_tmeit">%d notifications from TMEIT</string>
     <string name="notifications_go_to_tmeit_se">Go to TMEIT.se to check them out.</string>
     <string name="notifications_notification_from_tmeit">Notification from TMEIT</string>
     <string name="notifications_receive_notifications">Receive notifications</string>
-    <string name="notifications_title">Notifications</string>
     <string name="notifications_server_is_still_processing">The server is still processing your request, please try again in a moment.</string>
     <string name="notifications_success">Success!</string>
     <string name="notifications_your_device_does_not_support">Your device does not support Google Play Services. Notifications are unavailable.</string>

@@ -16,6 +16,9 @@ import se.tmeit.app.R;
  * Model object for members.
  */
 public final class Member {
+    private String mDateMarskalk;
+    private String mDatePrao;
+    private String mDateVraq;
     private String mEmail;
     private List<String> mFaces;
     private int mGroupId;
@@ -37,6 +40,10 @@ public final class Member {
         member.setTitleId(obj.optInt(Keys.TITLE_ID));
         member.setUsername(obj.getString(Keys.USERNAME));
 
+        member.setDatePrao(obj.optString(Keys.DATE_PRAO));
+        member.setDateMarskalk(obj.optString(Keys.DATE_MARSKALK));
+        member.setDateVraq(obj.optString(Keys.DATE_VRAQ));
+
         ArrayList<String> faces = new ArrayList<>();
         JSONArray jsonFaces = obj.optJSONArray(Keys.FACES);
         if (null != jsonFaces) {
@@ -47,6 +54,30 @@ public final class Member {
         member.setFaces(faces);
 
         return member;
+    }
+
+    public String getDateMarskalk() {
+        return mDateMarskalk;
+    }
+
+    public void setDateMarskalk(String date) {
+        mDateMarskalk = date;
+    }
+
+    public String getDatePrao() {
+        return mDatePrao;
+    }
+
+    public void setDatePrao(String date) {
+        mDatePrao = date;
+    }
+
+    public String getDateVraq() {
+        return mDateVraq;
+    }
+
+    public void setDateVraq(String date) {
+        mDateVraq = date;
     }
 
     public String getEmail() {
@@ -145,6 +176,9 @@ public final class Member {
     }
 
     public static class Keys {
+        public static final String DATE_MARSKALK = "date_marskalk";
+        public static final String DATE_PRAO = "date_prao";
+        public static final String DATE_VRAQ = "date_vraq";
         public static final String EMAIL = "email";
         public static final String FACES = "faces";
         public static final String GROUP_ID = "group_id";

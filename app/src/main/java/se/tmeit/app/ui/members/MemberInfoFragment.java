@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +43,9 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         bundle.putString(Member.Keys.PHONE, member.getPhone());
         bundle.putString(Member.Keys.EMAIL, member.getEmail());
         bundle.putStringArrayList(Member.Keys.FACES, new ArrayList<>(member.getFaces()));
+        bundle.putString(Member.Keys.DATE_PRAO, member.getDatePrao());
+        bundle.putString(Member.Keys.DATE_MARSKALK, member.getDateMarskalk());
+        bundle.putString(Member.Keys.DATE_VRAQ, member.getDateVraq());
 
         MemberInfoFragment instance = new MemberInfoFragment();
         instance.setArguments(bundle);
@@ -52,7 +59,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
     @Override
     public int getTitle() {
-        return R.string.member_title;
+        return R.string.member_nav_title;
     }
 
     @Override
@@ -73,10 +80,10 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         usernameText.setText(args.getString(Member.Keys.USERNAME));
 
         TextView titleText = (TextView) view.findViewById(R.id.member_title);
-        titleText.setText(args.getString(Member.Keys.TITLE_TEXT));
+        setTextWithPrefix(titleText, R.string.member_title, args.getString(Member.Keys.TITLE_TEXT));
 
         TextView teamText = (TextView) view.findViewById(R.id.member_team);
-        teamText.setText(args.getString(Member.Keys.TEAM_TEXT));
+        setTextWithPrefix(teamText, R.string.member_team, args.getString(Member.Keys.TEAM_TEXT));
 
         ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
         List<String> faces = args.getStringArrayList(Member.Keys.FACES);
@@ -127,6 +134,10 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             callButton.setEnabled(false);
         }
 
+        setTextWithPrefixIfNotEmpty(view, R.id.member_prao, R.string.member_prao, args.getString(Member.Keys.DATE_PRAO));
+        setTextWithPrefixIfNotEmpty(view, R.id.member_marskalk, R.string.member_marskalk, args.getString(Member.Keys.DATE_MARSKALK));
+        setTextWithPrefixIfNotEmpty(view, R.id.member_vraq, R.string.member_vraq, args.getString(Member.Keys.DATE_VRAQ));
+
         return view;
     }
 
@@ -147,5 +158,24 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         }
 
         return false;
+    }
+
+    private void setTextWithPrefix(TextView textView, int prefixResId, String str) {
+        String prefixStr = getString(prefixResId);
+        SpannableString teamStr = new SpannableString(prefixStr + " " + str);
+        teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        teamStr.setSpan(new ForegroundColorSpan(R.color.color_insektionen), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(teamStr);
+    }
+
+    private void setTextWithPrefixIfNotEmpty(View view, int textViewId, int prefixResId, String str) {
+        TextView textView = (TextView) view.findViewById(textViewId);
+
+        if (!TextUtils.isEmpty(str)) {
+            setTextWithPrefix(textView, prefixResId, str);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            textView.setVisibility(View.GONE);
+        }
     }
 }

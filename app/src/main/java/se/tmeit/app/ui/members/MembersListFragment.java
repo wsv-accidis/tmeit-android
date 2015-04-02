@@ -52,7 +52,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
 
     @Override
     public int getTitle() {
-        return R.string.members_title;
+        return R.string.members_nav_title;
     }
 
     @Override

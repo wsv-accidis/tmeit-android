@@ -18,6 +18,11 @@ import se.tmeit.app.utils.AndroidUtils;
 public final class AboutFragment extends Fragment implements MainActivity.HasTitle {
 
     @Override
+    public int getTitle() {
+        return R.string.about_nav_title;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
 
@@ -28,10 +33,5 @@ public final class AboutFragment extends Fragment implements MainActivity.HasTit
         versionText.setText("v" + AndroidUtils.getAppVersionName(getActivity()));
 
         return view;
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.about_title;
     }
 }

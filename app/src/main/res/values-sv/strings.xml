@@ -1,8 +1,6 @@
 <resources>
-
-
+    <string name="about_nav_title">Om</string>
     <string name="about_text_intro">TMEIT för Android är utvecklad av <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> för <a href="http://tmeit.se">TMEIT</a>. Du kan hämta källkoden, rapportera buggar och lämna synpunkter på <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
-    <string name="about_title">Om</string>
 
     <string name="auth_error_code_denied">Koden godkändes inte av servern. Den kan vara utgången. Prova att logga in igen och kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_code_not_valid">Koden är ogiltig. Prova att logga in igen. Kontrollera också att du har senaste versionen av appen.</string>
@@ -10,7 +8,6 @@
     <string name="auth_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
-    <string name="member_title">Medlem</string>
     <string name="member_add_contact">Lägg till kontakt</string>
     <string name="member_call">Ring</string>
     <string name="member_contact_could_not_saved">Kunde inte spara kontakten, någonting gick fel.</string>
@@ -19,12 +16,13 @@
     <string name="member_filter_list">Filtrera listan</string>
     <string name="member_make_call">Ring samtal</string>
     <string name="member_message">SMS</string>
+    <string name="member_nav_title">Medlem</string>
     <string name="member_no_email">Saknar e-mailadress för denna medlem.</string>
     <string name="member_no_phone">Saknar telefonnummer till denna medlem.</string>
     <string name="member_send_email">Skicka e-post</string>
     <string name="member_send_message">Skicka SMS</string>
 
-    <string name="members_title">Medlemmar</string>
+    <string name="members_nav_title">Medlemmar</string>
     <string name="members_no_title_placeholder">(ingen)</string>
     <string name="members_no_team_placeholder">(inget)</string>
 
@@ -39,11 +37,11 @@
     <string name="notifications_go_to_tmeit_se">Läs mer på TMEIT.se.</string>
     <string name="notifications_in_the_future">I framtiden kommer det att gå att välja vilka meddelanden du vill ta emot.</string>
     <string name="notifications_message_has_no_content">Detta meddelande saknar innehåll.</string>
+    <string name="notifications_nav_title">Meddelanden</string>
     <string name="notifications_notification_from_tmeit">Meddelande från TMEIT</string>
     <string name="notifications_receive_notifications">Ta emot meddelanden</string>
     <string name="notifications_server_is_still_processing">Servern hanterar fortfarande din begäran, vänligen försök om en stund.</string>
     <string name="notifications_success">Klart!</string>
-    <string name="notifications_title">Meddelanden</string>
     <string name="notifications_x_notifications_from_tmeit">%d meddelanden från TMEIT</string>
     <string name="notifications_your_device_does_not_support">Din enhet har inte stöd för Google Play-tjänster. Du kan inte ta emot meddelanden.</string>
 

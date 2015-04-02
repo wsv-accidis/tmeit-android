@@ -21,9 +21,9 @@ public enum NavigationItem {
     public static String[] asTitles(Resources resources) {
         // The index of each item in this array _MUST_ match its position in the enum
         return new String[]{
-                resources.getString(R.string.members_title),
-                resources.getString(R.string.notifications_title),
-                resources.getString(R.string.about_title)
+                resources.getString(R.string.members_nav_title),
+                resources.getString(R.string.notifications_nav_title),
+                resources.getString(R.string.about_nav_title)
         };
     }
 
