@@ -3,5 +3,8 @@
     <item
         android:id="@+id/member_action_add_contact"
         android:title="@string/member_add_contact"
-        app:showAsAction="never"/>
+        app:showAsAction="never">
+        <menu>
+        </menu>
+    </item>
 </menu>

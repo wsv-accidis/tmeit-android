@@ -16,6 +16,7 @@
     <string name="member_contact_could_not_saved">Kunde inte spara kontakten, någonting gick fel.</string>
     <string name="member_contact_saved">Kontakten sparades.</string>
     <string name="member_email">Maila</string>
+    <string name="member_filter_list">Filtrera listan</string>
     <string name="member_make_call">Ring samtal</string>
     <string name="member_message">SMS</string>
     <string name="member_no_email">Saknar e-mailadress för denna medlem.</string>

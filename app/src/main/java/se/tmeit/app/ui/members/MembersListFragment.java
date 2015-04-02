@@ -11,8 +11,10 @@ import android.support.v4.app.ListFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,7 +36,7 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for the list of members.
  */
-public final class MembersListFragment extends ListFragment implements MainActivity.HasTitle {
+public final class MembersListFragment extends ListFragment implements MainActivity.HasTitle, MainActivity.HasMenu {
     private static final String STATE_LISTVIEW = "membersListState";
     private static final String TAG = MembersListFragment.class.getSimpleName();
     private final Handler mHandler = new Handler();
@@ -42,6 +44,11 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     private Parcelable mListState;
     private Member.RepositoryData mMembers;
     private Preferences mPrefs;
+
+    @Override
+    public int getMenu() {
+        return R.menu.menu_member_list;
+    }
 
     @Override
     public int getTitle() {
@@ -72,7 +79,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
 
             switch (item.getItemId()) {
                 case R.id.member_action_call:
-                    if(TextUtils.isEmpty(member.getPhone())) {
+                    if (TextUtils.isEmpty(member.getPhone())) {
                         Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
                         toast.show();
                     } else {
@@ -80,7 +87,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
                     }
                     return true;
                 case R.id.member_action_email:
-                    if(TextUtils.isEmpty(member.getEmail())) {
+                    if (TextUtils.isEmpty(member.getEmail())) {
                         Toast toast = Toast.makeText(getActivity(), R.string.member_no_email, Toast.LENGTH_SHORT);
                         toast.show();
                     } else {
@@ -88,7 +95,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
                     }
                     return true;
                 case R.id.member_action_message:
-                    if(TextUtils.isEmpty(member.getPhone())) {
+                    if (TextUtils.isEmpty(member.getPhone())) {
                         Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
                         toast.show();
                     } else {
@@ -117,6 +124,18 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem filterItem = menu.findItem(R.id.member_filter_list);
+        if (null != filterItem) {
+            SubMenu subMenu = filterItem.getSubMenu();
+            subMenu.add("Test");
+            subMenu.add("Test2");
+        }
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (position < mMembers.getMembers().size()) {
             Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), mMembers, position);
@@ -128,6 +147,11 @@ public final class MembersListFragment extends ListFragment implements MainActiv
                 Log.e(TAG, "Activity holding fragment is not MainActivity!");
             }
         }
+    }
+
+    @Override
+    public boolean onMenuItemSelected(MenuItem item) {
+        return false;
     }
 
     @Override

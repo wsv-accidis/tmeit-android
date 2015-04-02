@@ -75,22 +75,21 @@ public final class MainActivity extends ActionBarActivity {
         }
 
         transaction.commit();
+        updateViewFromFragment(fragment);
+    }
 
-        if (fragment instanceof HasTitle) {
-            HasTitle fragmentWithTitle = (HasTitle) fragment;
-            setMainTitle(fragmentWithTitle.getTitle());
-        } else {
-            setMainTitle(0);
+    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
+        switch (item) {
+            case ABOUT_ITEM:
+                return new AboutFragment();
+            case MEMBERS_ITEM:
+                return new MembersListFragment();
+            case NOTIFICATIONS_ITEM:
+                return new NotificationsFragment();
         }
 
-        if (fragment instanceof HasMenu) {
-            mOptionsMenu = (HasMenu) fragment;
-            fragment.setHasOptionsMenu(true);
-        } else {
-            mOptionsMenu = null;
-        }
-
-        restoreActionBar();
+        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+        return null;
     }
 
     @Override
@@ -101,7 +100,7 @@ public final class MainActivity extends ActionBarActivity {
         mPrefs = new Preferences(this);
         mTitle = getTitle();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setNavigationDrawerCallbacks(new NavigationDrawerCallbacks());
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -119,6 +118,16 @@ public final class MainActivity extends ActionBarActivity {
             mOpenFragmentItem = NavigationItem.getDefault();
             openNavigationItem(mOpenFragmentItem);
         }
+
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+                if (null != fragment) {
+                    updateViewFromFragment(fragment);
+                }
+            }
+        });
     }
 
     @Override
@@ -150,20 +159,6 @@ public final class MainActivity extends ActionBarActivity {
         outState.putInt(STATE_LAST_OPENED_FRAGMENT_POS, mOpenFragmentItem.getPosition());
     }
 
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case MEMBERS_ITEM:
-                return new MembersListFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
-        }
-
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
-    }
-
     private void openNavigationItem(NavigationItem item) {
         Fragment nextFragment = getFragmentByDrawerItem(item);
         if (null != nextFragment) {
@@ -190,6 +185,24 @@ public final class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void updateViewFromFragment(Fragment fragment) {
+        if (fragment instanceof HasTitle) {
+            HasTitle fragmentWithTitle = (HasTitle) fragment;
+            setMainTitle(fragmentWithTitle.getTitle());
+        } else {
+            setMainTitle(0);
+        }
+
+        if (fragment instanceof HasMenu) {
+            mOptionsMenu = (HasMenu) fragment;
+            fragment.setHasOptionsMenu(true);
+        } else {
+            mOptionsMenu = null;
+        }
+
+        restoreActionBar();
     }
 
     private void validateAndRegisterServicesIfNeeded() {

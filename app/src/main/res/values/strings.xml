@@ -16,6 +16,7 @@
     <string name="member_contact_could_not_saved">Could not save contact, something went wrong.</string>
     <string name="member_contact_saved">Contact saved.</string>
     <string name="member_email">Mail</string>
+    <string name="member_filter_list">Filter list</string>
     <string name="member_make_call">Make call</string>
     <string name="member_message">SMS</string>
     <string name="member_no_email">No e-mail address for this member.</string>
