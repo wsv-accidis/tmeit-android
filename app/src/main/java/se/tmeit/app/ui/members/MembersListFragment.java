@@ -141,6 +141,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
             Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), mMembers, position);
             Activity activity = getActivity();
             if (activity instanceof MainActivity) {
+                mListState = getListView().onSaveInstanceState();
                 MainActivity mainActivity = (MainActivity) activity;
                 mainActivity.openFragment(memberInfoFragment, true);
             } else {

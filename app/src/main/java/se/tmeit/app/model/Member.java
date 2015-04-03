@@ -21,6 +21,7 @@ public final class Member {
     private String mDateVraq;
     private String mEmail;
     private List<String> mFaces;
+    private long mFlags;
     private int mGroupId;
     private int mId;
     private String mPhone;
@@ -31,7 +32,11 @@ public final class Member {
 
     public static Member fromJson(JSONObject obj) throws JSONException {
         Member member = new Member();
+        member.setDateMarskalk(obj.optString(Keys.DATE_MARSKALK));
+        member.setDatePrao(obj.optString(Keys.DATE_PRAO));
+        member.setDateVraq(obj.optString(Keys.DATE_VRAQ));
         member.setEmail(obj.getString(Keys.EMAIL));
+        member.setFlags(obj.optBoolean(Keys.HAS_STAD), obj.optBoolean(Keys.HAS_FEST), obj.optBoolean(Keys.HAS_PERMIT), obj.optBoolean(Keys.HAS_LICENSE));
         member.setGroupId(obj.optInt(Keys.GROUP_ID));
         member.setId(obj.getInt(Keys.ID));
         member.setPhone(obj.getString(Keys.PHONE));
@@ -39,10 +44,6 @@ public final class Member {
         member.setTeamId(obj.optInt(Keys.TEAM_ID));
         member.setTitleId(obj.optInt(Keys.TITLE_ID));
         member.setUsername(obj.getString(Keys.USERNAME));
-
-        member.setDatePrao(obj.optString(Keys.DATE_PRAO));
-        member.setDateMarskalk(obj.optString(Keys.DATE_MARSKALK));
-        member.setDateVraq(obj.optString(Keys.DATE_VRAQ));
 
         ArrayList<String> faces = new ArrayList<>();
         JSONArray jsonFaces = obj.optJSONArray(Keys.FACES);
@@ -60,7 +61,7 @@ public final class Member {
         return mDateMarskalk;
     }
 
-    public void setDateMarskalk(String date) {
+    private void setDateMarskalk(String date) {
         mDateMarskalk = date;
     }
 
@@ -68,7 +69,7 @@ public final class Member {
         return mDatePrao;
     }
 
-    public void setDatePrao(String date) {
+    private void setDatePrao(String date) {
         mDatePrao = date;
     }
 
@@ -76,7 +77,7 @@ public final class Member {
         return mDateVraq;
     }
 
-    public void setDateVraq(String date) {
+    private void setDateVraq(String date) {
         mDateVraq = date;
     }
 
@@ -94,6 +95,10 @@ public final class Member {
 
     private void setFaces(List<String> faces) {
         mFaces = faces;
+    }
+
+    public long getFlags() {
+        return mFlags;
     }
 
     public int getGroupId() {
@@ -170,9 +175,48 @@ public final class Member {
         mUsername = username;
     }
 
+    public boolean hasFlag(Flags flag) {
+        return (0 != (mFlags & flag.getValue()));
+    }
+
     @Override
     public String toString() {
         return getRealName();
+    }
+
+    private void setFlags(boolean hasStad, boolean hasFest, boolean onPermit, boolean driversLicense) {
+        long flags = 0;
+        if (hasStad) {
+            flags |= Flags.HAS_STAD.getValue();
+        }
+        if (hasFest) {
+            flags |= Flags.HAS_FEST.getValue();
+        }
+        if (onPermit) {
+            flags |= Flags.ON_PERMIT.getValue();
+        }
+        if (driversLicense) {
+            flags |= Flags.DRIVERS_LICENSE.getValue();
+        }
+
+        mFlags = flags;
+    }
+
+    public enum Flags {
+        HAS_STAD(1),
+        HAS_FEST(1 << 1),
+        ON_PERMIT(1 << 2),
+        DRIVERS_LICENSE(1 << 3);
+
+        private final long mValue;
+
+        private Flags(long value) {
+            mValue = value;
+        }
+
+        public long getValue() {
+            return mValue;
+        }
     }
 
     public static class Keys {
@@ -181,7 +225,12 @@ public final class Member {
         public static final String DATE_VRAQ = "date_vraq";
         public static final String EMAIL = "email";
         public static final String FACES = "faces";
+        public static final String FLAGS = "flags"; // bundle only
         public static final String GROUP_ID = "group_id";
+        public static final String HAS_FEST = "has_fest";
+        public static final String HAS_LICENSE = "has_license";
+        public static final String HAS_PERMIT = "has_permit";
+        public static final String HAS_STAD = "has_stad";
         public static final String ID = "id";
         public static final String PHONE = "phone";
         public static final String REAL_NAME = "realname";

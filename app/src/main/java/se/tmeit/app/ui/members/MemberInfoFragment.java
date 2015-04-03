@@ -43,6 +43,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         bundle.putString(Member.Keys.PHONE, member.getPhone());
         bundle.putString(Member.Keys.EMAIL, member.getEmail());
         bundle.putStringArrayList(Member.Keys.FACES, new ArrayList<>(member.getFaces()));
+        bundle.putString(Member.Keys.FLAGS, getDescriptionOfFlags(context, member));
         bundle.putString(Member.Keys.DATE_PRAO, member.getDatePrao());
         bundle.putString(Member.Keys.DATE_MARSKALK, member.getDateMarskalk());
         bundle.putString(Member.Keys.DATE_VRAQ, member.getDateVraq());
@@ -50,6 +51,24 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         MemberInfoFragment instance = new MemberInfoFragment();
         instance.setArguments(bundle);
         return instance;
+    }
+
+    public static String getDescriptionOfFlags(Context context, Member member) {
+        List<String> strings = new ArrayList<>();
+        if (member.hasFlag(Member.Flags.HAS_STAD)) {
+            strings.add(context.getString(R.string.member_stad));
+        }
+        if (member.hasFlag(Member.Flags.HAS_FEST)) {
+            strings.add(context.getString(R.string.member_fest));
+        }
+        if (member.hasFlag(Member.Flags.ON_PERMIT)) {
+            strings.add(context.getString(R.string.member_on_permit));
+        }
+        if (member.hasFlag(Member.Flags.DRIVERS_LICENSE)) {
+            strings.add(context.getString(R.string.member_drivers_license));
+        }
+
+        return TextUtils.join(", ", strings);
     }
 
     @Override
@@ -134,6 +153,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             callButton.setEnabled(false);
         }
 
+        setTextWithPrefixIfNotEmpty(view, R.id.member_flags, R.string.member_info, args.getString(Member.Keys.FLAGS));
         setTextWithPrefixIfNotEmpty(view, R.id.member_prao, R.string.member_prao, args.getString(Member.Keys.DATE_PRAO));
         setTextWithPrefixIfNotEmpty(view, R.id.member_marskalk, R.string.member_marskalk, args.getString(Member.Keys.DATE_MARSKALK));
         setTextWithPrefixIfNotEmpty(view, R.id.member_vraq, R.string.member_vraq, args.getString(Member.Keys.DATE_VRAQ));
