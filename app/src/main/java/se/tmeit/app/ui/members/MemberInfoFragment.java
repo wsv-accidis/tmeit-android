@@ -32,9 +32,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
     private final static String TAG = MemberInfoFragment.class.getSimpleName();
     private MemberFaceHelper mFaceHelper;
 
-    public static MemberInfoFragment createInstance(Context context, Member.RepositoryData memberRepository, int position) {
-        Member member = memberRepository.getMembers().get(position);
-
+    public static MemberInfoFragment createInstance(Context context, Member member, Member.RepositoryData memberRepository) {
         Bundle bundle = new Bundle();
         bundle.putString(Member.Keys.USERNAME, member.getUsername());
         bundle.putString(Member.Keys.REAL_NAME, member.getRealName());

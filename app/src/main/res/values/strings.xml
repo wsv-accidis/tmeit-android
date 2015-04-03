@@ -34,9 +34,13 @@
     <string name="member_title">Title</string>
     <string name="member_vraq" translatable="false">Vraq</string>
 
+    <string name="members_show_all">Show all</string>
+    <string name="members_groups">Groups</string>
     <string name="members_nav_title">Members</string>
+    <string name="members_no_results">No results. Check filters.</string>
     <string name="members_no_title_placeholder">(none)</string>
     <string name="members_no_team_placeholder">(none)</string>
+    <string name="members_teams">Teams</string>
 
     <string name="network_error_not_available">There is no network available. This app won\'t work without a network connection.</string>
     <string name="network_error_not_available_title">No network</string>

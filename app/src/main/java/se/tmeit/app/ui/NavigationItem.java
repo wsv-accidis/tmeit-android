@@ -38,7 +38,7 @@ public enum NavigationItem {
     }
 
     public static NavigationItem getDefault() {
-        return NOTIFICATIONS_ITEM;
+        return MEMBERS_ITEM;
     }
 
     public int getPosition() {

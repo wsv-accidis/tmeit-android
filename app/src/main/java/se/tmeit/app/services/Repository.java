@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import se.tmeit.app.R;
@@ -41,7 +41,7 @@ public final class Repository {
     }
 
     Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {
-        HashMap<Integer, String> result = new HashMap<>();
+        Map<Integer, String> result = new LinkedHashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             result.put(obj.getInt(FIELD_ID), obj.getString(FIELD_TITLE));

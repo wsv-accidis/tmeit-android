@@ -1,7 +1,6 @@
 package se.tmeit.app.ui.members;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -16,16 +15,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
@@ -37,10 +33,17 @@ import se.tmeit.app.ui.MainActivity;
  * Fragment for the list of members.
  */
 public final class MembersListFragment extends ListFragment implements MainActivity.HasTitle, MainActivity.HasMenu {
-    private static final String STATE_LISTVIEW = "membersListState";
+    private static final int MENU_CLEAR_FILTER_ID = 1;
+    private static final int MENU_GROUPS_ID = 10000;
+    private static final int MENU_TEAMS_ID = 20000;
+    private static final String STATE_LIST_VIEW = "membersListState";
     private static final String TAG = MembersListFragment.class.getSimpleName();
+    private final Set<Integer> mFilteredGroups = new HashSet<>();
+    private final Set<Integer> mFilteredTeams = new HashSet<>();
     private final Handler mHandler = new Handler();
-    private MemberFaceHelper mFaceHelper;
+    private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
+    private Menu mFilterMenu;
+    private MembersListAdapter mListAdapter;
     private Parcelable mListState;
     private Member.RepositoryData mMembers;
     private Preferences mPrefs;
@@ -59,15 +62,15 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            mListState = savedInstanceState.getParcelable(STATE_LISTVIEW);
+            mListState = savedInstanceState.getParcelable(STATE_LIST_VIEW);
         }
         registerForContextMenu(getListView());
+        setEmptyText(getString(R.string.members_no_results));
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mFaceHelper = MemberFaceHelper.getInstance(activity);
         mPrefs = new Preferences(activity);
     }
 
@@ -79,35 +82,16 @@ public final class MembersListFragment extends ListFragment implements MainActiv
 
             switch (item.getItemId()) {
                 case R.id.member_action_call:
-                    if (TextUtils.isEmpty(member.getPhone())) {
-                        Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else {
-                        MemberActions.makeCallTo(member.getPhone(), this);
-                    }
+                    onMemberCallSelected(member);
                     return true;
                 case R.id.member_action_email:
-                    if (TextUtils.isEmpty(member.getEmail())) {
-                        Toast toast = Toast.makeText(getActivity(), R.string.member_no_email, Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else {
-                        MemberActions.sendEmailTo(member.getEmail(), this);
-                    }
+                    onMemberEmailSelected(member);
                     return true;
                 case R.id.member_action_message:
-                    if (TextUtils.isEmpty(member.getPhone())) {
-                        Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else {
-                        MemberActions.sendSmsTo(member.getPhone(), this);
-                    }
+                    onMemberMessageSelected(member);
                     return true;
                 case R.id.member_action_add_contact:
-                    boolean succeeded = MemberActions.addAsContact(member.getRealName(), member.getPhone(), member.getEmail(), getActivity().getContentResolver());
-                    Toast toast = Toast.makeText(getActivity(),
-                            (succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
-                            (succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
-                    toast.show();
+                    onMemberAddContactSelected(member);
                     return true;
             }
         }
@@ -118,7 +102,6 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.menu_member_context, menu);
     }
@@ -130,15 +113,34 @@ public final class MembersListFragment extends ListFragment implements MainActiv
         MenuItem filterItem = menu.findItem(R.id.member_filter_list);
         if (null != filterItem) {
             SubMenu subMenu = filterItem.getSubMenu();
-            subMenu.add("Test");
-            subMenu.add("Test2");
+            subMenu.clear();
+
+            if (null != mMembers) {
+                subMenu.add(Menu.NONE, MENU_CLEAR_FILTER_ID, Menu.NONE, R.string.members_show_all);
+
+                subMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.members_groups).setEnabled(false);
+                for (Map.Entry<Integer, String> group : mMembers.getGroups().entrySet()) {
+                    MenuItem item = subMenu.add(MENU_GROUPS_ID, MENU_GROUPS_ID + group.getKey(), Menu.NONE, group.getValue());
+                    item.setCheckable(true).setChecked(!mFilteredGroups.contains(group.getKey()));
+                }
+
+                subMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.members_teams).setEnabled(false);
+                for (Map.Entry<Integer, String> team : mMembers.getTeams().entrySet()) {
+                    MenuItem item = subMenu.add(MENU_TEAMS_ID, MENU_TEAMS_ID + team.getKey(), Menu.NONE, team.getValue());
+                    item.setCheckable(true).setChecked(!mFilteredTeams.contains(team.getKey()));
+                }
+
+                mFilterMenu = subMenu;
+                setMenuItemStates();
+            }
         }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position < mMembers.getMembers().size()) {
-            Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), mMembers, position);
+        if (position < mListAdapter.getCount()) {
+            Member member = (Member) mListAdapter.getItem(position);
+            Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), member, mMembers);
             Activity activity = getActivity();
             if (activity instanceof MainActivity) {
                 mListState = getListView().onSaveInstanceState();
@@ -152,48 +154,28 @@ public final class MembersListFragment extends ListFragment implements MainActiv
 
     @Override
     public boolean onMenuItemSelected(MenuItem item) {
+        if (MENU_CLEAR_FILTER_ID == item.getItemId()) {
+            onClearFilterSelected();
+            return true;
+        } else if (MENU_GROUPS_ID == item.getGroupId()) {
+            onFilterGroupSelected(item);
+            return true;
+        } else if (MENU_TEAMS_ID == item.getGroupId()) {
+            onFilterTeamSelected(item);
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         Repository repository = new Repository(username, serviceAuth);
 
         if (null == mMembers) {
-            repository.getMembers(new Repository.RepositoryResultHandler<Member.RepositoryData>() {
-                @Override
-                public void onError(final int errorMessage) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Activity activity = getActivity();
-                            if (null != activity && isVisible()) {
-                                mMembers = null;
-                                initializeList();
-
-                                Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
-                                toast.show();
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onSuccess(final Member.RepositoryData result) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (null != getActivity() && isVisible()) {
-                                mMembers = result;
-                                initializeList();
-                            }
-                        }
-                    });
-                }
-            });
+            repository.getMembers(mRepositoryResultHandler);
         } else {
             initializeList();
         }
@@ -202,59 +184,149 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (null != getView()) {
-            outState.putParcelable(STATE_LISTVIEW, getListView().onSaveInstanceState());
+            outState.putParcelable(STATE_LIST_VIEW, getListView().onSaveInstanceState());
         }
     }
 
     private void initializeList() {
-        List<Member> members = (null != mMembers ? mMembers.getMembers() : Collections.<Member>emptyList());
-        setListAdapter(new MembersListAdapter(getActivity(), R.layout.list_item_member, R.id.member_real_name, members));
+        mFilteredGroups.clear();
+        mFilteredGroups.addAll(mPrefs.getMembersListGroupsFilter());
+        mFilteredTeams.clear();
+        mFilteredTeams.addAll(mPrefs.getMembersListTeamsFilter());
+
+        mListAdapter = new MembersListAdapter(getActivity(), mMembers, mFilteredGroups, mFilteredTeams);
+
+        setListAdapter(mListAdapter);
 
         if (null != mListState) {
             getListView().onRestoreInstanceState(mListState);
             mListState = null;
         }
+
+        getActivity().invalidateOptionsMenu();
+        refreshFilter();
     }
 
-    private class MembersListAdapter extends ArrayAdapter<Member> {
-        public MembersListAdapter(Context context, int resource, int textViewResourceId, List<Member> objects) {
-            super(context, resource, textViewResourceId, objects);
+    private void onClearFilterSelected() {
+        mFilteredGroups.clear();
+        mFilteredTeams.clear();
+        setMenuItemStates();
+        refreshFilter();
+    }
+
+    private void onFilterGroupSelected(MenuItem item) {
+        int groupId = item.getItemId() - MENU_GROUPS_ID;
+        if (mFilteredGroups.contains(groupId)) {
+            mFilteredGroups.remove(groupId);
+            item.setChecked(true);
+        } else {
+            mFilteredGroups.add(groupId);
+            item.setChecked(false);
+        }
+        refreshFilter();
+    }
+
+    private void onFilterTeamSelected(MenuItem item) {
+        int teamId = item.getItemId() - MENU_TEAMS_ID;
+        if (mFilteredTeams.contains(teamId)) {
+            mFilteredTeams.remove(teamId);
+            item.setChecked(true);
+        } else {
+            mFilteredTeams.add(teamId);
+            item.setChecked(false);
+        }
+        refreshFilter();
+    }
+
+    private void onMemberAddContactSelected(Member member) {
+        boolean succeeded = MemberActions.addAsContact(member.getRealName(), member.getPhone(), member.getEmail(), getActivity().getContentResolver());
+        Toast toast = Toast.makeText(getActivity(),
+                (succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
+                (succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
+        toast.show();
+    }
+
+    private void onMemberCallSelected(Member member) {
+        if (TextUtils.isEmpty(member.getPhone())) {
+            Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            MemberActions.makeCallTo(member.getPhone(), this);
+        }
+    }
+
+    private void onMemberEmailSelected(Member member) {
+        if (TextUtils.isEmpty(member.getEmail())) {
+            Toast toast = Toast.makeText(getActivity(), R.string.member_no_email, Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            MemberActions.sendEmailTo(member.getEmail(), this);
+        }
+    }
+
+    private void onMemberMessageSelected(Member member) {
+        if (TextUtils.isEmpty(member.getPhone())) {
+            Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            MemberActions.sendSmsTo(member.getPhone(), this);
+        }
+    }
+
+    private void refreshFilter() {
+        mPrefs.setMembersListFilters(mFilteredGroups, mFilteredTeams);
+        if (null != mListAdapter) {
+            mListAdapter.invalidateFilter();
+        }
+    }
+
+    private void setMenuItemStates() {
+        if (null == mMembers || null == mFilterMenu) {
+            return;
+        }
+
+        for (Integer groupId : mMembers.getGroups().keySet()) {
+            MenuItem groupItem = mFilterMenu.findItem(MENU_GROUPS_ID + groupId);
+            if (null != groupItem && !mFilteredGroups.contains(groupId)) {
+                groupItem.setChecked(true);
+            }
+        }
+        for (Integer teamId : mMembers.getTeams().keySet()) {
+            MenuItem teamItem = mFilterMenu.findItem(MENU_TEAMS_ID + teamId);
+            if (null != teamItem && !mFilteredTeams.contains(teamId)) {
+                teamItem.setChecked(true);
+            }
+        }
+    }
+
+    private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<Member.RepositoryData> {
+        @Override
+        public void onError(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null != activity && isVisible()) {
+                        mMembers = null;
+                        initializeList();
+                        Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
+            });
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
-            Member member = mMembers.getMembers().get(position);
-
-            ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
-            List<String> faces = member.getFaces();
-            if (!faces.isEmpty()) {
-                mFaceHelper.picasso(faces)
-                        .resizeDimen(R.dimen.tmeit_members_list_face_size, R.dimen.tmeit_members_list_face_size)
-                        .centerInside()
-                        .placeholder(R.drawable.member_placeholder)
-                        .into(imageView);
-            } else {
-                imageView.setImageResource(R.drawable.member_placeholder);
-            }
-
-            TextView titleTextView = (TextView) view.findViewById(R.id.member_title);
-            titleTextView.setText(member.getTitleText(getContext(), mMembers));
-
-            TextView teamTextView = (TextView) view.findViewById(R.id.member_team);
-            teamTextView.setText(member.getTeamText(getContext(), mMembers));
-
-            TextView phoneTextView = (TextView) view.findViewById(R.id.member_phone);
-            if (null != phoneTextView) {
-                phoneTextView.setText(member.getPhone());
-            }
-
-            TextView emailTextView = (TextView) view.findViewById(R.id.member_email);
-            if (null != emailTextView) {
-                emailTextView.setText(member.getEmail());
-            }
-
-            return view;
+        public void onSuccess(final Member.RepositoryData result) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != getActivity() && isVisible()) {
+                        mMembers = result;
+                        initializeList();
+                    }
+                }
+            });
         }
     }
 }
