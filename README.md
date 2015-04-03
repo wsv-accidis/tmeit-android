@@ -10,14 +10,14 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.1 has been published to Google Play. Only push notifications are supported so far. Version
-1.1 was a bug fix and general improvements release with no significant new features.
+Version 1.2 has been published to Google Play. This version adds a list of members with filtering
+and quick actions for calling, sending messages or e-mail.
 
 ## Development plan
 This app is still under development and not in a usable state. The plan is essentially this:
 
 1. DONE - Show push notifications regarding new activities being published on the TMEIT web site
-2. Show general information for TMEIT members, such as the member list
+2. DONE - Show general information for TMEIT members, such as the member list
 3. Handle signups for external events
 4. Handle signups for working at TMEIT events
 5. Handle reporting of TMEIT events for team leaders

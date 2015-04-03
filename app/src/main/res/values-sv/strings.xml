@@ -24,6 +24,8 @@
     <string name="member_on_permit">På tillståndet</string>
     <string name="member_send_email">Skicka e-post</string>
     <string name="member_send_message">Skicka SMS</string>
+    <string name="member_team">Arbetslag</string>
+    <string name="member_title">Titel</string>
 
     <string name="members_show_all">Visa alla</string>
     <string name="members_groups">Grupper</string>
