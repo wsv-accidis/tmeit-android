@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +29,7 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for an individual member.
  */
-public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu {
+public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu, View.OnClickListener {
     private final static String TAG = MemberInfoFragment.class.getSimpleName();
     private MemberFaceHelper mFaceHelper;
 
@@ -108,6 +109,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             mFaceHelper.picasso(faces)
                     .placeholder(R.drawable.member_placeholder)
                     .into(imageView);
+            imageView.setOnClickListener(this);
         } else {
             imageView.setImageResource(R.drawable.member_placeholder);
         }
@@ -194,6 +196,21 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Bundle args = getArguments();
+        List<String> faces = args.getStringArrayList(Member.Keys.FACES);
+
+        Fragment memberImagesFragment = MemberImagesFragment.createInstance(getActivity(), faces);
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            mainActivity.openFragment(memberImagesFragment, true);
+        } else {
+            Log.e(TAG, "Activity holding fragment is not MainActivity!");
         }
     }
 }
