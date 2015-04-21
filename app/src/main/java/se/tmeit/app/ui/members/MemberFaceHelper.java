@@ -38,4 +38,9 @@ public final class MemberFaceHelper {
         String face = faces.get(mRandom.nextInt(faces.size()));
         return mPicasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(face).build());
     }
+
+    public RequestCreator picasso(List<String> faces, int index) {
+        String face = faces.get(index);
+        return mPicasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(face).build());
+    }
 }
