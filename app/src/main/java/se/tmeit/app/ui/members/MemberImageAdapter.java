@@ -14,6 +14,9 @@ import java.util.List;
 
 import se.tmeit.app.R;
 
+/**
+ * Adapter for the member images grid.
+ */
 public final class MemberImageAdapter extends BaseAdapter {
     private static final int IMAGES_PER_ROW = 3;
     private static final double IMAGE_PROPORTIONS = (12 / 11);

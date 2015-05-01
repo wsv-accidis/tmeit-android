@@ -13,9 +13,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import se.tmeit.app.R;
+import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.model.Member;
 
 /**
@@ -33,6 +35,11 @@ public final class Repository {
     public Repository(String username, String serviceAuth) {
         mUsername = username;
         mServiceAuth = serviceAuth;
+    }
+
+    public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
+        Request request = getRequestBuilder("GetExternalEvents.php").build();
+        TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventsCallback(resultHandler));
     }
 
     public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
@@ -61,6 +68,27 @@ public final class Repository {
         public void onError(int errorMessage);
 
         public void onSuccess(TResult result);
+    }
+
+    private final class GetExternalEventsCallback extends GetResultCallback<List<ExternalEvent>> {
+        private static final String EVENTS = "events";
+
+        public GetExternalEventsCallback(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected List<ExternalEvent> getResult(JSONObject responseBody) throws JSONException {
+            JSONArray jsonEvents = responseBody.getJSONArray(EVENTS);
+
+            ArrayList<ExternalEvent> events = new ArrayList<>();
+            for (int i = 0; i < jsonEvents.length(); i++) {
+                JSONObject jsonUser = jsonEvents.getJSONObject(i);
+                events.add(ExternalEvent.fromJson(jsonUser));
+            }
+
+            return events;
+        }
     }
 
     private final class GetMembersCallback extends GetResultCallback<Member.RepositoryData> {

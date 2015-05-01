@@ -17,6 +17,9 @@ import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
 
+/**
+ * Fragment displaying all available images for a member as a full-screen grid.
+ */
 public final class MemberImagesFragment extends Fragment implements MainActivity.HasTitle {
     private final static String TAG = MemberImagesFragment.class.getSimpleName();
     private MemberFaceHelper mFaceHelper;

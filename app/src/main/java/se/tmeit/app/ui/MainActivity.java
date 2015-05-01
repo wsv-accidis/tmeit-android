@@ -22,7 +22,6 @@ import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
-import se.tmeit.app.ui.members.MembersListFragment;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
 import se.tmeit.app.utils.AndroidUtils;
@@ -76,20 +75,6 @@ public final class MainActivity extends AppCompatActivity {
 
         transaction.commit();
         updateViewFromFragment(fragment);
-    }
-
-    private static Fragment getFragmentByDrawerItem(NavigationItem item) {
-        switch (item) {
-            case ABOUT_ITEM:
-                return new AboutFragment();
-            case MEMBERS_ITEM:
-                return new MembersListFragment();
-            case NOTIFICATIONS_ITEM:
-                return new NotificationsFragment();
-        }
-
-        Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        return null;
     }
 
     @Override
@@ -160,10 +145,12 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void openNavigationItem(NavigationItem item) {
-        Fragment nextFragment = getFragmentByDrawerItem(item);
+        Fragment nextFragment = NavigationItem.createFragment(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
             openFragment(nextFragment, false);
+        } else {
+            Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
         }
     }
 

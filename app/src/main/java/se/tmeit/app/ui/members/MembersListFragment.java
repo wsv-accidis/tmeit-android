@@ -2,11 +2,8 @@ package se.tmeit.app.ui.members;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -26,13 +23,13 @@ import java.util.Set;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.services.Repository;
-import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 
 /**
  * Fragment for the list of members.
  */
-public final class MembersListFragment extends ListFragment implements MainActivity.HasTitle, MainActivity.HasMenu {
+public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu {
     private static final int MENU_CLEAR_FILTER_ID = 1;
     private static final int MENU_GROUPS_ID = 10000;
     private static final int MENU_TEAMS_ID = 20000;
@@ -40,13 +37,10 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     private static final String TAG = MembersListFragment.class.getSimpleName();
     private final Set<Integer> mFilteredGroups = new HashSet<>();
     private final Set<Integer> mFilteredTeams = new HashSet<>();
-    private final Handler mHandler = new Handler();
     private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
     private Menu mFilterMenu;
     private MembersListAdapter mListAdapter;
-    private Parcelable mListState;
     private Member.RepositoryData mMembers;
-    private Preferences mPrefs;
 
     @Override
     public int getMenu() {
@@ -61,17 +55,8 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            mListState = savedInstanceState.getParcelable(STATE_LIST_VIEW);
-        }
         registerForContextMenu(getListView());
         setEmptyText(getString(R.string.members_no_results));
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPrefs = new Preferences(activity);
     }
 
     @Override
@@ -143,7 +128,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
             Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), member, mMembers);
             Activity activity = getActivity();
             if (activity instanceof MainActivity) {
-                mListState = getListView().onSaveInstanceState();
+                saveInstanceState();
                 MainActivity mainActivity = (MainActivity) activity;
                 mainActivity.openFragment(memberInfoFragment, true);
             } else {
@@ -168,40 +153,26 @@ public final class MembersListFragment extends ListFragment implements MainActiv
         return false;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
-        Repository repository = new Repository(username, serviceAuth);
 
-        if (null == mMembers) {
-            repository.getMembers(mRepositoryResultHandler);
-        } else {
-            initializeList();
-        }
+    @Override
+    protected void getDataFromRepository(Repository repository) {
+        repository.getMembers(mRepositoryResultHandler);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (null != getView()) {
-            outState.putParcelable(STATE_LIST_VIEW, getListView().onSaveInstanceState());
-        }
+    protected String getStateKey() {
+        return STATE_LIST_VIEW;
     }
 
-    private void initializeList() {
+    @Override
+    protected void initializeList() {
         mFilteredGroups.clear();
-        mFilteredGroups.addAll(mPrefs.getMembersListGroupsFilter());
+        mFilteredGroups.addAll(getPreferences().getMembersListGroupsFilter());
         mFilteredTeams.clear();
-        mFilteredTeams.addAll(mPrefs.getMembersListTeamsFilter());
+        mFilteredTeams.addAll(getPreferences().getMembersListTeamsFilter());
 
         mListAdapter = new MembersListAdapter(getActivity(), mMembers, mFilteredGroups, mFilteredTeams);
-
-        setListAdapter(mListAdapter);
-
-        if (null != mListState) {
-            getListView().onRestoreInstanceState(mListState);
-            mListState = null;
-        }
+        finishInitializeList(mListAdapter);
 
         getActivity().invalidateOptionsMenu();
         refreshFilter();
@@ -274,7 +245,7 @@ public final class MembersListFragment extends ListFragment implements MainActiv
     }
 
     private void refreshFilter() {
-        mPrefs.setMembersListFilters(mFilteredGroups, mFilteredTeams);
+        getPreferences().setMembersListFilters(mFilteredGroups, mFilteredTeams);
         if (null != mListAdapter) {
             mListAdapter.invalidateFilter();
         }
@@ -301,32 +272,15 @@ public final class MembersListFragment extends ListFragment implements MainActiv
 
     private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<Member.RepositoryData> {
         @Override
-        public void onError(final int errorMessage) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Activity activity = getActivity();
-                    if (null != activity && isVisible()) {
-                        mMembers = null;
-                        initializeList();
-                        Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
-                        toast.show();
-                    }
-                }
-            });
+        public void onError(int errorMessage) {
+            mMembers = null;
+            onRepositoryError(errorMessage);
         }
 
         @Override
-        public void onSuccess(final Member.RepositoryData result) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (null != getActivity() && isVisible()) {
-                        mMembers = result;
-                        initializeList();
-                    }
-                }
-            });
+        public void onSuccess(Member.RepositoryData result) {
+            mMembers = result;
+            onRepositorySuccess();
         }
     }
 }
