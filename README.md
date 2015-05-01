@@ -14,7 +14,8 @@ Version 1.2 has been published to Google Play. This version adds a list of membe
 and quick actions for calling, sending messages or e-mail.
 
 ## Development plan
-This app is still under development and not in a usable state. The plan is essentially this:
+This app is still under development but several features are functional and the app is intended
+to be used in its current state.
 
 1. DONE - Show push notifications regarding new activities being published on the TMEIT web site
 2. DONE - Show general information for TMEIT members, such as the member list
@@ -49,4 +50,5 @@ TMEIT for Android uses the following third-party libraries and resources, in add
 SDKs provided by Google:
 
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
+* [Picasso Image downloading and caching for Android](http://square.github.io/picasso/)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
