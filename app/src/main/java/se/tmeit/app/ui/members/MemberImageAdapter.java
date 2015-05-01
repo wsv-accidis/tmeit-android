@@ -14,13 +14,16 @@ import java.util.List;
 
 import se.tmeit.app.R;
 
-public class MemberImageAdapter extends BaseAdapter {
+public final class MemberImageAdapter extends BaseAdapter {
+    private static final int IMAGES_PER_ROW = 3;
+    private static final double IMAGE_PROPORTIONS = (12 / 11);
     private Context mContext;
-    private List<String> mFaces;
     private MemberFaceHelper mFaceHelper;
+    private List<String> mFaces;
+    private int mImageWidth = -1;
 
-    public MemberImageAdapter(Context c, List<String> faces, MemberFaceHelper faceHelper) {
-        mContext = c;
+    public MemberImageAdapter(Context context, List<String> faces, MemberFaceHelper faceHelper) {
+        mContext = context;
         mFaces = faces;
         mFaceHelper = faceHelper;
     }
@@ -44,18 +47,9 @@ public class MemberImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
 
-        if(convertView == null) {
-            imageView = new ImageView(mContext);
-            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width = (size.x / 3);
-            imageView.setLayoutParams(new GridView.LayoutParams(width, width * (12/11)));
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setClickable(false);
-        }
-        else {
+        if (convertView == null) {
+            imageView = initializeImageView();
+        } else {
             imageView = (ImageView) convertView;
         }
 
@@ -63,6 +57,27 @@ public class MemberImageAdapter extends BaseAdapter {
                 .placeholder(R.drawable.member_placeholder)
                 .into(imageView);
 
+        return imageView;
+    }
+
+    private int getImageWidth() {
+        if (mImageWidth <= 0) {
+            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            mImageWidth = (size.x / IMAGES_PER_ROW);
+        }
+
+        return mImageWidth;
+    }
+
+    private ImageView initializeImageView() {
+        ImageView imageView = new ImageView(mContext);
+        int width = getImageWidth();
+        imageView.setLayoutParams(new GridView.LayoutParams(width, (int) (width * IMAGE_PROPORTIONS)));
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setClickable(false);
         return imageView;
     }
 }

@@ -15,6 +15,7 @@
     <string name="member_drivers_license">Körkort</string>
     <string name="member_email">Maila</string>
     <string name="member_filter_list">Filtrera listan</string>
+    <string name="member_images_nav_title">Bilder</string>
     <string name="member_info">Info</string>
     <string name="member_make_call">Ring samtal</string>
     <string name="member_message">SMS</string>

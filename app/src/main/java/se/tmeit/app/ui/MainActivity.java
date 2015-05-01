@@ -200,6 +200,7 @@ public final class MainActivity extends ActionBarActivity {
             fragment.setHasOptionsMenu(true);
         } else {
             mOptionsMenu = null;
+            fragment.setHasOptionsMenu(false);
         }
 
         restoreActionBar();

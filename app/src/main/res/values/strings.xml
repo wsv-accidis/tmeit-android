@@ -18,6 +18,7 @@
     <string name="member_email">Mail</string>
     <string name="member_fest" translatable="false">FEST</string>
     <string name="member_filter_list">Filter list</string>
+    <string name="member_images_nav_title">Images</string>
     <string name="member_info">Info</string>
     <string name="member_make_call">Make call</string>
     <string name="member_marskalk" translatable="false">Marskalk</string>
