@@ -10,13 +10,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
@@ -27,7 +27,7 @@ import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
 import se.tmeit.app.utils.AndroidUtils;
 
-public final class MainActivity extends ActionBarActivity {
+public final class MainActivity extends AppCompatActivity {
     private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
     private static final String STATE_LAST_OPENED_FRAGMENT_POS = "openMainActivityFragmentPos";
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -169,7 +169,6 @@ public final class MainActivity extends ActionBarActivity {
 
     private void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -288,7 +287,7 @@ public final class MainActivity extends ActionBarActivity {
                 public void run() {
                     refreshNotificationsFragment();
                     if (canRecover) {
-                        GooglePlayServicesUtil.getErrorDialog(resultCode, MainActivity.this, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                        GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
                     } else {
                         Toast toast = Toast.makeText(MainActivity.this, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
                         toast.show();

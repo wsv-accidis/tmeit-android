@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -29,10 +29,10 @@ import se.tmeit.app.utils.AndroidUtils;
 public final class GcmRegistration {
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = GcmRegistration.class.getSimpleName();
+    private static GcmRegistration mInstance;
     private final Context mContext;
     private final Preferences mPrefs;
     private final TmeitServiceHelper mTmeit = new TmeitServiceHelper();
-    private static GcmRegistration mInstance;
     private boolean mIsBusy;
 
     private GcmRegistration(Context context) {
@@ -96,9 +96,9 @@ public final class GcmRegistration {
     }
 
     private boolean checkForGooglePlayServices(RegistrationResultHandler resultHandler) {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext);
+        int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(mContext);
         if (resultCode != ConnectionResult.SUCCESS) {
-            resultHandler.onGoogleServicesError(resultCode, GooglePlayServicesUtil.isUserRecoverableError(resultCode));
+            resultHandler.onGoogleServicesError(resultCode, GoogleApiAvailability.getInstance().isUserResolvableError(resultCode));
             return false;
         }
         return true;

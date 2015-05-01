@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.security.ProviderInstaller;
 
 import se.tmeit.app.services.TmeitHttpClient;
@@ -28,7 +28,7 @@ public final class TmeitApplication extends Application {
             @Override
             public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
                 Log.e(TAG, "Google Play Services security provider failed to update automatically.");
-                GooglePlayServicesUtil.showErrorNotification(errorCode, getApplicationContext());
+                GoogleApiAvailability.getInstance().showErrorNotification(getApplicationContext(), errorCode);
             }
 
             @Override

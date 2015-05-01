@@ -13,7 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
@@ -110,7 +110,7 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
                     setNotificationsSwitch(true);
 
                     if (canRecover) {
-                        GooglePlayServicesUtil.getErrorDialog(resultCode, activity, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                        GoogleApiAvailability.getInstance().getErrorDialog(activity, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
                     } else {
                         Toast toast = Toast.makeText(activity, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
                         toast.show();
