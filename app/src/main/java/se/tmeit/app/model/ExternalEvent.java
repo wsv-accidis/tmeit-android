@@ -13,6 +13,7 @@ public final class ExternalEvent {
     private boolean mIsPast;
     private boolean mIsPastSignup;
     private String mLastSignupDate;
+    private int mNumberOfAttendees;
     private String mStartDate;
     private String mTitle;
 
@@ -24,9 +25,9 @@ public final class ExternalEvent {
         event.setIsPast(obj.getBoolean(Keys.IS_PAST));
         event.setIsPastSignup(obj.getBoolean(Keys.IS_PAST_SIGNUP));
         event.setLastSignupDate(obj.getString(Keys.LAST_SIGNUP));
+        event.setNumberOfAttendees(obj.getInt(Keys.ATTENDEES));
         event.setStartDate(obj.getString(Keys.START_DATE));
         event.setTitle(obj.getString(Keys.TITLE));
-
         return event;
     }
 
@@ -44,6 +45,14 @@ public final class ExternalEvent {
 
     private void setLastSignupDate(String date) {
         mLastSignupDate = date;
+    }
+
+    public int getNumberOfAttendees() {
+        return mNumberOfAttendees;
+    }
+
+    private void setNumberOfAttendees(int value) {
+        mNumberOfAttendees = value;
     }
 
     public String getStartDate() {
@@ -95,6 +104,7 @@ public final class ExternalEvent {
     }
 
     public static class Keys {
+        public static final String ATTENDEES = "attendees";
         public static final String ID = "id";
         public static final String IS_ATTENDING = "is_attending";
         public static final String IS_NEAR_SIGNUP = "is_near_signup";

@@ -7,6 +7,22 @@
         <!-- Global app theme -->
     </style>
 
+    <style name="EventsListDate" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="EventsListPrimary" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="EventsListSecondary" parent="TextAppearance.AppCompat.Small">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
     <style name="MemberInfoHeader" parent="TextAppearance.AppCompat.Headline">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
@@ -19,14 +35,19 @@
     </style>
 
     <style name="MembersListPrimary" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:ellipsize">end</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="MembersListSecondary" parent="TextAppearance.AppCompat.Small">
+        <item name="android:ellipsize">end</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="MembersListTertiary" parent="TextAppearance.AppCompat.Small">
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="OnboardingLabel" parent="TextAppearance.AppCompat.Medium">
