@@ -42,7 +42,7 @@ public final class TmeitHttpClient extends OkHttpClient {
             Cache cache = new Cache(cacheDirectory, CACHE_SIZE);
             mInstance.setCache(cache);
             Log.d(TAG, "HTTP response cache was initialized.");
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Log.w(TAG, "Failed to initialize HTTP response cache.", ex);
         }
     }

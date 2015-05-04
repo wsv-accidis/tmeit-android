@@ -6,6 +6,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -135,6 +136,12 @@ public final class Repository {
         @Override
         public void onResponse(Response response) throws IOException {
             Log.i(TAG, "Download response received with HTTP status = " + response.code() + ", cached = " + (null == response.networkResponse()) + ".");
+
+            if(!response.isSuccessful()) {
+                Log.e(TAG, "Downloading data failed because an unsuccessful HTTP status code (" + response.code() + ") was returned.");
+                mResultHandler.onError(R.string.repository_error_unspecified_protocol);
+                return;
+            }
 
             try {
                 JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
