@@ -15,6 +15,8 @@
     <string name="event_last_signup_date">Sista anmälan</string>
     <string name="event_last_signup_passed">Sista anmälan har varit</string>
     <string name="event_not_attending">Inte anmäld</string>
+    <string name="event_internal_nav_title">Interna event</string>
+    <string name="event_internal_workers">arbetare</string>
 
     <string name="member_add_contact">Lägg till kontakt</string>
     <string name="member_call">Ring</string>

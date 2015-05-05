@@ -19,6 +19,7 @@ import java.util.Map;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
+import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.model.Member;
 
 /**
@@ -41,6 +42,11 @@ public final class Repository {
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
         Request request = getRequestBuilder("GetExternalEvents.php").build();
         TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventsCallback(resultHandler));
+    }
+
+    public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
+        Request request = getRequestBuilder("GetEvents.php").build();
+        TmeitHttpClient.getInstance().enqueueRequest(request, new GetInternalEventsCallback(resultHandler));
     }
 
     public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
@@ -84,8 +90,29 @@ public final class Repository {
 
             ArrayList<ExternalEvent> events = new ArrayList<>();
             for (int i = 0; i < jsonEvents.length(); i++) {
-                JSONObject jsonUser = jsonEvents.getJSONObject(i);
-                events.add(ExternalEvent.fromJson(jsonUser));
+                JSONObject jsonEvent = jsonEvents.getJSONObject(i);
+                events.add(ExternalEvent.fromJson(jsonEvent));
+            }
+
+            return events;
+        }
+    }
+
+    private final class GetInternalEventsCallback extends GetResultCallback<List<InternalEvent>> {
+        private static final String EVENTS = "events";
+
+        public GetInternalEventsCallback(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected List<InternalEvent> getResult(JSONObject responseBody) throws JSONException {
+            JSONArray jsonEvents = responseBody.getJSONArray(EVENTS);
+
+            ArrayList<InternalEvent> events = new ArrayList<>();
+            for(int i = 0; i < jsonEvents.length(); i++) {
+                JSONObject jsonEvent = jsonEvents.getJSONObject(i);
+                events.add(InternalEvent.fromJson(jsonEvent));
             }
 
             return events;
