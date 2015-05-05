@@ -29,8 +29,9 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for an individual member.
  */
-public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu, View.OnClickListener {
+public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu {
     private final static String TAG = MemberInfoFragment.class.getSimpleName();
+    private final OnImageClickedListener mOnImageClickedListener = new OnImageClickedListener();
     private MemberFaceHelper mFaceHelper;
 
     public static MemberInfoFragment createInstance(Context context, Member member, Member.RepositoryData memberRepository) {
@@ -87,21 +88,6 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
     }
 
     @Override
-    public void onClick(View v) {
-        Activity activity = getActivity();
-        if (activity instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity) activity;
-
-            Bundle args = getArguments();
-            List<String> faces = args.getStringArrayList(Member.Keys.FACES);
-            Fragment memberImagesFragment = MemberImagesFragment.createInstance(faces);
-            mainActivity.openFragment(memberImagesFragment, true);
-        } else {
-            Log.e(TAG, "Activity holding fragment is not MainActivity!");
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_member_info, container, false);
 
@@ -124,7 +110,8 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             mFaceHelper.picasso(faces)
                     .placeholder(R.drawable.member_placeholder)
                     .into(imageView);
-            imageView.setOnClickListener(this);
+
+            imageView.setOnClickListener(mOnImageClickedListener);
         } else {
             imageView.setImageResource(R.drawable.member_placeholder);
         }
@@ -211,6 +198,22 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
             textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
+        }
+    }
+
+    private final class OnImageClickedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) activity;
+                Bundle args = getArguments();
+                List<String> faces = args.getStringArrayList(Member.Keys.FACES);
+                Fragment memberImagesFragment = MemberImagesFragment.createInstance(faces);
+                mainActivity.openFragment(memberImagesFragment, true);
+            } else {
+                Log.e(TAG, "Activity holding fragment is not MainActivity!");
+            }
         }
     }
 }
