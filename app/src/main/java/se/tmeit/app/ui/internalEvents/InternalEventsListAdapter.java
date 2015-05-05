@@ -57,7 +57,7 @@ public class InternalEventsListAdapter extends BaseAdapter {
         InternalEvent event = mInternalEvents.get(position);
 
         TextView dateView = (TextView) view.findViewById(R.id.event_date);
-        dateView.setText(event.getStartDate());
+        dateView.setText(event.getStartDate() + "\n" + event.getStartTime());
 
         TextView titleView = (TextView) view.findViewById(R.id.event_title);
         titleView.setText(event.getTitle());
