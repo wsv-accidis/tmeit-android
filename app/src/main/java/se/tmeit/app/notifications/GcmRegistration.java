@@ -129,7 +129,7 @@ public final class GcmRegistration {
 
             String registrationId;
             try {
-                String senderId = "";//mContext.getString(R.string.gcm_sender_id);
+                String senderId = mContext.getString(R.string.gcm_sender_id);
                 registrationId = GoogleCloudMessaging.getInstance(mContext).register(senderId);
             } catch (Exception ex) {
                 Log.e(TAG, "Failed to register with Google Cloud Messaging.", ex);
