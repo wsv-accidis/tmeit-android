@@ -45,9 +45,34 @@
                 android:id="@+id/event_title"
                 style="@style/EventInfoHeader"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Foo bar"/>
+                android:layout_height="wrap_content"/>
 
+            <TextView
+                android:id="@+id/event_start_date"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_invitation"
+                android:drawablePadding="8dp"/>
+
+            <TextView
+                android:id="@+id/event_last_signup"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/ic_event_busy"
+                android:drawablePadding="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/event_progress_bar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:indeterminate="true"/>
         </LinearLayout>
     </ScrollView>
 

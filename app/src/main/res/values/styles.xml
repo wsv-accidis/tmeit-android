@@ -11,6 +11,11 @@
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
+    <style name="EventInfoMedium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+
     <style name="EventsListDate" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>
         <item name="android:gravity">right</item>

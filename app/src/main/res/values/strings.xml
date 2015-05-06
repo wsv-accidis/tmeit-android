@@ -13,6 +13,7 @@
     <string name="event_attendee">attendee</string>
     <string name="event_attendees">attendees</string>
     <string name="event_attending">Attending</string>
+    <string name="event_external_info_nav_title">Event</string>
     <string name="event_external_nav_title">External events</string>
     <string name="event_last_signup_date">Last signup</string>
     <string name="event_last_signup_passed">Last signup has passed</string>

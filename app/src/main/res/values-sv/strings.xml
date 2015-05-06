@@ -11,6 +11,7 @@
     <string name="event_attendee">anmäld</string>
     <string name="event_attendees">anmälda</string>
     <string name="event_attending">Anmäld</string>
+    <string name="event_external_info_nav_title">Event</string>
     <string name="event_external_nav_title">Externa event</string>
     <string name="event_last_signup_date">Sista anmälan</string>
     <string name="event_last_signup_passed">Sista anmälan har varit</string>
