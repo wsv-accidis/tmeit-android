@@ -26,9 +26,7 @@ import se.tmeit.app.model.Member;
  * Downloads data entities from TMEIT web services.
  */
 public final class Repository {
-    private static final String FIELD_EVENT_ID = "event_id";
-    private static final String FIELD_ID = "id";
-    private static final String FIELD_TITLE = "title";
+
     private static final String HEADER_SERVICE_AUTH = "X-TMEIT-Service-Auth";
     private static final String HEADER_USERNAME = "X-TMEIT-Username";
     private static final String TAG = Repository.class.getSimpleName();
@@ -41,17 +39,17 @@ public final class Repository {
     }
 
     public void attendExternalEvent(int id, ExternalEventAttendee attendee, RepositoryResultHandler<Void> resultHandler) {
-        Request request = new Request.Builder()
-                .url(TmeitServiceConfig.SERVICE_BASE_URL + "AttendExternalEvent.php")
-                .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForAttendExternalEvent(id, attendee)))
-                .build();
+        try {
+            Request request = new Request.Builder()
+                    .url(TmeitServiceConfig.SERVICE_BASE_URL + "AttendExternalEvent.php")
+                    .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForAttendExternalEvent(id, attendee)))
+                    .build();
 
-        TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
-    }
-
-    private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) {
-        JSONObject json = new JSONObject();
-        json.put()
+            TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
+        } catch (JSONException ex) {
+            Log.e(TAG, "Unexpected JSON exception while creating request.", ex);
+            resultHandler.onError(R.string.network_error_unspecified_protocol);
+        }
     }
 
     public void getExternalEventDetails(int id, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
@@ -73,9 +71,25 @@ public final class Repository {
         Map<Integer, String> result = new LinkedHashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            result.put(obj.getInt(FIELD_ID), obj.getString(FIELD_TITLE));
+            result.put(obj.getInt(JsonKeys.ID), obj.getString(JsonKeys.TITLE));
         }
         return result;
+    }
+
+    private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put(JsonKeys.EVENT_ID, id);
+
+        if (null != attendee) {
+            JSONObject attending = new JSONObject();
+            attending.put(JsonKeys.DOB, attendee.getDateOfBirth());
+            attending.put(JsonKeys.DRINK_PREFS, attendee.getDrinkPreferences());
+            attending.put(JsonKeys.FOOD_PREFS, attendee.getFoodPreferences());
+            attending.put(JsonKeys.NOTES, attendee.getNotes());
+            json.put(JsonKeys.ATTENDING, attending);
+        }
+
+        return json.toString();
     }
 
     private Request.Builder getRequestBuilder(String relativeUrl) {
@@ -84,6 +98,23 @@ public final class Repository {
                 .addHeader(HEADER_USERNAME, mUsername)
                 .addHeader(HEADER_SERVICE_AUTH, mServiceAuth)
                 .get();
+    }
+
+    private interface JsonKeys {
+        String ATTENDEE = "attendee";
+        String ATTENDING = "attending";
+        String DOB = "dob";
+        String DRINK_PREFS = "drink_prefs";
+        String EVENT = "event";
+        String EVENT_ID = "event_id";
+        String FOOD_PREFS = "food_prefs";
+        String GROUPS = "groups";
+        String ID = "id";
+        String NOTES = "notes";
+        String TEAMS = "teams";
+        String TITLE = "title";
+        String TITLES = "titles";
+        String USERS = "users";
     }
 
     private final class AttendExternalEventCallback extends GetResultCallback<Void> {
@@ -98,17 +129,14 @@ public final class Repository {
     }
 
     private final class GetExternalEventDetailsCallback extends GetResultCallback<ExternalEvent.RepositoryData> {
-        private static final String ATTENDEE = "attendee";
-        private static final String EVENT = "event";
-
         public GetExternalEventDetailsCallback(RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
         @Override
         protected ExternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-            JSONObject jsonEvent = responseBody.getJSONObject(EVENT);
-            JSONObject jsonAttendee = responseBody.getJSONObject(ATTENDEE);
+            JSONObject jsonEvent = responseBody.getJSONObject(JsonKeys.EVENT);
+            JSONObject jsonAttendee = responseBody.getJSONObject(JsonKeys.ATTENDEE);
 
             return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent), ExternalEventAttendee.fromJson(jsonAttendee));
         }
@@ -136,22 +164,17 @@ public final class Repository {
     }
 
     private final class GetMembersCallback extends GetResultCallback<Member.RepositoryData> {
-        private static final String GROUPS = "groups";
-        private static final String TEAMS = "teams";
-        private static final String TITLES = "titles";
-        private static final String USERS = "users";
-
         public GetMembersCallback(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
         @Override
         protected Member.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(GROUPS));
-            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(TEAMS));
-            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(TITLES));
+            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(JsonKeys.GROUPS));
+            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(JsonKeys.TEAMS));
+            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(JsonKeys.TITLES));
 
-            JSONArray jsonUsers = responseBody.getJSONArray(USERS);
+            JSONArray jsonUsers = responseBody.getJSONArray(JsonKeys.USERS);
 
             ArrayList<Member> members = new ArrayList<>();
             for (int i = 0; i < jsonUsers.length(); i++) {

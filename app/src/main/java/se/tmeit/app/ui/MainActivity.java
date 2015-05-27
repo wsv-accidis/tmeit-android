@@ -20,6 +20,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
+import se.tmeit.app.services.AuthenticationResultHandler;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
@@ -197,20 +198,20 @@ public final class MainActivity extends AppCompatActivity {
     private void validateAndRegisterServicesIfNeeded() {
         String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         ServiceAuthenticator authenticator = new ServiceAuthenticator();
-        authenticator.authenticateFromCredentials(username, serviceAuth, new AuthenticationResultHandler());
+        authenticator.authenticateFromCredentials(username, serviceAuth, new MainAuthenticationResultHandler());
     }
 
-    public static interface HasMenu {
+    public interface HasMenu {
         int getMenu();
 
         boolean onMenuItemSelected(MenuItem item);
     }
 
-    public static interface HasTitle {
+    public interface HasTitle {
         int getTitle();
     }
 
-    private final class AuthenticationResultHandler implements se.tmeit.app.services.AuthenticationResultHandler {
+    private final class MainAuthenticationResultHandler implements AuthenticationResultHandler {
         @Override
         public void onAuthenticationError(int errorMessage) {
             showErrorMessage(errorMessage);

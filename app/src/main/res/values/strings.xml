@@ -54,6 +54,7 @@
 
     <string name="network_error_not_available">There is no network available. This app won\'t work without a network connection.</string>
     <string name="network_error_not_available_title">No network</string>
+    <string name="network_error_unspecified_protocol">An unexpected error occurred. Try again. If the issue persists, make sure you have the latest version of this app.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
