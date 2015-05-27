@@ -22,7 +22,7 @@ to be used in its current state.
 3. Handle signups for external events
 4. Handle signups for working at TMEIT events
 5. Handle reporting of TMEIT events for team leaders
-6. More stuff.
+6. Less stuff.
 
 This app is intended to function as a complement to TMEIT.se but eventually, it could be
 a full replacement for those who prefer a smartphone or tablet instead of a computer.
