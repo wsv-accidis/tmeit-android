@@ -210,7 +210,7 @@ public final class MainActivity extends AppCompatActivity {
         int getTitle();
     }
 
-    private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
+    private final class AuthenticationResultHandler implements se.tmeit.app.services.AuthenticationResultHandler {
         @Override
         public void onAuthenticationError(int errorMessage) {
             showErrorMessage(errorMessage);

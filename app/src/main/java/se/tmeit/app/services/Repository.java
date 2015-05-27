@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,12 +19,14 @@ import java.util.Map;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
+import se.tmeit.app.model.ExternalEventAttendee;
 import se.tmeit.app.model.Member;
 
 /**
  * Downloads data entities from TMEIT web services.
  */
 public final class Repository {
+    private static final String FIELD_EVENT_ID = "event_id";
     private static final String FIELD_ID = "id";
     private static final String FIELD_TITLE = "title";
     private static final String HEADER_SERVICE_AUTH = "X-TMEIT-Service-Auth";
@@ -36,6 +38,25 @@ public final class Repository {
     public Repository(String username, String serviceAuth) {
         mUsername = username;
         mServiceAuth = serviceAuth;
+    }
+
+    public void attendExternalEvent(int id, ExternalEventAttendee attendee, RepositoryResultHandler<Void> resultHandler) {
+        Request request = new Request.Builder()
+                .url(TmeitServiceConfig.SERVICE_BASE_URL + "AttendExternalEvent.php")
+                .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForAttendExternalEvent(id, attendee)))
+                .build();
+
+        TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
+    }
+
+    private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) {
+        JSONObject json = new JSONObject();
+        json.put()
+    }
+
+    public void getExternalEventDetails(int id, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
+        Request request = getRequestBuilder("GetExternalEventDetails.php/" + id).build();
+        TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventDetailsCallback(resultHandler));
     }
 
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
@@ -65,10 +86,32 @@ public final class Repository {
                 .get();
     }
 
-    public static interface RepositoryResultHandler<TResult> {
-        public void onError(int errorMessage);
+    private final class AttendExternalEventCallback extends GetResultCallback<Void> {
+        public AttendExternalEventCallback(RepositoryResultHandler<Void> resultHandler) {
+            super(resultHandler);
+        }
 
-        public void onSuccess(TResult result);
+        @Override
+        protected Void getResult(JSONObject responseBody) throws JSONException {
+            return null;
+        }
+    }
+
+    private final class GetExternalEventDetailsCallback extends GetResultCallback<ExternalEvent.RepositoryData> {
+        private static final String ATTENDEE = "attendee";
+        private static final String EVENT = "event";
+
+        public GetExternalEventDetailsCallback(RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected ExternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
+            JSONObject jsonEvent = responseBody.getJSONObject(EVENT);
+            JSONObject jsonAttendee = responseBody.getJSONObject(ATTENDEE);
+
+            return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent), ExternalEventAttendee.fromJson(jsonAttendee));
+        }
     }
 
     private final class GetExternalEventsCallback extends GetResultCallback<List<ExternalEvent>> {
@@ -137,7 +180,7 @@ public final class Repository {
         public void onResponse(Response response) throws IOException {
             Log.i(TAG, "Download response received with HTTP status = " + response.code() + ", cached = " + (null == response.networkResponse()) + ".");
 
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 Log.e(TAG, "Downloading data failed because an unsuccessful HTTP status code (" + response.code() + ") was returned.");
                 mResultHandler.onError(R.string.repository_error_unspecified_protocol);
                 return;

@@ -11,6 +11,7 @@ import java.util.List;
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 
@@ -20,10 +21,10 @@ import se.tmeit.app.ui.MainActivity;
 public final class ExternalEventsListFragment extends ListFragmentBase {
     private static final String STATE_LIST_VIEW = "extEventsListState";
     private static final String TAG = ExternalEventsListFragment.class.getSimpleName();
-    private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
+    private final ExternalEventsResultHandler mRepositoryResultHandler = new ExternalEventsResultHandler();
     private List<ExternalEvent> mEvents;
     private ExternalEventsListAdapter mListAdapter;
-    
+
     @Override
     public int getTitle() {
         return R.string.event_external_nav_title;
@@ -45,7 +46,7 @@ public final class ExternalEventsListFragment extends ListFragmentBase {
         finishInitializeList(mListAdapter);
     }
 
-    private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<List<ExternalEvent>> {
+    private final class ExternalEventsResultHandler implements RepositoryResultHandler<List<ExternalEvent>> {
         @Override
         public void onError(int errorMessage) {
             mEvents = null;

@@ -1,12 +1,17 @@
 package se.tmeit.app.model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Model object for external events.
  */
 public final class ExternalEvent {
+    private List<ExternalEventAttendee> mAttendees;
+    private String mBody;
     private int mId;
     private boolean mIsAttending;
     private boolean mIsNearSignup;
@@ -19,8 +24,9 @@ public final class ExternalEvent {
 
     public static ExternalEvent fromJson(JSONObject obj) throws JSONException {
         ExternalEvent event = new ExternalEvent();
+        event.setBody(obj.optString(Keys.BODY));
         event.setId(obj.getInt(Keys.ID));
-        event.setIsAttending(obj.getBoolean(Keys.IS_ATTENDING));
+        event.setIsAttending(obj.optBoolean(Keys.IS_ATTENDING));
         event.setIsNearSignup(obj.getBoolean(Keys.IS_NEAR_SIGNUP));
         event.setIsPast(obj.getBoolean(Keys.IS_PAST));
         event.setIsPastSignup(obj.getBoolean(Keys.IS_PAST_SIGNUP));
@@ -28,7 +34,32 @@ public final class ExternalEvent {
         event.setNumberOfAttendees(obj.getInt(Keys.ATTENDEES));
         event.setStartDate(obj.getString(Keys.START_DATE));
         event.setTitle(obj.getString(Keys.TITLE));
+
+        JSONArray attendees = obj.optJSONArray(Keys.ATTENDEES);
+        if (null != attendees) {
+            event.setAttendees(ExternalEventAttendee.fromJsonArray(attendees));
+            event.setNumberOfAttendees(event.getAttendees().size());
+        } else {
+            event.setNumberOfAttendees(obj.getInt(Keys.ATTENDEES));
+        }
+
         return event;
+    }
+
+    public List<ExternalEventAttendee> getAttendees() {
+        return mAttendees;
+    }
+
+    public void setAttendees(List<ExternalEventAttendee> attendees) {
+        mAttendees = attendees;
+    }
+
+    public String getBody() {
+        return mBody;
+    }
+
+    private void setBody(String body) {
+        mBody = body;
     }
 
     public int getId() {
@@ -105,6 +136,7 @@ public final class ExternalEvent {
 
     public static class Keys {
         public static final String ATTENDEES = "attendees";
+        public static final String BODY = "body";
         public static final String ID = "id";
         public static final String IS_ATTENDING = "is_attending";
         public static final String IS_NEAR_SIGNUP = "is_near_signup";
@@ -115,6 +147,24 @@ public final class ExternalEvent {
         public static final String TITLE = "title";
 
         private Keys() {
+        }
+    }
+
+    public static class RepositoryData {
+        private final ExternalEvent mExternalEvent;
+        private final ExternalEventAttendee mBlankAttendee;
+
+        public RepositoryData(ExternalEvent externalEvent, ExternalEventAttendee blankAttendee) {
+            mExternalEvent = externalEvent;
+            mBlankAttendee = blankAttendee;
+        }
+
+        public ExternalEvent getExternalEvent() {
+            return mExternalEvent;
+        }
+
+        public ExternalEventAttendee getBlankAttendee() {
+            return mBlankAttendee;
         }
     }
 }

@@ -99,16 +99,6 @@ public final class ServiceAuthenticator {
         return json.toString();
     }
 
-    public static interface AuthenticationResultHandler {
-        public void onAuthenticationError(int errorMessage);
-
-        public void onNetworkError(int errorMessage);
-
-        public void onProtocolError(int errorMessage);
-
-        public void onSuccess(String serviceAuth, String authenticatedUser);
-    }
-
     private static class AuthenticationCallback implements Callback {
         private final AuthenticationResultHandler mResultHandler;
         private final String mServiceAuth;

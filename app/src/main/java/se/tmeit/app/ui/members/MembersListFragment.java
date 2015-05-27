@@ -23,6 +23,7 @@ import java.util.Set;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 
@@ -37,7 +38,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
     private static final String TAG = MembersListFragment.class.getSimpleName();
     private final Set<Integer> mFilteredGroups = new HashSet<>();
     private final Set<Integer> mFilteredTeams = new HashSet<>();
-    private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
+    private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
     private Menu mFilterMenu;
     private MembersListAdapter mListAdapter;
     private Member.RepositoryData mMembers;
@@ -270,7 +271,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         }
     }
 
-    private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<Member.RepositoryData> {
+    private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
         @Override
         public void onError(int errorMessage) {
             mMembers = null;

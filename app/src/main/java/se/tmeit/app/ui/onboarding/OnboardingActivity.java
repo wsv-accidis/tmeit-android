@@ -58,7 +58,7 @@ public final class OnboardingActivity extends FragmentActivity {
         }
     }
 
-    private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
+    private final class AuthenticationResultHandler implements se.tmeit.app.services.AuthenticationResultHandler {
         private boolean mAbandoned;
         private WaitingFragment mWaitingFragment;
 
