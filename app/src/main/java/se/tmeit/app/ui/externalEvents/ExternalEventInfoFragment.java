@@ -3,6 +3,7 @@ package se.tmeit.app.ui.externalEvents;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
 
@@ -21,11 +24,13 @@ import se.tmeit.app.ui.MainActivity;
  * Fragment for an external event.
  */
 public final class ExternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
-    private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
     private static final char FORMAT_SPACE = ' ';
+    private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
+    private final ExternalEventResultHandler mRepositoryResultHandler = new ExternalEventResultHandler();
+    private final Handler mHandler = new Handler();
     private Button mAttendingButton;
-    private ProgressBar mProgressBar;
     private Preferences mPrefs;
+    private ProgressBar mProgressBar;
 
     public static ExternalEventInfoFragment createInstance(Context context, ExternalEvent event) {
         Bundle bundle = new Bundle();
@@ -40,14 +45,14 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPrefs = new Preferences(activity);
+    public int getTitle() {
+        return R.string.event_external_info_nav_title;
     }
 
     @Override
-    public int getTitle() {
-        return R.string.event_external_info_nav_title;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mPrefs = new Preferences(activity);
     }
 
     @Override
@@ -74,11 +79,47 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
     private void beginLoad() {
         mAttendingButton.setEnabled(false);
-        mProgressBar.setIndeterminate(true);
-        mProgressBar.setVisibility(View.VISIBLE);
+        setProgressBarVisible(true);
+
+        Bundle args = getArguments();
+        int id = args.getInt(ExternalEvent.Keys.ID);
 
         String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         Repository repository = new Repository(username, serviceAuth);
+        repository.getExternalEventDetails(id, mRepositoryResultHandler);
+    }
 
+    private void setProgressBarVisible(boolean visible) {
+        mProgressBar.setIndeterminate(visible);
+        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private final class ExternalEventResultHandler implements RepositoryResultHandler<ExternalEvent.RepositoryData> {
+        @Override
+        public void onError(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null != activity && isVisible()) {
+                        setProgressBarVisible(false);
+                        Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onSuccess(ExternalEvent.RepositoryData repositoryData) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != getActivity() && isVisible()) {
+                        setProgressBarVisible(false);
+                    }
+                }
+            });
+        }
     }
 }

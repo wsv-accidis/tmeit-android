@@ -102,6 +102,7 @@ public final class Repository {
 
     private interface JsonKeys {
         String ATTENDEE = "attendee";
+        String ATTENDEES = "attendees";
         String ATTENDING = "attending";
         String DOB = "dob";
         String DRINK_PREFS = "drink_prefs";
@@ -137,8 +138,10 @@ public final class Repository {
         protected ExternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
             JSONObject jsonEvent = responseBody.getJSONObject(JsonKeys.EVENT);
             JSONObject jsonAttendee = responseBody.getJSONObject(JsonKeys.ATTENDEE);
-
-            return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent), ExternalEventAttendee.fromJson(jsonAttendee));
+            JSONArray jsonAttendees = responseBody.getJSONArray(JsonKeys.ATTENDEES);
+            return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent),
+                    ExternalEventAttendee.fromJson(jsonAttendee),
+                    ExternalEventAttendee.fromJsonArray(jsonAttendees));
         }
     }
 

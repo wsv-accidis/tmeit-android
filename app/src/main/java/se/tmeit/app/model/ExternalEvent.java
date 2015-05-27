@@ -1,6 +1,5 @@
 package se.tmeit.app.model;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +9,6 @@ import java.util.List;
  * Model object for external events.
  */
 public final class ExternalEvent {
-    private List<ExternalEventAttendee> mAttendees;
     private String mBody;
     private int mId;
     private boolean mIsAttending;
@@ -27,31 +25,14 @@ public final class ExternalEvent {
         event.setBody(obj.optString(Keys.BODY));
         event.setId(obj.getInt(Keys.ID));
         event.setIsAttending(obj.optBoolean(Keys.IS_ATTENDING));
-        event.setIsNearSignup(obj.getBoolean(Keys.IS_NEAR_SIGNUP));
+        event.setIsNearSignup(obj.optBoolean(Keys.IS_NEAR_SIGNUP));
         event.setIsPast(obj.getBoolean(Keys.IS_PAST));
         event.setIsPastSignup(obj.getBoolean(Keys.IS_PAST_SIGNUP));
         event.setLastSignupDate(obj.getString(Keys.LAST_SIGNUP));
-        event.setNumberOfAttendees(obj.getInt(Keys.ATTENDEES));
+        event.setNumberOfAttendees(obj.optInt(Keys.ATTENDEES));
         event.setStartDate(obj.getString(Keys.START_DATE));
         event.setTitle(obj.getString(Keys.TITLE));
-
-        JSONArray attendees = obj.optJSONArray(Keys.ATTENDEES);
-        if (null != attendees) {
-            event.setAttendees(ExternalEventAttendee.fromJsonArray(attendees));
-            event.setNumberOfAttendees(event.getAttendees().size());
-        } else {
-            event.setNumberOfAttendees(obj.getInt(Keys.ATTENDEES));
-        }
-
         return event;
-    }
-
-    public List<ExternalEventAttendee> getAttendees() {
-        return mAttendees;
-    }
-
-    public void setAttendees(List<ExternalEventAttendee> attendees) {
-        mAttendees = attendees;
     }
 
     public String getBody() {
@@ -151,20 +132,26 @@ public final class ExternalEvent {
     }
 
     public static class RepositoryData {
-        private final ExternalEvent mExternalEvent;
+        private final List<ExternalEventAttendee> mAttendees;
         private final ExternalEventAttendee mBlankAttendee;
+        private final ExternalEvent mExternalEvent;
 
-        public RepositoryData(ExternalEvent externalEvent, ExternalEventAttendee blankAttendee) {
+        public RepositoryData(ExternalEvent externalEvent, ExternalEventAttendee blankAttendee, List<ExternalEventAttendee> attendees) {
             mExternalEvent = externalEvent;
             mBlankAttendee = blankAttendee;
+            mAttendees = attendees;
         }
 
-        public ExternalEvent getExternalEvent() {
-            return mExternalEvent;
+        public List<ExternalEventAttendee> getAttendees() {
+            return mAttendees;
         }
 
         public ExternalEventAttendee getBlankAttendee() {
             return mBlankAttendee;
+        }
+
+        public ExternalEvent getExternalEvent() {
+            return mExternalEvent;
         }
     }
 }

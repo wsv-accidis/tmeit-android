@@ -128,6 +128,7 @@ public final class MainActivity extends AppCompatActivity {
                 showNoNetworkAlert(this);
             }
 
+            // TODO Perhaps we don't need to call this if we already did a few seconds ago (e.g. screen rotation)
             validateAndRegisterServicesIfNeeded();
         }
     }

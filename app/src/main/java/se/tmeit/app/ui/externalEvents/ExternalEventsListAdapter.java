@@ -59,6 +59,7 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         dateView.setText(event.getStartDate());
 
         TextView titleView = (TextView) view.findViewById(R.id.event_title);
+        titleView.setTextColor(mResources.getColor(event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
         titleView.setText(event.getTitle());
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventAttendingIcon(event), 0);
 
