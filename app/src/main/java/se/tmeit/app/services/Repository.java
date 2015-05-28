@@ -26,7 +26,6 @@ import se.tmeit.app.model.Member;
  * Downloads data entities from TMEIT web services.
  */
 public final class Repository {
-
     private static final String HEADER_SERVICE_AUTH = "X-TMEIT-Service-Auth";
     private static final String HEADER_USERNAME = "X-TMEIT-Username";
     private static final String TAG = Repository.class.getSimpleName();
@@ -71,22 +70,22 @@ public final class Repository {
         Map<Integer, String> result = new LinkedHashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            result.put(obj.getInt(JsonKeys.ID), obj.getString(JsonKeys.TITLE));
+            result.put(obj.getInt(Keys.ID), obj.getString(Keys.TITLE));
         }
         return result;
     }
 
     private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) throws JSONException {
         JSONObject json = new JSONObject();
-        json.put(JsonKeys.EVENT_ID, id);
+        json.put(Keys.EVENT_ID, id);
 
         if (null != attendee) {
             JSONObject attending = new JSONObject();
-            attending.put(JsonKeys.DOB, attendee.getDateOfBirth());
-            attending.put(JsonKeys.DRINK_PREFS, attendee.getDrinkPreferences());
-            attending.put(JsonKeys.FOOD_PREFS, attendee.getFoodPreferences());
-            attending.put(JsonKeys.NOTES, attendee.getNotes());
-            json.put(JsonKeys.ATTENDING, attending);
+            attending.put(Keys.DOB, attendee.getDateOfBirth());
+            attending.put(Keys.DRINK_PREFS, attendee.getDrinkPreferences());
+            attending.put(Keys.FOOD_PREFS, attendee.getFoodPreferences());
+            attending.put(Keys.NOTES, attendee.getNotes());
+            json.put(Keys.ATTENDING, attending);
         }
 
         return json.toString();
@@ -100,22 +99,25 @@ public final class Repository {
                 .get();
     }
 
-    private interface JsonKeys {
-        String ATTENDEE = "attendee";
-        String ATTENDEES = "attendees";
-        String ATTENDING = "attending";
-        String DOB = "dob";
-        String DRINK_PREFS = "drink_prefs";
-        String EVENT = "event";
-        String EVENT_ID = "event_id";
-        String FOOD_PREFS = "food_prefs";
-        String GROUPS = "groups";
-        String ID = "id";
-        String NOTES = "notes";
-        String TEAMS = "teams";
-        String TITLE = "title";
-        String TITLES = "titles";
-        String USERS = "users";
+    private static class Keys {
+        public static final String ATTENDEE = "attendee";
+        public static final String ATTENDEES = "attendees";
+        public static final String ATTENDING = "attending";
+        public static final String DOB = "dob";
+        public static final String DRINK_PREFS = "drink_prefs";
+        public static final String EVENT = "event";
+        public static final String EVENT_ID = "event_id";
+        public static final String FOOD_PREFS = "food_prefs";
+        public static final String GROUPS = "groups";
+        public static final String ID = "id";
+        public static final String NOTES = "notes";
+        public static final String TEAMS = "teams";
+        public static final String TITLE = "title";
+        public static final String TITLES = "titles";
+        public static final String USERS = "users";
+
+        private Keys() {
+        }
     }
 
     private final class AttendExternalEventCallback extends GetResultCallback<Void> {
@@ -136,9 +138,9 @@ public final class Repository {
 
         @Override
         protected ExternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-            JSONObject jsonEvent = responseBody.getJSONObject(JsonKeys.EVENT);
-            JSONObject jsonAttendee = responseBody.getJSONObject(JsonKeys.ATTENDEE);
-            JSONArray jsonAttendees = responseBody.getJSONArray(JsonKeys.ATTENDEES);
+            JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
+            JSONObject jsonAttendee = responseBody.getJSONObject(Keys.ATTENDEE);
+            JSONArray jsonAttendees = responseBody.getJSONArray(Keys.ATTENDEES);
             return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent),
                     ExternalEventAttendee.fromJson(jsonAttendee),
                     ExternalEventAttendee.fromJsonArray(jsonAttendees));
@@ -173,11 +175,11 @@ public final class Repository {
 
         @Override
         protected Member.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(JsonKeys.GROUPS));
-            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(JsonKeys.TEAMS));
-            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(JsonKeys.TITLES));
+            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(Keys.GROUPS));
+            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TEAMS));
+            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TITLES));
 
-            JSONArray jsonUsers = responseBody.getJSONArray(JsonKeys.USERS);
+            JSONArray jsonUsers = responseBody.getJSONArray(Keys.USERS);
 
             ArrayList<Member> members = new ArrayList<>();
             for (int i = 0; i < jsonUsers.length(); i++) {

@@ -15,6 +15,7 @@
     <string name="event_external_nav_title">Externa event</string>
     <string name="event_last_signup_date">Sista anmälan</string>
     <string name="event_last_signup_passed">Sista anmälan har varit</string>
+    <string name="event_more_information_at_url">Mer info på </string>
     <string name="event_not_attending">Inte anmäld</string>
 
     <string name="member_add_contact">Lägg till kontakt</string>

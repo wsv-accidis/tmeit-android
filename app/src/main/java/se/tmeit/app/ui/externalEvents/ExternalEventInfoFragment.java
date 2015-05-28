@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
@@ -26,11 +30,12 @@ import se.tmeit.app.ui.MainActivity;
 public final class ExternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
     private static final char FORMAT_SPACE = ' ';
     private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
-    private final ExternalEventResultHandler mRepositoryResultHandler = new ExternalEventResultHandler();
     private final Handler mHandler = new Handler();
+    private final ExternalEventResultHandler mRepositoryResultHandler = new ExternalEventResultHandler();
     private Button mAttendingButton;
     private Preferences mPrefs;
     private ProgressBar mProgressBar;
+    private View mDetailsLayout;
 
     public static ExternalEventInfoFragment createInstance(Context context, ExternalEvent event) {
         Bundle bundle = new Bundle();
@@ -71,6 +76,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
         mAttendingButton = (Button) view.findViewById(R.id.event_button_attending);
         mProgressBar = (ProgressBar) view.findViewById(R.id.event_progress_bar);
+        mDetailsLayout = view.findViewById(R.id.event_details_layout);
 
         beginLoad();
 
@@ -79,6 +85,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
     private void beginLoad() {
         mAttendingButton.setEnabled(false);
+        mDetailsLayout.setVisibility(View.GONE);
         setProgressBarVisible(true);
 
         Bundle args = getArguments();
@@ -87,6 +94,28 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
         Repository repository = new Repository(username, serviceAuth);
         repository.getExternalEventDetails(id, mRepositoryResultHandler);
+    }
+
+    private void finishLoad(ExternalEvent.RepositoryData repositoryData) {
+        View view = getView();
+        if (null == view) {
+            return;
+        }
+
+        ExternalEvent event = repositoryData.getExternalEvent();
+
+        TextView bodyText = (TextView) view.findViewById(R.id.event_body);
+        bodyText.setText(event.getBody());
+
+        TextView externalUrlText = (TextView) view.findViewById(R.id.event_external_url);
+        if(!TextUtils.isEmpty(event.getExternalUrl())) {
+            externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + event.getExternalUrl());
+            externalUrlText.setVisibility(View.VISIBLE);
+        } else {
+            externalUrlText.setVisibility(View.GONE);
+        }
+
+        mDetailsLayout.setVisibility(View.VISIBLE);
     }
 
     private void setProgressBarVisible(boolean visible) {
@@ -111,12 +140,13 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         }
 
         @Override
-        public void onSuccess(ExternalEvent.RepositoryData repositoryData) {
+        public void onSuccess(final ExternalEvent.RepositoryData repositoryData) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (null != getActivity() && isVisible()) {
                         setProgressBarVisible(false);
+                        finishLoad(repositoryData);
                     }
                 }
             });

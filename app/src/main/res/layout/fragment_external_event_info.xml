@@ -73,6 +73,38 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="25dp"
                 android:indeterminate="true"/>
+
+            <LinearLayout
+                android:id="@+id/event_details_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/event_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:autoLink="email|web"/>
+
+                <TextView
+                    android:id="@+id/event_external_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:autoLink="web"
+                    android:ellipsize="end"
+                    android:singleLine="true"/>
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

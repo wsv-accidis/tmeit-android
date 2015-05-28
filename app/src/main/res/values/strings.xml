@@ -17,6 +17,7 @@
     <string name="event_external_nav_title">External events</string>
     <string name="event_last_signup_date">Last signup</string>
     <string name="event_last_signup_passed">Last signup has passed</string>
+    <string name="event_more_information_at_url">More info at </string>
     <string name="event_not_attending">Not attending</string>
 
     <string name="member_add_contact">Add as contact</string>

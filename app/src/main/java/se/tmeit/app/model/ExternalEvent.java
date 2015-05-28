@@ -10,6 +10,7 @@ import java.util.List;
  */
 public final class ExternalEvent {
     private String mBody;
+    private String mExternalUrl;
     private int mId;
     private boolean mIsAttending;
     private boolean mIsNearSignup;
@@ -23,6 +24,7 @@ public final class ExternalEvent {
     public static ExternalEvent fromJson(JSONObject obj) throws JSONException {
         ExternalEvent event = new ExternalEvent();
         event.setBody(obj.optString(Keys.BODY));
+        event.setExternalUrl(obj.optString(Keys.EXTERNAL_URL));
         event.setId(obj.getInt(Keys.ID));
         event.setIsAttending(obj.optBoolean(Keys.IS_ATTENDING));
         event.setIsNearSignup(obj.optBoolean(Keys.IS_NEAR_SIGNUP));
@@ -41,6 +43,14 @@ public final class ExternalEvent {
 
     private void setBody(String body) {
         mBody = body;
+    }
+
+    public String getExternalUrl() {
+        return mExternalUrl;
+    }
+
+    private void setExternalUrl(String value) {
+        mExternalUrl = value;
     }
 
     public int getId() {
@@ -118,6 +128,7 @@ public final class ExternalEvent {
     public static class Keys {
         public static final String ATTENDEES = "attendees";
         public static final String BODY = "body";
+        public static final String EXTERNAL_URL = "external_url";
         public static final String ID = "id";
         public static final String IS_ATTENDING = "is_attending";
         public static final String IS_NEAR_SIGNUP = "is_near_signup";
