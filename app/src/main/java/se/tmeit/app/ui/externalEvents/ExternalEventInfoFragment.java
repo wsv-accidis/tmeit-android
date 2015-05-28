@@ -6,19 +6,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import java.util.List;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
+import se.tmeit.app.model.ExternalEventAttendee;
 import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.storage.Preferences;
@@ -108,14 +109,57 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         bodyText.setText(event.getBody());
 
         TextView externalUrlText = (TextView) view.findViewById(R.id.event_external_url);
-        if(!TextUtils.isEmpty(event.getExternalUrl())) {
+        if (!TextUtils.isEmpty(event.getExternalUrl())) {
             externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + event.getExternalUrl());
             externalUrlText.setVisibility(View.VISIBLE);
         } else {
             externalUrlText.setVisibility(View.GONE);
         }
 
+        List<ExternalEventAttendee> attendees = repositoryData.getAttendees();
+        LinearLayout attendeeListView = (LinearLayout) view.findViewById(R.id.event_attendees);
+        View noAttendeesText = view.findViewById(R.id.event_no_attendees);
+        if (null != attendees && !attendees.isEmpty()) {
+            noAttendeesText.setVisibility(View.GONE);
+            initializeListOfAttendees(attendeeListView, attendees);
+        } else {
+            attendeeListView.setVisibility(View.GONE);
+            noAttendeesText.setVisibility(View.VISIBLE);
+        }
+
         mDetailsLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void initializeListOfAttendees(LinearLayout attendeeListView, List<ExternalEventAttendee> attendees) {
+        attendeeListView.removeAllViews();
+
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        for (ExternalEventAttendee attendee : attendees) {
+            TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, null);
+
+            StringBuilder builder = new StringBuilder();
+            builder.append(attendee.getName());
+
+            boolean hasDrinkPrefs = !TextUtils.isEmpty(attendee.getDrinkPreferences()),
+                    hasFoodPrefs = !TextUtils.isEmpty(attendee.getFoodPreferences());
+
+            if (hasDrinkPrefs || hasFoodPrefs) {
+                builder.append(" (");
+                if (hasDrinkPrefs) {
+                    builder.append(attendee.getDrinkPreferences());
+                    if (hasFoodPrefs) {
+                        builder.append(", ");
+                    }
+                }
+                if (hasFoodPrefs) {
+                    builder.append(attendee.getFoodPreferences());
+                }
+                builder.append(")");
+            }
+
+            view.setText(builder.toString());
+            attendeeListView.addView(view);
+        }
     }
 
     private void setProgressBarVisible(boolean visible) {

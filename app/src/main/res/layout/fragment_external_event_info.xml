@@ -13,7 +13,8 @@
         android:paddingBottom="@dimen/button_bar_vertical_margin"
         android:paddingLeft="@dimen/button_bar_horizontal_margin"
         android:paddingRight="@dimen/button_bar_horizontal_margin"
-        android:paddingTop="@dimen/button_bar_vertical_margin">
+        android:paddingTop="@dimen/button_bar_vertical_margin"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/event_button_attending"
@@ -79,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <View
                     style="@style/Divider"
@@ -104,6 +105,30 @@
                 <View
                     style="@style/Divider"
                     android:layout_marginTop="10dp"/>
+
+                <TextView
+                    style="@style/EventInfoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/ic_group"
+                    android:drawablePadding="8dp"
+                    android:text="@string/event_attendees_title"/>
+
+                <TextView
+                    android:id="@+id/event_no_attendees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/event_no_attendees_yet"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/event_attendees"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
