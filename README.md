@@ -10,8 +10,9 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.2 has been published to Google Play. This version adds a list of members with filtering
-and quick actions for calling, sending messages or e-mail.
+Version 1.3 has been published to Google Play. In addition to some fixes and general improvements,
+this version adds a full-screen gallery for viewing a member's images and the ability to list and
+view external events.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended
