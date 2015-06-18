@@ -14,13 +14,19 @@
     <string name="event_attendees">attendees</string>
     <string name="event_attendees_title">Attendees</string>
     <string name="event_attending">Attending</string>
+    <string name="event_date_of_birth">Date of birth (YYYY-MM-DD)</string>
+    <string name="event_delete">Delete</string>
+    <string name="event_drink_prefs">Drink preferences</string>
     <string name="event_external_info_nav_title">Event</string>
     <string name="event_external_nav_title">External events</string>
+    <string name="event_food_prefs">Food preferences</string>
     <string name="event_last_signup_date">Last signup</string>
     <string name="event_last_signup_passed">Last signup has passed</string>
     <string name="event_more_information_at_url">More info at </string>
     <string name="event_no_attendees_yet">Nobody is attending.</string>
     <string name="event_not_attending">Not attending</string>
+    <string name="event_notes">Notes (only visible to masters)</string>
+    <string name="event_save">Save</string>
 
     <string name="member_add_contact">Add as contact</string>
     <string name="member_call">Call</string>

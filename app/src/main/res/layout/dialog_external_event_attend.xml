@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/event_attending_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:inputType="none"
+        android:singleLine="true"
+        tools:ignore="Deprecated"/>
+
+    <EditText
+        android:id="@+id/event_attending_dob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/event_date_of_birth"
+        android:inputType="date"
+        android:singleLine="true"/>
+
+    <EditText
+        android:id="@+id/event_attending_food_prefs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/event_food_prefs"
+        android:inputType="text|textAutoCorrect"
+        android:singleLine="true"/>
+
+    <EditText
+        android:id="@+id/event_attending_drink_prefs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/event_drink_prefs"
+        android:inputType="text|textAutoCorrect"
+        android:singleLine="true"/>
+
+    <EditText
+        android:id="@+id/event_attending_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/event_notes"
+        android:inputType="text|textAutoCorrect|textMultiLine"
+        android:singleLine="false"/>
+</LinearLayout>

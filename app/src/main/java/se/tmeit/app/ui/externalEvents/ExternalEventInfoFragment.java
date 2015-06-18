@@ -31,12 +31,15 @@ import se.tmeit.app.ui.MainActivity;
 public final class ExternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
     private static final char FORMAT_SPACE = ' ';
     private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
+    private final AttendingButtonClickListener mAttendingClickedListener = new AttendingButtonClickListener();
     private final Handler mHandler = new Handler();
     private final ExternalEventResultHandler mRepositoryResultHandler = new ExternalEventResultHandler();
     private Button mAttendingButton;
+    private ExternalEventAttendee mCurrentAttendee;
+    private View mDetailsLayout;
+    private ExternalEvent mEvent;
     private Preferences mPrefs;
     private ProgressBar mProgressBar;
-    private View mDetailsLayout;
 
     public static ExternalEventInfoFragment createInstance(Context context, ExternalEvent event) {
         Bundle bundle = new Bundle();
@@ -85,7 +88,6 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     }
 
     private void beginLoad() {
-        mAttendingButton.setEnabled(false);
         mDetailsLayout.setVisibility(View.GONE);
         setProgressBarVisible(true);
 
@@ -103,15 +105,16 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
             return;
         }
 
-        ExternalEvent event = repositoryData.getExternalEvent();
-        event.setIsAttending(repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId()));
+        mEvent = repositoryData.getExternalEvent();
+        mCurrentAttendee = repositoryData.getCurrentAttendee();
+        mEvent.setIsAttending(repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId()));
 
         TextView bodyText = (TextView) view.findViewById(R.id.event_body);
-        bodyText.setText(event.getBody());
+        bodyText.setText(mEvent.getBody());
 
         TextView externalUrlText = (TextView) view.findViewById(R.id.event_external_url);
-        if (!TextUtils.isEmpty(event.getExternalUrl())) {
-            externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + event.getExternalUrl());
+        if (!TextUtils.isEmpty(mEvent.getExternalUrl())) {
+            externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + mEvent.getExternalUrl());
             externalUrlText.setVisibility(View.VISIBLE);
         } else {
             externalUrlText.setVisibility(View.GONE);
@@ -128,10 +131,10 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
             noAttendeesText.setVisibility(View.VISIBLE);
         }
 
-        Button attendingButton = (Button) view.findViewById(R.id.event_button_attending);
-        attendingButton.setText(event.isAttending() ? R.string.event_attending : R.string.event_not_attending);
-        attendingButton.setEnabled(!event.isPastSignup());
-        attendingButton.setVisibility(View.VISIBLE);
+        mAttendingButton.setOnClickListener(mAttendingClickedListener);
+        mAttendingButton.setText(mEvent.isAttending() ? R.string.event_attending : R.string.event_not_attending);
+        mAttendingButton.setEnabled(!mEvent.isPastSignup());
+        mAttendingButton.setVisibility(View.VISIBLE);
 
         mDetailsLayout.setVisibility(View.VISIBLE);
     }
@@ -171,6 +174,23 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     private void setProgressBarVisible(boolean visible) {
         mProgressBar.setIndeterminate(visible);
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private final class AttendingButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Bundle args = new Bundle();
+            args.putBoolean(ExternalEvent.Keys.IS_ATTENDING, mEvent.isAttending());
+            args.putString(ExternalEventAttendee.Keys.NAME, mCurrentAttendee.getName());
+            args.putString(ExternalEventAttendee.Keys.DOB, mCurrentAttendee.getDateOfBirth());
+            args.putString(ExternalEventAttendee.Keys.DRINK_PREFS, mCurrentAttendee.getDrinkPreferences());
+            args.putString(ExternalEventAttendee.Keys.FOOD_PREFS, mCurrentAttendee.getFoodPreferences());
+            args.putString(ExternalEventAttendee.Keys.NOTES, mCurrentAttendee.getNotes());
+
+            ExternalEventAttendDialogFragment dialog = new ExternalEventAttendDialogFragment();
+            dialog.setArguments(args);
+            dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
+        }
     }
 
     private final class ExternalEventResultHandler implements RepositoryResultHandler<ExternalEvent.RepositoryData> {
