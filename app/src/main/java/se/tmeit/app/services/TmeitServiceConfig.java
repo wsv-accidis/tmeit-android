@@ -25,6 +25,7 @@ public final class TmeitServiceConfig {
     public static final String SERVICE_AUTH_KEY = "serviceAuth";
     public static final String SUCCESS_KEY = "success";
     public static final String USERNAME_KEY = "username";
+    public static final String USER_ID_KEY = "id";
 
     private TmeitServiceConfig() {
     }

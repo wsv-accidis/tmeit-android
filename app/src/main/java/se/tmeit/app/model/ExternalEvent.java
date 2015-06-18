@@ -109,7 +109,7 @@ public final class ExternalEvent {
         return mIsPastSignup;
     }
 
-    private void setIsAttending(boolean value) {
+    public void setIsAttending(boolean value) {
         mIsAttending = value;
     }
 
@@ -163,6 +163,16 @@ public final class ExternalEvent {
 
         public ExternalEvent getExternalEvent() {
             return mExternalEvent;
+        }
+
+        public boolean isUserAttending(int userId) {
+            for (ExternalEventAttendee attendee : mAttendees) {
+                if (userId == attendee.getId()) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

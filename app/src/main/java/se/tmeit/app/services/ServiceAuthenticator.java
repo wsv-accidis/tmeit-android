@@ -125,7 +125,8 @@ public final class ServiceAuthenticator {
                 Log.e(TAG, "Got empty response from authentication request.");
                 mResultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
             } else if (HttpStatus.SC_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
-                mResultHandler.onSuccess(mServiceAuth, mUsername);
+                int userId = responseBody.optInt(TmeitServiceConfig.USER_ID_KEY);
+                mResultHandler.onSuccess(mServiceAuth, mUsername, userId);
             } else if (HttpStatus.SC_FORBIDDEN == response.code()) {
                 mResultHandler.onAuthenticationError(R.string.auth_error_code_denied);
             } else {

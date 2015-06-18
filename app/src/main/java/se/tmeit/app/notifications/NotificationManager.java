@@ -79,7 +79,7 @@ public final class NotificationManager {
         Calendar lastNotif = getTimeOfLatestNotification();
         Response response;
         try {
-            String json = createJsonForGetNotifications(mPrefs.getAuthenticatedUser(), mPrefs.getServiceAuthentication(), lastNotif, MAX_COUNT);
+            String json = createJsonForGetNotifications(mPrefs.getAuthenticatedUserName(), mPrefs.getServiceAuthentication(), lastNotif, MAX_COUNT);
 
             Request request = new Request.Builder()
                     .url(TmeitServiceConfig.SERVICE_BASE_URL + "GetNotifications.php")

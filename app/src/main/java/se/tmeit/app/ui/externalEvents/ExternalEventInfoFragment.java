@@ -92,7 +92,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         Bundle args = getArguments();
         int id = args.getInt(ExternalEvent.Keys.ID);
 
-        String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
+        String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
         Repository repository = new Repository(username, serviceAuth);
         repository.getExternalEventDetails(id, mRepositoryResultHandler);
     }
@@ -104,6 +104,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         }
 
         ExternalEvent event = repositoryData.getExternalEvent();
+        event.setIsAttending(repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId()));
 
         TextView bodyText = (TextView) view.findViewById(R.id.event_body);
         bodyText.setText(event.getBody());
@@ -126,6 +127,11 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
             attendeeListView.setVisibility(View.GONE);
             noAttendeesText.setVisibility(View.VISIBLE);
         }
+
+        Button attendingButton = (Button) view.findViewById(R.id.event_button_attending);
+        attendingButton.setText(event.isAttending() ? R.string.event_attending : R.string.event_not_attending);
+        attendingButton.setEnabled(!event.isPastSignup());
+        attendingButton.setVisibility(View.VISIBLE);
 
         mDetailsLayout.setVisibility(View.VISIBLE);
     }

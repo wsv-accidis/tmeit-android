@@ -40,7 +40,7 @@ public abstract class ListFragmentBase extends ListFragment implements MainActiv
         super.onResume();
 
         if (!mIsLoaded) {
-            String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
+            String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
             getDataFromRepository(new Repository(username, serviceAuth));
         } else {
             initializeList();

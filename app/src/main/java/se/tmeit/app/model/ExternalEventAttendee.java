@@ -16,6 +16,7 @@ public final class ExternalEventAttendee {
     private String mFoodPrefs;
     private String mName;
     private String mNotes;
+    private int mId;
 
     public static ExternalEventAttendee fromJson(JSONObject json) {
         ExternalEventAttendee attendee = new ExternalEventAttendee();
@@ -24,6 +25,7 @@ public final class ExternalEventAttendee {
         attendee.setFoodPreferences(json.optString(Keys.FOOD_PREFS));
         attendee.setName(json.optString(Keys.NAME));
         attendee.setNotes(json.optString(Keys.NOTES));
+        attendee.setId(json.optInt(Keys.ID));
         return attendee;
     }
 
@@ -76,10 +78,19 @@ public final class ExternalEventAttendee {
         mNotes = notes;
     }
 
+    public int getId() {
+        return mId;
+    }
+
+    private void setId(int id) {
+        mId = id;
+    }
+
     public static class Keys {
         public static final String DOB = "dob";
         public static final String DRINK_PREFS = "drink_prefs";
         public static final String FOOD_PREFS = "food_prefs";
+        public static final String ID = "id";
         public static final String NAME = "user_name";
         public static final String NOTES = "notes";
 

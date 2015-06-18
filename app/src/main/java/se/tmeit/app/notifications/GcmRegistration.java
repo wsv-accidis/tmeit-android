@@ -141,7 +141,7 @@ public final class GcmRegistration {
 
             boolean tmeitSuccessful;
             try {
-                String authenticatedUser = mPrefs.getAuthenticatedUser();
+                String authenticatedUser = mPrefs.getAuthenticatedUserName();
                 String serviceAuth = mPrefs.getServiceAuthentication();
                 tmeitSuccessful = mTmeit.registerGcm(registrationId, serviceAuth, authenticatedUser);
             } catch (Exception ex) {
@@ -236,7 +236,7 @@ public final class GcmRegistration {
 
             boolean tmeitSuccessful;
             try {
-                String authenticatedUser = mPrefs.getAuthenticatedUser();
+                String authenticatedUser = mPrefs.getAuthenticatedUserName();
                 String serviceAuth = mPrefs.getServiceAuthentication();
                 tmeitSuccessful = mTmeit.unregisterGcm(registrationId, serviceAuth, authenticatedUser);
             } catch (Exception ex) {

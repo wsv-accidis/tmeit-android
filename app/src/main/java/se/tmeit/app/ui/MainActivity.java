@@ -68,7 +68,7 @@ public final class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
         if (addToBackStack) {
             transaction.addToBackStack(null);
@@ -197,7 +197,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void validateAndRegisterServicesIfNeeded() {
-        String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
+        String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
         ServiceAuthenticator authenticator = new ServiceAuthenticator();
         authenticator.authenticateFromCredentials(username, serviceAuth, new MainAuthenticationResultHandler());
     }
@@ -235,7 +235,10 @@ public final class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(String serviceAuth, String authenticatedUser) {
+        public void onSuccess(String serviceAuth, String userName, int userId) {
+            mPrefs.setServiceAuthentication(serviceAuth);
+            mPrefs.setAuthenticatedUser(userName, userId);
+
             GcmRegistration.getInstance(MainActivity.this)
                     .registerIfRegistrationExpired(new RegistrationResultHandler());
         }

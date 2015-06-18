@@ -10,5 +10,5 @@ public interface AuthenticationResultHandler {
 
     void onProtocolError(int errorMessage);
 
-    void onSuccess(String serviceAuth, String authenticatedUser);
+    void onSuccess(String serviceAuth, String userName, int userId);
 }

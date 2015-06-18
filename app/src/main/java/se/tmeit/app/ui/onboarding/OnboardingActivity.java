@@ -88,14 +88,14 @@ public final class OnboardingActivity extends FragmentActivity {
         }
 
         @Override
-        public void onSuccess(String serviceAuth, String authenticatedUser) {
+        public void onSuccess(String serviceAuth, String userName, int userId) {
             if (mAbandoned) {
                 return;
             }
 
-            Log.i(TAG, "Completed onboarding flow. Authenticated user = " + authenticatedUser);
+            Log.i(TAG, "Completed onboarding flow. Authenticated user name = " + userName + ", id = " + userId);
             mPrefs.setServiceAuthentication(serviceAuth);
-            mPrefs.setAuthenticatedUser(authenticatedUser);
+            mPrefs.setAuthenticatedUser(userName, userId);
 
             mHandler.post(new Runnable() {
                 @Override

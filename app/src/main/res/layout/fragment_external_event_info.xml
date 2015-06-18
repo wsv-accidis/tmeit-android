@@ -13,8 +13,7 @@
         android:paddingBottom="@dimen/button_bar_vertical_margin"
         android:paddingLeft="@dimen/button_bar_horizontal_margin"
         android:paddingRight="@dimen/button_bar_horizontal_margin"
-        android:paddingTop="@dimen/button_bar_vertical_margin"
-        android:visibility="gone">
+        android:paddingTop="@dimen/button_bar_vertical_margin">
 
         <Button
             android:id="@+id/event_button_attending"
@@ -25,7 +24,9 @@
             android:layout_marginRight="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_check_circle"
-            android:text="@string/event_attending"/>
+            android:text="@string/event_not_attending"
+            android:enabled="false"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ScrollView
