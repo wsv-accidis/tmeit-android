@@ -33,6 +33,8 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
     private final AttendingButtonClickListener mAttendingClickedListener = new AttendingButtonClickListener();
     private final Handler mHandler = new Handler();
+    private final AttendingResultHandler mAttendingResultHandler = new AttendingResultHandler();
+    private final AttendingDialogListener mAttendingDialogListener = new AttendingDialogListener();
     private final ExternalEventResultHandler mRepositoryResultHandler = new ExternalEventResultHandler();
     private Button mAttendingButton;
     private ExternalEventAttendee mCurrentAttendee;
@@ -40,6 +42,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     private ExternalEvent mEvent;
     private Preferences mPrefs;
     private ProgressBar mProgressBar;
+    private Repository mRepository;
 
     public static ExternalEventInfoFragment createInstance(Context context, ExternalEvent event) {
         Bundle bundle = new Bundle();
@@ -95,8 +98,8 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         int id = args.getInt(ExternalEvent.Keys.ID);
 
         String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
-        Repository repository = new Repository(username, serviceAuth);
-        repository.getExternalEventDetails(id, mRepositoryResultHandler);
+        mRepository = new Repository(username, serviceAuth);
+        mRepository.getExternalEventDetails(id, mRepositoryResultHandler);
     }
 
     private void finishLoad(ExternalEvent.RepositoryData repositoryData) {
@@ -189,7 +192,32 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
             ExternalEventAttendDialogFragment dialog = new ExternalEventAttendDialogFragment();
             dialog.setArguments(args);
+            dialog.setListener(mAttendingDialogListener);
             dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
+        }
+    }
+
+    private final class AttendingDialogListener implements ExternalEventAttendDialogFragment.ExternalEventAttendDialogListener {
+        @Override
+        public void deleteClicked() {
+            mRepository.attendExternalEvent(mEvent.getId(), null, mAttendingResultHandler);
+        }
+
+        @Override
+        public void saveClicked(ExternalEventAttendee attendee) {
+            mRepository.attendExternalEvent(mEvent.getId(), attendee, mAttendingResultHandler);
+        }
+    }
+
+    private final class AttendingResultHandler implements RepositoryResultHandler<Void> {
+        @Override
+        public void onError(int errorMessage) {
+
+        }
+
+        @Override
+        public void onSuccess(Void aVoid) {
+
         }
     }
 

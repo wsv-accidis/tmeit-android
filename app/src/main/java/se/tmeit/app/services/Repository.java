@@ -77,6 +77,8 @@ public final class Repository {
 
     private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) throws JSONException {
         JSONObject json = new JSONObject();
+        json.put(TmeitServiceConfig.USERNAME_KEY, mUsername);
+        json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, mServiceAuth);
         json.put(Keys.EVENT_ID, id);
 
         if (null != attendee) {
@@ -95,8 +97,7 @@ public final class Repository {
         return new Request.Builder()
                 .url(TmeitServiceConfig.SERVICE_BASE_URL + relativeUrl)
                 .addHeader(HEADER_USERNAME, mUsername)
-                .addHeader(HEADER_SERVICE_AUTH, mServiceAuth)
-                .get();
+                .addHeader(HEADER_SERVICE_AUTH, mServiceAuth);
     }
 
     private static class Keys {

@@ -13,6 +13,7 @@
     <string name="event_attendees_title">Deltagare</string>
     <string name="event_attending">Anmäld</string>
     <string name="event_date_of_birth">Födelsedatum (YYYY-MM-DD)</string>
+    <string name="event_delete">Ta bort</string>
     <string name="event_drink_prefs">Dryckespreferenser</string>
     <string name="event_external_info_nav_title">Event</string>
     <string name="event_external_nav_title">Externa event</string>
@@ -23,6 +24,7 @@
     <string name="event_no_attendees_yet">Ingen är anmäld.</string>
     <string name="event_not_attending">Inte anmäld</string>
     <string name="event_notes">Övrigt (bara synligt för mästare)</string>
+    <string name="event_save">Spara</string>
 
     <string name="member_add_contact">Lägg till kontakt</string>
     <string name="member_call">Ring</string>
