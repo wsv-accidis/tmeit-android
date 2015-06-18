@@ -18,11 +18,11 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -96,7 +96,7 @@ public final class NotificationManager {
 
         if (null == responseBody) {
             Log.e(TAG, "Got empty response from notifications request.");
-        } else if (HttpStatus.SC_OK == response.code()) {
+        } else if (HttpURLConnection.HTTP_OK == response.code()) {
             handleNotifications(responseBody.optJSONArray(NOTIFICATIONS));
         } else {
             String errorMessage = TmeitServiceConfig.getErrorMessage(responseBody);

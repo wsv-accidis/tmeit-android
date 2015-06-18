@@ -8,11 +8,11 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import se.tmeit.app.R;
 
@@ -124,10 +124,10 @@ public final class ServiceAuthenticator {
             if (null == responseBody) {
                 Log.e(TAG, "Got empty response from authentication request.");
                 mResultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
-            } else if (HttpStatus.SC_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
+            } else if (HttpURLConnection.HTTP_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
                 int userId = responseBody.optInt(TmeitServiceConfig.USER_ID_KEY);
                 mResultHandler.onSuccess(mServiceAuth, mUsername, userId);
-            } else if (HttpStatus.SC_FORBIDDEN == response.code()) {
+            } else if (HttpURLConnection.HTTP_FORBIDDEN == response.code()) {
                 mResultHandler.onAuthenticationError(R.string.auth_error_code_denied);
             } else {
                 String errorMessage = TmeitServiceConfig.getErrorMessage(responseBody);

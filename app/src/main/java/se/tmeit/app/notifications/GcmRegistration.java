@@ -11,11 +11,11 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import se.tmeit.app.R;
 import se.tmeit.app.services.TmeitHttpClient;
@@ -104,12 +104,12 @@ public final class GcmRegistration {
         return true;
     }
 
-    public static interface RegistrationResultHandler {
-        public void onError(int errorMessage);
+    public interface RegistrationResultHandler {
+        void onError(int errorMessage);
 
-        public void onGoogleServicesError(int resultCode, boolean canRecover);
+        void onGoogleServicesError(int resultCode, boolean canRecover);
 
-        public void onSuccess();
+        void onSuccess();
     }
 
     private final class RegisterTask extends AsyncTask<Void, Void, Void> {
@@ -199,7 +199,7 @@ public final class GcmRegistration {
             if (null == responseBody) {
                 Log.e(TAG, "Got empty response from registration request.");
                 return false;
-            } else if (HttpStatus.SC_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
+            } else if (HttpURLConnection.HTTP_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
                 return true;
             } else {
                 String errorMessage = TmeitServiceConfig.getErrorMessage(responseBody);
