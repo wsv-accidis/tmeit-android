@@ -85,13 +85,12 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         mProgressBar = (ProgressBar) view.findViewById(R.id.event_progress_bar);
         mDetailsLayout = view.findViewById(R.id.event_details_layout);
 
-        beginLoad();
+        beginLoad(false);
 
         return view;
     }
 
-    private void beginLoad() {
-        mDetailsLayout.setVisibility(View.GONE);
+    private void beginLoad(boolean noCache) {
         setProgressBarVisible(true);
 
         Bundle args = getArguments();
@@ -99,7 +98,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
         String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
         mRepository = new Repository(username, serviceAuth);
-        mRepository.getExternalEventDetails(id, mRepositoryResultHandler);
+        mRepository.getExternalEventDetails(id, noCache, mRepositoryResultHandler);
     }
 
     private void finishLoad(ExternalEvent.RepositoryData repositoryData) {
@@ -175,6 +174,11 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     }
 
     private void setProgressBarVisible(boolean visible) {
+        if(visible) {
+            mDetailsLayout.setVisibility(View.GONE);
+            mAttendingButton.setVisibility(View.GONE);
+        }
+
         mProgressBar.setIndeterminate(visible);
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
@@ -200,24 +204,42 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     private final class AttendingDialogListener implements ExternalEventAttendDialogFragment.ExternalEventAttendDialogListener {
         @Override
         public void deleteClicked() {
+            setProgressBarVisible(true);
             mRepository.attendExternalEvent(mEvent.getId(), null, mAttendingResultHandler);
         }
 
         @Override
         public void saveClicked(ExternalEventAttendee attendee) {
+            setProgressBarVisible(true);
             mRepository.attendExternalEvent(mEvent.getId(), attendee, mAttendingResultHandler);
         }
     }
 
     private final class AttendingResultHandler implements RepositoryResultHandler<Void> {
         @Override
-        public void onError(int errorMessage) {
-
+        public void onError(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null != activity && isVisible()) {
+                        Toast toast = Toast.makeText(getActivity(), getString(errorMessage), Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
+            });
         }
 
         @Override
         public void onSuccess(Void aVoid) {
-
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != getActivity() && isVisible()) {
+                        beginLoad(true);
+                    }
+                }
+            });
         }
     }
 

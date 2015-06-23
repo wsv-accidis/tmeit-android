@@ -2,6 +2,7 @@ package se.tmeit.app.services;
 
 import android.util.Log;
 
+import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -51,9 +52,12 @@ public final class Repository {
         }
     }
 
-    public void getExternalEventDetails(int id, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
-        Request request = getRequestBuilder("GetExternalEventDetails.php/" + id).build();
-        TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventDetailsCallback(resultHandler));
+    public void getExternalEventDetails(int id, boolean noCache, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
+        Request.Builder requestBuilder = getRequestBuilder("GetExternalEventDetails.php/" + id);
+        if(noCache) {
+            requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
+        }
+        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventDetailsCallback(resultHandler));
     }
 
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
