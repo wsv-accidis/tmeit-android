@@ -64,7 +64,7 @@ public final class ExternalEventsListFragment extends ListFragmentBase {
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (position < mListAdapter.getCount()) {
             ExternalEvent externalEvent = (ExternalEvent) mListAdapter.getItem(position);
-            Fragment eventInfoFragment = ExternalEventInfoFragment.createInstance(getActivity(), externalEvent);
+            Fragment eventInfoFragment = ExternalEventInfoFragment.createInstance(externalEvent);
             Activity activity = getActivity();
             if (activity instanceof MainActivity) {
                 saveInstanceState();

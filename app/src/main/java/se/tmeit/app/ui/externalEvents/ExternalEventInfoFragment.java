@@ -44,7 +44,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     private ProgressBar mProgressBar;
     private Repository mRepository;
 
-    public static ExternalEventInfoFragment createInstance(Context context, ExternalEvent event) {
+    public static ExternalEventInfoFragment createInstance(ExternalEvent event) {
         Bundle bundle = new Bundle();
         bundle.putInt(ExternalEvent.Keys.ID, event.getId());
         bundle.putString(ExternalEvent.Keys.TITLE, event.getTitle());
