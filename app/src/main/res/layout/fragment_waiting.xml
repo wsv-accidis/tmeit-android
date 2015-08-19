@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_insektionen"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    tools:context=".onboarding.WaitingFragment">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/bg_insektionen"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             tools:context=".onboarding.WaitingFragment">
 
     <LinearLayout
         android:id="@+id/onboarding_waiting_layout"
@@ -20,14 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminate="true" />
+            android:indeterminate="true"/>
 
         <TextView
             style="@style/OnboardingLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/onboarding_authenticating_please_wait" />
+            android:text="@string/onboarding_authenticating_please_wait"/>
     </LinearLayout>
 
     <LinearLayout
@@ -43,7 +43,7 @@
             style="@style/OnboardingLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:gravity="center"/>
 
         <Button
             android:id="@+id/onboarding_try_again_button"
@@ -51,6 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="@string/onboarding_lets_try_that_again" />
+            android:text="@string/onboarding_lets_try_that_again"/>
     </LinearLayout>
 </FrameLayout>

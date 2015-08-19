@@ -24,8 +24,8 @@
             android:layout_marginRight="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_check_circle"
-            android:text="@string/event_not_attending"
             android:enabled="false"
+            android:text="@string/event_not_attending"
             android:visibility="gone"/>
     </LinearLayout>
 
