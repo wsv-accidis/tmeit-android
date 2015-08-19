@@ -2,6 +2,7 @@ package se.tmeit.app.ui.externalEvents;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,8 @@ import se.tmeit.app.model.ExternalEvent;
  * List adapter for external events list.
  */
 public final class ExternalEventsListAdapter extends BaseAdapter {
-    private static final char FORMAT_SPACE = ' ';
     private static final String FORMAT_SEPARATOR = " - ";
+    private static final char FORMAT_SPACE = ' ';
     private final List<ExternalEvent> mExternalEvents;
     private final LayoutInflater mInflater;
     private final Resources mResources;
@@ -59,7 +60,7 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         dateView.setText(event.getStartDate());
 
         TextView titleView = (TextView) view.findViewById(R.id.event_title);
-        titleView.setTextColor(mResources.getColor(event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
+        titleView.setTextColor(getColor(event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
         titleView.setText(event.getTitle());
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventAttendingIcon(event), 0);
 
@@ -70,15 +71,12 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         return view;
     }
 
-    private static int getEventSignupIcon(ExternalEvent event) {
-        if (event.isPast()) {
-            return 0;
-        } else if (event.isPastSignup()) {
-            return R.drawable.ic_error_red_small;
-        } else if (event.isNearSignup()) {
-            return R.drawable.ic_warning_amber_small;
+    private int getColor(int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return mResources.getColor(resId, null);
         } else {
-            return 0;
+            //noinspection deprecation
+            return mResources.getColor(resId);
         }
     }
 
@@ -106,5 +104,17 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         }
 
         return builder.toString();
+    }
+
+    private static int getEventSignupIcon(ExternalEvent event) {
+        if (event.isPast()) {
+            return 0;
+        } else if (event.isPastSignup()) {
+            return R.drawable.ic_error_red_small;
+        } else if (event.isNearSignup()) {
+            return R.drawable.ic_warning_amber_small;
+        } else {
+            return 0;
+        }
     }
 }

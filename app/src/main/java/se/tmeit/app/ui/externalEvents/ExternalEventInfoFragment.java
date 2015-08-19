@@ -62,9 +62,9 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPrefs = new Preferences(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mPrefs = new Preferences(context);
     }
 
     @Override

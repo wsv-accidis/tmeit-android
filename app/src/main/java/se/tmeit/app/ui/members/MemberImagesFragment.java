@@ -39,9 +39,9 @@ public final class MemberImagesFragment extends Fragment implements MainActivity
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mFaceHelper = MemberFaceHelper.getInstance(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mFaceHelper = MemberFaceHelper.getInstance(context);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package se.tmeit.app.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -30,9 +31,9 @@ public abstract class ListFragmentBase extends ListFragment implements MainActiv
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPrefs = new Preferences(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mPrefs = new Preferences(context);
     }
 
     @Override
