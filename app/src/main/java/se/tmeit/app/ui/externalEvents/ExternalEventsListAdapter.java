@@ -3,6 +3,7 @@ package se.tmeit.app.ui.externalEvents;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,12 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
     private static final char FORMAT_SPACE = ' ';
     private final List<ExternalEvent> mExternalEvents;
     private final LayoutInflater mInflater;
-    private final Resources mResources;
+    private final Context mContext;
 
     public ExternalEventsListAdapter(Context context, List<ExternalEvent> externalEvents) {
         mExternalEvents = externalEvents;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mResources = context.getResources();
+        mContext = context;
     }
 
     @Override
@@ -60,7 +61,7 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         dateView.setText(event.getStartDate());
 
         TextView titleView = (TextView) view.findViewById(R.id.event_title);
-        titleView.setTextColor(getColor(event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
+        titleView.setTextColor(ContextCompat.getColor(mContext, event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
         titleView.setText(event.getTitle());
         titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventAttendingIcon(event), 0);
 
@@ -71,15 +72,6 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         return view;
     }
 
-    private int getColor(int resId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return mResources.getColor(resId, null);
-        } else {
-            //noinspection deprecation
-            return mResources.getColor(resId);
-        }
-    }
-
     private static int getEventAttendingIcon(ExternalEvent event) {
         return event.isAttending() ? R.drawable.ic_check_circle : 0;
     }
@@ -88,9 +80,9 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         StringBuilder builder = new StringBuilder();
 
         if (event.isPastSignup()) {
-            builder.append(mResources.getString(R.string.event_last_signup_passed));
+            builder.append(mContext.getString(R.string.event_last_signup_passed));
         } else {
-            builder.append(mResources.getString(R.string.event_last_signup_date))
+            builder.append(mContext.getString(R.string.event_last_signup_date))
                     .append(FORMAT_SPACE)
                     .append(event.getLastSignupDate());
         }
@@ -98,9 +90,9 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
         builder.append(FORMAT_SEPARATOR).append(event.getNumberOfAttendees()).append(FORMAT_SPACE);
 
         if (1 == event.getNumberOfAttendees()) {
-            builder.append(mResources.getString(R.string.event_attendee));
+            builder.append(mContext.getString(R.string.event_attendee));
         } else {
-            builder.append(mResources.getString(R.string.event_attendees));
+            builder.append(mContext.getString(R.string.event_attendees));
         }
 
         return builder.toString();
