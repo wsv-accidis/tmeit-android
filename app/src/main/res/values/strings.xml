@@ -5,7 +5,7 @@
     <string name="about_text_intro">TMEIT for Android is developed by <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> and contributors for <a href="http://tmeit.se">TMEIT</a>. You can check out the source code, report bugs and feedback on <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
 
     <string name="age_check_begin">Anyone born</string>
-    <string name="age_check_end">…or later, is over 18 today.</string>
+    <string name="age_check_end">…or earlier, is over 18 today.</string>
     <string name="age_check_nav_title">Over 18?</string>
     <string name="age_check_placeholder" translatable="false">YYYY-MM-DD</string>
     <string name="age_check_legal">Persons younger than 18 may not be served alcohol. Responsibility to check age always resides with the person serving. Persons who can not verify their age must not be served. Breaking this law is punishable by fine or up to four years imprisonment.</string>

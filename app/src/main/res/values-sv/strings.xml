@@ -3,7 +3,7 @@
     <string name="about_text_intro">TMEIT för Android är utvecklad av <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> med flera för <a href="http://tmeit.se">TMEIT</a>. Du kan hämta källkoden, rapportera buggar och lämna synpunkter på <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
 
     <string name="age_check_begin">Alla som är födda</string>
-    <string name="age_check_end">…eller senare, är över 18 idag.</string>
+    <string name="age_check_end">…eller tidigare, är över 18 idag.</string>
     <string name="age_check_nav_title">Över 18?</string>
     <string name="age_check_legal">Personer under 18 får inte serveras alkohol. Ansvaret för ålderskontroll ligger alltid hos den som serverar. Saknas legitimation ska servering vägras. Överträdelse kan straffas med böter eller fängelse i upp till fyra år.</string>
 
