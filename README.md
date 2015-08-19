@@ -10,8 +10,8 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.4 has been published to Google Play. This version adds the ability to sign up (and cancel
-sign-ups) for external events.
+Version 1.5 has been published to Google Play. This version adds a simple feature to check if
+someone is over 18 and thus of legal age to be served alcohol.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended

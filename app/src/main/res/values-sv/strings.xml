@@ -5,7 +5,6 @@
     <string name="age_check_begin">Alla som är födda</string>
     <string name="age_check_end">…eller senare, är över 18 idag.</string>
     <string name="age_check_nav_title">Över 18?</string>
-    <string name="age_check_placeholder" translatable="false">YYYY-MM-DD</string>
     <string name="age_check_legal">Personer under 18 får inte serveras alkohol. Ansvaret för ålderskontroll ligger alltid hos den som serverar. Saknas legitimation ska servering vägras. Överträdelse kan straffas med böter eller fängelse i upp till fyra år.</string>
 
     <string name="auth_error_code_denied">Koden godkändes inte av servern. Den kan vara utgången. Prova att logga in igen och kontrollera att du har senaste versionen av appen.</string>
