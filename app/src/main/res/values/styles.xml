@@ -3,6 +3,19 @@
     <color name="color_insektionen">#44687D</color>
     <color name="color_insektionen_light">#70AACC</color>
 
+    <style name="AgeCheckLargeText">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textSize">36sp</item>
+    </style>
+
+    <style name="AgeCheckSmallText">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="AgeCheckLegalText">
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Global app theme -->
     </style>
@@ -26,7 +39,6 @@
     <style name="EventInfoMedium" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
-
 
     <style name="EventsListDate" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>

@@ -33,7 +33,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-
             android:drawableLeft="@drawable/ic_message"
             android:text="@string/member_message"/>
 

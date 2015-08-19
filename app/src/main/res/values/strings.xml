@@ -4,6 +4,12 @@
     <string name="about_nav_title">About</string>
     <string name="about_text_intro">TMEIT for Android is developed by <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> and contributors for <a href="http://tmeit.se">TMEIT</a>. You can check out the source code, report bugs and feedback on <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
 
+    <string name="age_check_begin">Anyone born</string>
+    <string name="age_check_end">…or later, is over 18 today.</string>
+    <string name="age_check_nav_title">Over 18?</string>
+    <string name="age_check_placeholder" translatable="false">YYYY-MM-DD</string>
+    <string name="age_check_legal">Persons younger than 18 may not be served alcohol. Responsibility to check age always resides with the person serving. Persons who can not verify their age must not be served. Breaking this law is punishable by fine or up to four years imprisonment.</string>
+
     <string name="auth_error_code_denied">The authorization code was rejected by the server. It may have expired. Try logging in again. Also, make sure you have the latest version of this app.</string>
     <string name="auth_error_code_not_valid">This authorization time code is not valid. Try logging in again. Also, make sure that you have the latest version of this app.</string>
     <string name="auth_error_unspecified_network">There was an error contacting the server. Please ensure you have Internet connectivity, then try again.</string>
