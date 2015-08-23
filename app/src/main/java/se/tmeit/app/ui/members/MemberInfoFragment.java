@@ -106,7 +106,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
         ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
         List<String> faces = args.getStringArrayList(Member.Keys.FACES);
-        if (!faces.isEmpty()) {
+        if (null != faces && !faces.isEmpty()) {
             mFaceHelper.picasso(faces)
                     .placeholder(R.drawable.member_placeholder)
                     .into(imageView);
@@ -186,7 +186,8 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         String prefixStr = getString(prefixResId);
         SpannableString teamStr = new SpannableString(prefixStr + " " + str);
         teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        teamStr.setSpan(new ForegroundColorSpan(R.color.color_insektionen), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int foregroundColor = getResources().getColor(R.color.color_insektionen, null);
+        teamStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(teamStr);
     }
 

@@ -76,6 +76,11 @@ public final class NotificationManager {
     }
 
     public void updateFromServer() {
+        if(!mPrefs.hasServiceAuthentication()) {
+            Log.i(TAG, "Update requested while not authenticated. Ignored.");
+            return;
+        }
+
         Calendar lastNotif = getTimeOfLatestNotification();
         Response response;
         try {

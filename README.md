@@ -40,6 +40,7 @@ are used for, here is a brief summary.
 * WAKE_LOCK - For (very briefly) keeping the phone awake when a push notification is received.
 * WRITE_CONTACTS - For creating a contact in the phone when the user tries to add a contact
   from someone in the list of members, or the member info page.
+* WRITE_EXTERNAL_STORAGE - For storing images in external storage when taking a photo.
 
 ## Licensing
 TMEIT for Android is distributed according to the terms of the **Apache License version 2.0**.
@@ -50,4 +51,5 @@ SDKs provided by Google:
 
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
 * [Picasso Image downloading and caching for Android](http://square.github.io/picasso/)
+* [Android CropImage (from AOSP 4.4.4)](https://github.com/lvillani/android-cropimage)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)

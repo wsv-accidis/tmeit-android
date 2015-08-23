@@ -51,7 +51,7 @@ public final class MemberImagesFragment extends Fragment implements MainActivity
         Bundle args = getArguments();
 
         List<String> faces = args.getStringArrayList(Member.Keys.FACES);
-        if (!faces.isEmpty()) {
+        if (null != faces && !faces.isEmpty()) {
             GridView gridView = (GridView) view;
             gridView.setAdapter(new MemberImageAdapter(getActivity(), faces, mFaceHelper));
         }
