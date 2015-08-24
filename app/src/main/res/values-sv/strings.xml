@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_nav_title">Om</string>
     <string name="about_text_intro">TMEIT för Android är utvecklad av <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> med flera för <a href="http://tmeit.se">TMEIT</a>. Du kan hämta källkoden, rapportera buggar och lämna synpunkter på <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
@@ -12,6 +13,10 @@
     <string name="auth_error_unspecified_network">Det gick inte att kontakta servern. Kontrollera att du har nätåtkomst och försök sedan igen.</string>
     <string name="auth_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
+
+    <string name="crop_photo_done">Spara</string>
+    <string name="crop_photo_saving">Sparar fotot…</string>
+    <string name="crop_photo_please_wait">Vänta lite…</string>
 
     <string name="event_attendee">anmäld</string>
     <string name="event_attendees">anmälda</string>

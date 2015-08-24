@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -10,6 +11,4 @@
 
     <dimen name="tmeit_logo_max_height">80dp</dimen>
     <dimen name="tmeit_members_list_face_size">50dp</dimen>
-
-    <dimen name="crop__bar_height">48dp</dimen>
 </resources>

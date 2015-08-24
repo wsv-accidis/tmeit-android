@@ -35,18 +35,6 @@ public final class CropUtil {
     private static final String SCHEME_CONTENT = "content";
     private static final String SCHEME_FILE = "file";
 
-    public static boolean copyExifRotation(File sourceFile, File destFile) throws IOException {
-        if (sourceFile == null || destFile == null) {
-            return false;
-        }
-
-        ExifInterface exifSource = new ExifInterface(sourceFile.getAbsolutePath());
-        ExifInterface exifDest = new ExifInterface(destFile.getAbsolutePath());
-        exifDest.setAttribute(ExifInterface.TAG_ORIENTATION, exifSource.getAttribute(ExifInterface.TAG_ORIENTATION));
-        exifDest.saveAttributes();
-        return true;
-    }
-
     public static int getExifRotation(File imageFile) throws IOException {
         if (imageFile == null) {
             return 0;
