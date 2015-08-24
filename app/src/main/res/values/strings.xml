@@ -16,6 +16,13 @@
     <string name="auth_error_unspecified_protocol">An unexpected error occurred while authenticating. Try again. If the issue persists, make sure you have the latest version of this app.</string>
     <string name="auth_error_invalid_data">The authentication data is no longer valid. Try logging in again.</string>
 
+    <string name="crop__saving">Saving picture…</string>
+    <string name="crop__wait">Please wait…</string>
+    <string name="crop__pick_error">No image sources available</string>
+
+    <string name="crop__done">Done</string>
+    <string name="crop__cancel">Cancel</string>
+
     <string name="event_attendee">attendee</string>
     <string name="event_attendees">attendees</string>
     <string name="event_attendees_title">Attendees</string>

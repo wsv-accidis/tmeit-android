@@ -35,10 +35,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.onboarding.OnboardingActivity"/>
+        <activity android:name=".ui.cropPhoto.CropImageActivity"/>
 
-        <!-- Activity from me.villani.lorenzo.android:android-cropimage -->
-        <activity android:name="com.android.camera.CropImage"/>
+        <activity android:name=".ui.onboarding.OnboardingActivity"/>
 
         <receiver android:name=".notifications.NotificationDeletedReceiver"/>
 

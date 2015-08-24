@@ -14,12 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.android.camera.CropImageIntentBuilder;
-
 import java.io.IOException;
 
 import se.tmeit.app.R;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.cropPhoto.Crop;
 import se.tmeit.app.utils.ImageUtils;
 
 /**
@@ -148,13 +147,19 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
             mPendingImageCropUri = ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
             Log.d(TAG, "Created image crop uri = \"" + mPendingImageCropUri + "\".");
 
-            // TODO Use own cropping lib instead, base it on https://github.com/jdamcd/android-crop
+            Crop intentBuilder = new Crop(sourceUri);
+            intentBuilder.output(mPendingImageCropUri);
+            intentBuilder.withAspect(BASE_OUTPUT_WIDTH, BASE_OUTPUT_HEIGHT);
+            intentBuilder.withMaxSize(OUTPUT_SCALE_FACTOR * BASE_OUTPUT_WIDTH, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT);
+            startActivityForResult(intentBuilder.getIntent(getContext()), ACTIVITY_RESULT_CROPPED_PHOTO);
 
+            /*
             CropImageIntentBuilder intentBuilder = new CropImageIntentBuilder(OUTPUT_SCALE_FACTOR * BASE_OUTPUT_WIDTH, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT, mPendingImageCropUri);
             intentBuilder.setSourceImage(sourceUri);
             intentBuilder.setDoFaceDetection(false);
             intentBuilder.setScaleUpIfNeeded(false);
             startActivityForResult(intentBuilder.getIntent(getContext()), ACTIVITY_RESULT_CROPPED_PHOTO);
+            */
         } catch (Exception ex) {
             Log.e(TAG, "Caught an exception while attempting to crop image.", ex);
         }

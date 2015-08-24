@@ -10,4 +10,6 @@
 
     <dimen name="tmeit_logo_max_height">80dp</dimen>
     <dimen name="tmeit_members_list_face_size">50dp</dimen>
+
+    <dimen name="crop__bar_height">48dp</dimen>
 </resources>
