@@ -20,8 +20,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -70,7 +70,7 @@ public abstract class ImageViewTouchBase extends ImageView {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             event.startTracking();
             return true;
@@ -347,10 +347,6 @@ public abstract class ImageViewTouchBase extends ImageView {
 
     private void setImageBitmap(Bitmap bitmap, int rotation) {
         super.setImageBitmap(bitmap);
-        Drawable d = getDrawable();
-        if (d != null) {
-            d.setDither(true);
-        }
 
         Bitmap old = mBitmapDisplayed.getBitmap();
         mBitmapDisplayed.setBitmap(bitmap);
@@ -364,6 +360,6 @@ public abstract class ImageViewTouchBase extends ImageView {
     // ImageViewTouchBase will pass a Bitmap to the Recycler if it has finished
     // its use of that Bitmap
     public interface Recycler {
-        public void recycle(Bitmap b);
+        void recycle(Bitmap b);
     }
 }

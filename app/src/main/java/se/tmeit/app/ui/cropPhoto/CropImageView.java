@@ -3,30 +3,28 @@ package se.tmeit.app.ui.cropPhoto;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
 public final class CropImageView extends ImageViewTouchBase {
-    Context mContext;
-    ArrayList<HighlightView> mHighlightViews = new ArrayList<HighlightView>();
-    float mLastX;
-    float mLastY;
-    int mMotionEdge;
-    HighlightView mMotionHighlightView;
+    public Context mContext;
+    public ArrayList<HighlightView> mHighlightViews = new ArrayList<>();
+    private float mLastX;
+    private float mLastY;
+    private int mMotionEdge;
+    private HighlightView mMotionHighlightView;
 
-    @SuppressWarnings("UnusedDeclaration")
     public CropImageView(Context context) {
         super(context);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public CropImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public CropImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
@@ -37,7 +35,7 @@ public final class CropImageView extends ImageViewTouchBase {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         CropImageActivity cropImageActivity = (CropImageActivity) mContext;
         if (cropImageActivity.isSaving()) {
             return false;
@@ -96,7 +94,7 @@ public final class CropImageView extends ImageViewTouchBase {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         for (HighlightView mHighlightView : mHighlightViews) {
             mHighlightView.draw(canvas);

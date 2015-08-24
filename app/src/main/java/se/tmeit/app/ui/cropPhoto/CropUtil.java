@@ -24,66 +24,52 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
 /*
  * Modified from original in AOSP.
  */
-public final class Util {
-    public static final String TAG = "android-crop";
+public final class CropUtil {
     private static final String SCHEME_CONTENT = "content";
     private static final String SCHEME_FILE = "file";
 
-    public static void closeSilently(Closeable c) {
-        if (c == null) return;
-        try {
-            c.close();
-        } catch (Throwable t) {
-            // Do nothing
-        }
-    }
-
-    public static boolean copyExifRotation(File sourceFile, File destFile) {
-        if (sourceFile == null || destFile == null) return false;
-        try {
-            ExifInterface exifSource = new ExifInterface(sourceFile.getAbsolutePath());
-            ExifInterface exifDest = new ExifInterface(destFile.getAbsolutePath());
-            exifDest.setAttribute(ExifInterface.TAG_ORIENTATION, exifSource.getAttribute(ExifInterface.TAG_ORIENTATION));
-            exifDest.saveAttributes();
-            return true;
-        } catch (IOException e) {
-            Log.e(TAG, "Error copying Exif data", e);
+    public static boolean copyExifRotation(File sourceFile, File destFile) throws IOException {
+        if (sourceFile == null || destFile == null) {
             return false;
         }
+
+        ExifInterface exifSource = new ExifInterface(sourceFile.getAbsolutePath());
+        ExifInterface exifDest = new ExifInterface(destFile.getAbsolutePath());
+        exifDest.setAttribute(ExifInterface.TAG_ORIENTATION, exifSource.getAttribute(ExifInterface.TAG_ORIENTATION));
+        exifDest.saveAttributes();
+        return true;
     }
 
-    public static int getExifRotation(File imageFile) {
-        if (imageFile == null) return 0;
-        try {
-            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
-            // We only recognize a subset of orientation tag values
-            switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    return 90;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    return 180;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    return 270;
-                default:
-                    return ExifInterface.ORIENTATION_UNDEFINED;
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Error getting Exif data", e);
+    public static int getExifRotation(File imageFile) throws IOException {
+        if (imageFile == null) {
             return 0;
+        }
+
+        ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+        // We only recognize a subset of orientation tag values
+        switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return 90;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return 180;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return 270;
+            default:
+                return ExifInterface.ORIENTATION_UNDEFINED;
         }
     }
 
     public static File getFromMediaUri(ContentResolver resolver, Uri uri) {
-        if (uri == null) return null;
+        if (uri == null) {
+            return null;
+        }
 
         if (SCHEME_FILE.equals(uri.getScheme())) {
             return new File(uri.getPath());
@@ -107,14 +93,16 @@ public final class Util {
             } catch (SecurityException ignored) {
                 // Nothing we can do
             } finally {
-                if (cursor != null) cursor.close();
+                if (cursor != null) {
+                    cursor.close();
+                }
             }
         }
+
         return null;
     }
 
-    public static void startBackgroundJob(MonitoredActivity activity,
-                                          String title, String message, Runnable job, Handler handler) {
+    public static void startBackgroundJob(MonitoredActivity activity, String title, String message, Runnable job, Handler handler) {
         // Make the progress dialog uncancelable, so that we can gurantee
         // the thread will be done before the activity getting destroyed
         ProgressDialog dialog = ProgressDialog.show(
@@ -123,7 +111,6 @@ public final class Util {
     }
 
     private static class BackgroundJob extends MonitoredActivity.LifeCycleAdapter implements Runnable {
-
         private final MonitoredActivity mActivity;
         private final ProgressDialog mDialog;
         private final Runnable mCleanupRunner = new Runnable() {
@@ -135,8 +122,7 @@ public final class Util {
         private final Handler mHandler;
         private final Runnable mJob;
 
-        public BackgroundJob(MonitoredActivity activity, Runnable job,
-                             ProgressDialog dialog, Handler handler) {
+        public BackgroundJob(MonitoredActivity activity, Runnable job, ProgressDialog dialog, Handler handler) {
             mActivity = activity;
             mDialog = dialog;
             mJob = job;

@@ -16,17 +16,14 @@
 
 package se.tmeit.app.ui.cropPhoto;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -34,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,13 +43,13 @@ import se.tmeit.app.R;
  * Modified from original in AOSP.
  */
 public final class CropImageActivity extends MonitoredActivity {
+    private static final String TAG = CropImageActivity.class.getSimpleName();
     public static final String EXTRA_ASPECT_X = "aspect_x";
     public static final String EXTRA_ASPECT_Y = "aspect_y";
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_MAX_X = "max_x";
     public static final String EXTRA_MAX_Y = "max_y";
     public static final int RESULT_ERROR = 404;
-    private static final boolean IN_MEMORY_CROP = Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1;
     private final Handler mHandler = new Handler();
     private int mAspectX;
     private int mAspectY;
@@ -105,7 +103,17 @@ public final class CropImageActivity extends MonitoredActivity {
         System.gc();
     }
 
-    @TargetApi(10)
+    private static void closeSilently(Closeable c) {
+        if (c == null) {
+            return;
+        }
+        try {
+            c.close();
+        } catch (Throwable t) {
+            // Do nothing
+        }
+    }
+
     private Bitmap decodeRegionCrop(Bitmap croppedImage, Rect rect) {
         // Release memory now
         clearImageView();
@@ -135,43 +143,14 @@ public final class CropImageActivity extends MonitoredActivity {
 
             } catch (IllegalArgumentException e) {
                 // Rethrow with some extra information
-                throw new IllegalArgumentException("Rectangle " + rect + " is outside of the image ("
-                        + width + "," + height + "," + mExifRotation + ")", e);
+                throw new IllegalArgumentException("Rectangle " + rect + " is outside of the image (" + width + "," + height + "," + mExifRotation + ")", e);
             }
-
         } catch (IOException e) {
-            Log.e(Util.TAG, "Error cropping picture: " + e.getMessage(), e);
+            Log.e(TAG, "Error cropping picture: " + e.getMessage(), e);
             finish();
         } finally {
-            Util.closeSilently(is);
+            closeSilently(is);
         }
-        return croppedImage;
-    }
-
-    private Bitmap inMemoryCrop(RotateBitmap rotateBitmap, Bitmap croppedImage, Rect r,
-                                int width, int height, int outWidth, int outHeight) {
-        // In-memory crop means potential OOM errors,
-        // but we have no choice as we can't selectively decode a bitmap with this API level
-        System.gc();
-
-        try {
-            croppedImage = Bitmap.createBitmap(outWidth, outHeight, Bitmap.Config.RGB_565);
-
-            Canvas canvas = new Canvas(croppedImage);
-            RectF dstRect = new RectF(0, 0, width, height);
-
-            Matrix m = new Matrix();
-            m.setRectToRect(new RectF(r), dstRect, Matrix.ScaleToFit.FILL);
-            m.preConcat(rotateBitmap.getRotateMatrix());
-            canvas.drawBitmap(rotateBitmap.getBitmap(), m, null);
-
-        } catch (OutOfMemoryError e) {
-            Log.e(Util.TAG, "Error cropping picture: " + e.getMessage(), e);
-            System.gc();
-        }
-
-        // Release bitmap memory as soon as possible
-        clearImageView();
         return croppedImage;
     }
 
@@ -200,18 +179,13 @@ public final class CropImageActivity extends MonitoredActivity {
         });
     }
 
-    /*
-     * TODO
-     * This should use the decode/crop/encode single step API so that the whole
-     * (possibly large) Bitmap doesn't need to be read into memory
-     */
     private void onSaveClicked() {
         if (mCrop == null || mIsSaving) {
             return;
         }
-        mIsSaving = true;
 
-        Bitmap croppedImage = null;
+        mIsSaving = true;
+        Bitmap croppedImage;
         Rect r = mCrop.getCropRect();
         int width = r.width();
         int height = r.height();
@@ -228,27 +202,22 @@ public final class CropImageActivity extends MonitoredActivity {
             }
         }
 
-        if (IN_MEMORY_CROP && mRotateBitmap != null) {
-            croppedImage = inMemoryCrop(mRotateBitmap, croppedImage, r, width, height, outWidth, outHeight);
-            if (croppedImage != null) {
-                mImageView.setImageBitmapResetBase(croppedImage, true);
-                mImageView.center(true, true);
-                mImageView.mHighlightViews.clear();
-            }
-        } else {
-            try {
-                croppedImage = decodeRegionCrop(croppedImage, r);
-            } catch (IllegalArgumentException e) {
-                setResultException(e);
-                finish();
-                return;
-            }
+        Log.d(TAG, "Width = " + width + ", height = " + height + ", outWidth = " + outWidth + ", outHeight = " + outHeight + ".");
 
-            if (croppedImage != null) {
-                mImageView.setImageRotateBitmapResetBase(new RotateBitmap(croppedImage, mExifRotation), true);
-                mImageView.center(true, true);
-                mImageView.mHighlightViews.clear();
-            }
+        try {
+            croppedImage = decodeRegionCrop(null, mCrop.getCropRect());
+        } catch (IllegalArgumentException e) {
+            setResultException(e);
+            finish();
+            return;
+        }
+
+        // TODO Resize output to outWidth/outHeight
+
+        if (croppedImage != null) {
+            mImageView.setImageRotateBitmapResetBase(new RotateBitmap(croppedImage, mExifRotation), true);
+            mImageView.center(true, true);
+            mImageView.mHighlightViews.clear();
         }
         saveImage(croppedImage);
     }
@@ -256,7 +225,7 @@ public final class CropImageActivity extends MonitoredActivity {
     private void saveImage(Bitmap croppedImage) {
         if (croppedImage != null) {
             final Bitmap b = croppedImage;
-            Util.startBackgroundJob(this, null, getResources().getString(R.string.crop__saving),
+            CropUtil.startBackgroundJob(this, null, getResources().getString(R.string.crop__saving),
                     new Runnable() {
                         public void run() {
                             saveOutput(b);
@@ -279,17 +248,18 @@ public final class CropImageActivity extends MonitoredActivity {
 
             } catch (IOException e) {
                 setResultException(e);
-                Log.e(Util.TAG, "Cannot open file: " + mSaveUri, e);
+                Log.e(TAG, "Cannot open file: " + mSaveUri, e);
             } finally {
-                Util.closeSilently(outputStream);
+                closeSilently(outputStream);
             }
 
-            if (!IN_MEMORY_CROP) {
-                // In-memory crop negates the rotation
-                Util.copyExifRotation(
-                        Util.getFromMediaUri(getContentResolver(), mSourceUri),
-                        Util.getFromMediaUri(getContentResolver(), mSaveUri)
+            try {
+                CropUtil.copyExifRotation(
+                        CropUtil.getFromMediaUri(getContentResolver(), mSourceUri),
+                        CropUtil.getFromMediaUri(getContentResolver(), mSaveUri)
                 );
+            } catch (IOException ex) {
+                Log.e(TAG, "Caught an exception trying to copy EXIF rotation.", ex);
             }
 
             setResultUri(mSaveUri);
@@ -328,20 +298,25 @@ public final class CropImageActivity extends MonitoredActivity {
 
         mSourceUri = intent.getData();
         if (mSourceUri != null) {
-            mExifRotation = Util.getExifRotation(Util.getFromMediaUri(getContentResolver(), mSourceUri));
+            try {
+                mExifRotation = CropUtil.getExifRotation(CropUtil.getFromMediaUri(getContentResolver(), mSourceUri));
+            } catch (IOException ex) {
+                Log.e(TAG, "Caught an exception reading EXIF rotation.", ex);
+                mExifRotation = 0;
+            }
 
             InputStream is = null;
             try {
                 is = getContentResolver().openInputStream(mSourceUri);
                 mRotateBitmap = new RotateBitmap(BitmapFactory.decodeStream(is), mExifRotation);
             } catch (IOException e) {
-                Log.e(Util.TAG, "Error reading picture: " + e.getMessage(), e);
+                Log.e(TAG, "Error reading picture: " + e.getMessage(), e);
                 setResultException(e);
             } catch (OutOfMemoryError e) {
-                Log.e(Util.TAG, "OOM while reading picture: " + e.getMessage(), e);
+                Log.e(TAG, "OOM while reading picture: " + e.getMessage(), e);
                 setResultException(e);
             } finally {
-                Util.closeSilently(is);
+                closeSilently(is);
             }
         }
     }
@@ -351,7 +326,7 @@ public final class CropImageActivity extends MonitoredActivity {
             return;
         }
         mImageView.setImageRotateBitmapResetBase(mRotateBitmap, true);
-        Util.startBackgroundJob(this, null, getResources().getString(R.string.crop__wait),
+        CropUtil.startBackgroundJob(this, null, getResources().getString(R.string.crop__wait),
                 new Runnable() {
                     public void run() {
                         final CountDownLatch latch = new CountDownLatch(1);

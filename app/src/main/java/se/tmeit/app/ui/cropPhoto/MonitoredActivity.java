@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Modified from original in AOSP.
  */
 public abstract class MonitoredActivity extends Activity {
-    private final ArrayList<LifeCycleListener> mListeners = new ArrayList<LifeCycleListener>();
+    private final ArrayList<LifeCycleListener> mListeners = new ArrayList<>();
 
     public void addLifeCycleListener(LifeCycleListener listener) {
         if (mListeners.contains(listener)) return;
@@ -68,14 +68,14 @@ public abstract class MonitoredActivity extends Activity {
         }
     }
 
-    public static interface LifeCycleListener {
-        public void onActivityCreated(MonitoredActivity activity);
+    public interface LifeCycleListener {
+        void onActivityCreated(MonitoredActivity activity);
 
-        public void onActivityDestroyed(MonitoredActivity activity);
+        void onActivityDestroyed(MonitoredActivity activity);
 
-        public void onActivityStarted(MonitoredActivity activity);
+        void onActivityStarted(MonitoredActivity activity);
 
-        public void onActivityStopped(MonitoredActivity activity);
+        void onActivityStopped(MonitoredActivity activity);
     }
 
     public static class LifeCycleAdapter implements LifeCycleListener {

@@ -42,7 +42,7 @@ import se.tmeit.app.R;
 public final class HighlightView {
     public static final int GROW_BOTTOM_EDGE = (1 << 4);
     public static final int GROW_LEFT_EDGE = (1 << 1);
-    public static final int GROW_NONE = (1 << 0);
+    public static final int GROW_NONE = (1);
     public static final int GROW_RIGHT_EDGE = (1 << 2);
     public static final int GROW_TOP_EDGE = (1 << 3);
     public static final int MOVE = (1 << 5);
@@ -54,19 +54,20 @@ public final class HighlightView {
     private final Paint mHandlePaint = new Paint();
     private final Paint mNoFocusPaint = new Paint();
     private final Paint mOutlinePaint = new Paint();
-    RectF mCropRect; // Image space
-    Rect mDrawRect; // Screen space
-    Matrix mMatrix;
-    private View mContext; // View displaying image
+    public RectF mCropRect;
+    public Rect mDrawRect;
+    public Matrix mMatrix;
+    private View mContext;
     private float mHandleRadius;
     private int mHighlightColor;
-    private RectF mImageRect; // Image space
+    private RectF mImageRect;
     private float mInitialAspectRatio;
     private boolean mIsFocused;
     private boolean mMaintainAspectRatio;
     private ModifyMode mMode = ModifyMode.None;
     private float mOutlineWidth;
     private boolean mShowThirds;
+
     public HighlightView(View context) {
         mContext = context;
         initStyles(context.getContext());
@@ -74,8 +75,7 @@ public final class HighlightView {
 
     // Returns the cropping rectangle in image space
     public Rect getCropRect() {
-        return new Rect((int) mCropRect.left, (int) mCropRect.top,
-                (int) mCropRect.right, (int) mCropRect.bottom);
+        return new Rect((int) mCropRect.left, (int) mCropRect.top, (int) mCropRect.right, (int) mCropRect.bottom);
     }
 
     // Determines which edges are hit by touching at (x, y)
@@ -86,10 +86,8 @@ public final class HighlightView {
 
         // verticalCheck makes sure the position is between the top and
         // the bottom edge (with some tolerance). Similar for horizCheck.
-        boolean verticalCheck = (y >= r.top - hysteresis)
-                && (y < r.bottom + hysteresis);
-        boolean horizCheck = (x >= r.left - hysteresis)
-                && (x < r.right + hysteresis);
+        boolean verticalCheck = (y >= r.top - hysteresis) && (y < r.bottom + hysteresis);
+        boolean horizCheck = (x >= r.left - hysteresis) && (x < r.right + hysteresis);
 
         // Check whether the position is near some edge(s)
         if ((Math.abs(r.left - x) < hysteresis) && verticalCheck) {
@@ -185,7 +183,7 @@ public final class HighlightView {
     }
 
     // Grows the cropping rectangle by (dx, dy) in image space.
-    void growBy(float dx, float dy) {
+    private void growBy(float dx, float dy) {
         if (mMaintainAspectRatio) {
             if (dx != 0) {
                 dy = dx / mInitialAspectRatio;
@@ -244,7 +242,7 @@ public final class HighlightView {
 
     // Handles motion (dx, dy) in screen space.
     // The "edge" parameter specifies which edges the user is dragging.
-    void handleMotion(int edge, float dx, float dy) {
+    public void handleMotion(int edge, float dx, float dy) {
         Rect r = computeLayout();
         if (edge == MOVE) {
             // Convert to image space before sending to moveBy()
@@ -268,7 +266,7 @@ public final class HighlightView {
     }
 
     // Grows the cropping rectangle by (dx, dy) in image space
-    void moveBy(float dx, float dy) {
+    private void moveBy(float dx, float dy) {
         Rect invalRect = new Rect(mDrawRect);
 
         mCropRect.offset(dx, dy);
@@ -340,5 +338,4 @@ public final class HighlightView {
     }
 
     enum ModifyMode {None, Move, Grow}
-
 }
