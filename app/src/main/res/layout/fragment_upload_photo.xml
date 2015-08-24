@@ -8,20 +8,31 @@
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin">
 
-    <Button
-        android:id="@+id/upload_photo_use_camera"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        style="?android:buttonBarStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:text="@string/upload_photo_use_camera"/>
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/upload_photo_select_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="24dp"
-        android:text="@string/upload_photo_select_existing"/>
+        <Button
+            android:id="@+id/upload_photo_use_camera"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_camera"
+            android:drawablePadding="10dp"
+            android:text="@string/upload_photo_use_camera"/>
+
+        <Button
+            android:id="@+id/upload_photo_select_photo"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_gallery"
+            android:drawablePadding="10dp"
+            android:text="@string/upload_photo_select_existing"/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

@@ -106,5 +106,5 @@
     <string name="upload_photo_nav_title">Upload photo</string>
     <string name="upload_photo_rules">Offensive images, or images that a depicted person would object to having published on the Internet may not be uploaded. The image should be a recognizable photo of the persons\'s face. Images that violate these rules will be deleted. Repeated violations will result in this functionality being disabled for everyone.</string>
     <string name="upload_photo_select_existing">Select an existing photo</string>
-    <string name="upload_photo_use_camera">Take a photo using camera</string>
+    <string name="upload_photo_use_camera">Use camera to take photo</string>
 </resources>
