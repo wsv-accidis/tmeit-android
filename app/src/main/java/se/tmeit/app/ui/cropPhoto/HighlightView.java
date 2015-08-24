@@ -54,16 +54,16 @@ public final class HighlightView {
     private final Paint mHandlePaint = new Paint();
     private final Paint mNoFocusPaint = new Paint();
     private final Paint mOutlinePaint = new Paint();
-    public RectF mCropRect;
-    public Rect mDrawRect;
-    public Matrix mMatrix;
     private View mContext;
+    private RectF mCropRect;
+    private Rect mDrawRect;
     private float mHandleRadius;
     private int mHighlightColor;
     private RectF mImageRect;
     private float mInitialAspectRatio;
     private boolean mIsFocused;
     private boolean mMaintainAspectRatio;
+    private Matrix mMatrix;
     private ModifyMode mMode = ModifyMode.None;
     private float mOutlineWidth;
     private boolean mShowThirds;
@@ -73,9 +73,12 @@ public final class HighlightView {
         initStyles(context.getContext());
     }
 
-    // Returns the cropping rectangle in image space
-    public Rect getCropRect() {
-        return new Rect((int) mCropRect.left, (int) mCropRect.top, (int) mCropRect.right, (int) mCropRect.bottom);
+    public RectF getCropRect() {
+        return mCropRect;
+    }
+
+    public Rect getDrawRect() {
+        return mDrawRect;
     }
 
     // Determines which edges are hit by touching at (x, y)
@@ -108,6 +111,44 @@ public final class HighlightView {
             retval = MOVE;
         }
         return retval;
+    }
+
+    // Returns the cropping rectangle in image space
+    public Rect getIntCropRect() {
+        return new Rect((int) mCropRect.left, (int) mCropRect.top, (int) mCropRect.right, (int) mCropRect.bottom);
+    }
+
+    public Matrix getMatrix() {
+        return mMatrix;
+    }
+
+    public void setMatrix(Matrix src) {
+        mMatrix.set(src);
+    }
+
+    // Handles motion (dx, dy) in screen space.
+    // The "edge" parameter specifies which edges the user is dragging.
+    public void handleMotion(int edge, float dx, float dy) {
+        Rect r = computeLayout();
+        if (edge == MOVE) {
+            // Convert to image space before sending to moveBy()
+            moveBy(dx * (mCropRect.width() / r.width()),
+                    dy * (mCropRect.height() / r.height()));
+        } else {
+            if (((GROW_LEFT_EDGE | GROW_RIGHT_EDGE) & edge) == 0) {
+                dx = 0;
+            }
+
+            if (((GROW_TOP_EDGE | GROW_BOTTOM_EDGE) & edge) == 0) {
+                dy = 0;
+            }
+
+            // Convert to image space before sending to growBy()
+            float xDelta = dx * (mCropRect.width() / r.width());
+            float yDelta = dy * (mCropRect.height() / r.height());
+            growBy((((edge & GROW_LEFT_EDGE) != 0) ? -1 : 1) * xDelta,
+                    (((edge & GROW_TOP_EDGE) != 0) ? -1 : 1) * yDelta);
+        }
     }
 
     public boolean hasFocus() {
@@ -182,6 +223,44 @@ public final class HighlightView {
         }
     }
 
+    // Maps the cropping rectangle from image space to screen space
+    private Rect computeLayout() {
+        RectF r = new RectF(mCropRect.left, mCropRect.top,
+                mCropRect.right, mCropRect.bottom);
+        mMatrix.mapRect(r);
+        return new Rect(Math.round(r.left), Math.round(r.top),
+                Math.round(r.right), Math.round(r.bottom));
+    }
+
+    private float dpToPx(float dp) {
+        return dp * mContext.getResources().getDisplayMetrics().density;
+    }
+
+    private void drawHandles(Canvas canvas) {
+        int xMiddle = mDrawRect.left + ((mDrawRect.right - mDrawRect.left) / 2);
+        int yMiddle = mDrawRect.top + ((mDrawRect.bottom - mDrawRect.top) / 2);
+
+        canvas.drawCircle(mDrawRect.left, yMiddle, mHandleRadius, mHandlePaint);
+        canvas.drawCircle(xMiddle, mDrawRect.top, mHandleRadius, mHandlePaint);
+        canvas.drawCircle(mDrawRect.right, yMiddle, mHandleRadius, mHandlePaint);
+        canvas.drawCircle(xMiddle, mDrawRect.bottom, mHandleRadius, mHandlePaint);
+    }
+
+    private void drawThirds(Canvas canvas) {
+        mOutlinePaint.setStrokeWidth(1);
+        float xThird = (mDrawRect.right - mDrawRect.left) / 3;
+        float yThird = (mDrawRect.bottom - mDrawRect.top) / 3;
+
+        canvas.drawLine(mDrawRect.left + xThird, mDrawRect.top,
+                mDrawRect.left + xThird, mDrawRect.bottom, mOutlinePaint);
+        canvas.drawLine(mDrawRect.left + xThird * 2, mDrawRect.top,
+                mDrawRect.left + xThird * 2, mDrawRect.bottom, mOutlinePaint);
+        canvas.drawLine(mDrawRect.left, mDrawRect.top + yThird,
+                mDrawRect.right, mDrawRect.top + yThird, mOutlinePaint);
+        canvas.drawLine(mDrawRect.left, mDrawRect.top + yThird * 2,
+                mDrawRect.right, mDrawRect.top + yThird * 2, mOutlinePaint);
+    }
+
     // Grows the cropping rectangle by (dx, dy) in image space.
     private void growBy(float dx, float dy) {
         if (mMaintainAspectRatio) {
@@ -240,28 +319,16 @@ public final class HighlightView {
         mContext.invalidate();
     }
 
-    // Handles motion (dx, dy) in screen space.
-    // The "edge" parameter specifies which edges the user is dragging.
-    public void handleMotion(int edge, float dx, float dy) {
-        Rect r = computeLayout();
-        if (edge == MOVE) {
-            // Convert to image space before sending to moveBy()
-            moveBy(dx * (mCropRect.width() / r.width()),
-                    dy * (mCropRect.height() / r.height()));
-        } else {
-            if (((GROW_LEFT_EDGE | GROW_RIGHT_EDGE) & edge) == 0) {
-                dx = 0;
-            }
-
-            if (((GROW_TOP_EDGE | GROW_BOTTOM_EDGE) & edge) == 0) {
-                dy = 0;
-            }
-
-            // Convert to image space before sending to growBy()
-            float xDelta = dx * (mCropRect.width() / r.width());
-            float yDelta = dy * (mCropRect.height() / r.height());
-            growBy((((edge & GROW_LEFT_EDGE) != 0) ? -1 : 1) * xDelta,
-                    (((edge & GROW_TOP_EDGE) != 0) ? -1 : 1) * yDelta);
+    private void initStyles(Context context) {
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.cropImageStyle, outValue, true);
+        TypedArray attributes = context.obtainStyledAttributes(outValue.resourceId, R.styleable.CropImageView);
+        try {
+            mShowThirds = attributes.getBoolean(R.styleable.CropImageView_showThirds, false);
+            mHighlightColor = attributes.getColor(R.styleable.CropImageView_highlightColor,
+                    DEFAULT_HIGHLIGHT_COLOR);
+        } finally {
+            attributes.recycle();
         }
     }
 
@@ -284,57 +351,6 @@ public final class HighlightView {
         invalRect.union(mDrawRect);
         invalRect.inset(-10, -10);
         mContext.invalidate(invalRect);
-    }
-
-    // Maps the cropping rectangle from image space to screen space
-    private Rect computeLayout() {
-        RectF r = new RectF(mCropRect.left, mCropRect.top,
-                mCropRect.right, mCropRect.bottom);
-        mMatrix.mapRect(r);
-        return new Rect(Math.round(r.left), Math.round(r.top),
-                Math.round(r.right), Math.round(r.bottom));
-    }
-
-    private float dpToPx(float dp) {
-        return dp * mContext.getResources().getDisplayMetrics().density;
-    }
-
-    private void drawHandles(Canvas canvas) {
-        int xMiddle = mDrawRect.left + ((mDrawRect.right - mDrawRect.left) / 2);
-        int yMiddle = mDrawRect.top + ((mDrawRect.bottom - mDrawRect.top) / 2);
-
-        canvas.drawCircle(mDrawRect.left, yMiddle, mHandleRadius, mHandlePaint);
-        canvas.drawCircle(xMiddle, mDrawRect.top, mHandleRadius, mHandlePaint);
-        canvas.drawCircle(mDrawRect.right, yMiddle, mHandleRadius, mHandlePaint);
-        canvas.drawCircle(xMiddle, mDrawRect.bottom, mHandleRadius, mHandlePaint);
-    }
-
-    private void drawThirds(Canvas canvas) {
-        mOutlinePaint.setStrokeWidth(1);
-        float xThird = (mDrawRect.right - mDrawRect.left) / 3;
-        float yThird = (mDrawRect.bottom - mDrawRect.top) / 3;
-
-        canvas.drawLine(mDrawRect.left + xThird, mDrawRect.top,
-                mDrawRect.left + xThird, mDrawRect.bottom, mOutlinePaint);
-        canvas.drawLine(mDrawRect.left + xThird * 2, mDrawRect.top,
-                mDrawRect.left + xThird * 2, mDrawRect.bottom, mOutlinePaint);
-        canvas.drawLine(mDrawRect.left, mDrawRect.top + yThird,
-                mDrawRect.right, mDrawRect.top + yThird, mOutlinePaint);
-        canvas.drawLine(mDrawRect.left, mDrawRect.top + yThird * 2,
-                mDrawRect.right, mDrawRect.top + yThird * 2, mOutlinePaint);
-    }
-
-    private void initStyles(Context context) {
-        TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.cropImageStyle, outValue, true);
-        TypedArray attributes = context.obtainStyledAttributes(outValue.resourceId, R.styleable.CropImageView);
-        try {
-            mShowThirds = attributes.getBoolean(R.styleable.CropImageView_showThirds, false);
-            mHighlightColor = attributes.getColor(R.styleable.CropImageView_highlightColor,
-                    DEFAULT_HIGHLIGHT_COLOR);
-        } finally {
-            attributes.recycle();
-        }
     }
 
     enum ModifyMode {None, Move, Grow}

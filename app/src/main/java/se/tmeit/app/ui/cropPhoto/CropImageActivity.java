@@ -156,7 +156,7 @@ public final class CropImageActivity extends MonitoredActivity {
 
     private void initViews() {
         mImageView = (CropImageView) findViewById(R.id.crop_image);
-        mImageView.mContext = this;
+        mImageView.setContext(this);
         mImageView.setRecycler(new ImageViewTouchBase.Recycler() {
             @Override
             public void recycle(Bitmap b) {
@@ -186,7 +186,7 @@ public final class CropImageActivity extends MonitoredActivity {
 
         mIsSaving = true;
         Bitmap croppedImage;
-        Rect r = mCrop.getCropRect();
+        Rect r = mCrop.getIntCropRect();
         int width = r.width();
         int height = r.height();
 
@@ -205,7 +205,7 @@ public final class CropImageActivity extends MonitoredActivity {
         Log.d(TAG, "Width = " + width + ", height = " + height + ", outWidth = " + outWidth + ", outHeight = " + outHeight + ".");
 
         try {
-            croppedImage = decodeRegionCrop(null, mCrop.getCropRect());
+            croppedImage = decodeRegionCrop(null, mCrop.getIntCropRect());
         } catch (IllegalArgumentException e) {
             setResultException(e);
             finish();
@@ -217,7 +217,7 @@ public final class CropImageActivity extends MonitoredActivity {
         if (croppedImage != null) {
             mImageView.setImageRotateBitmapResetBase(new RotateBitmap(croppedImage, mExifRotation), true);
             mImageView.center(true, true);
-            mImageView.mHighlightViews.clear();
+            mImageView.clear();
         }
         saveImage(croppedImage);
     }
@@ -348,15 +348,14 @@ public final class CropImageActivity extends MonitoredActivity {
                 }, mHandler);
     }
 
-    private class Cropper {
-
+    private final class Cropper {
         public void crop() {
             mHandler.post(new Runnable() {
                 public void run() {
                     makeDefault();
                     mImageView.invalidate();
-                    if (mImageView.mHighlightViews.size() == 1) {
-                        mCrop = mImageView.mHighlightViews.get(0);
+                    if (mImageView.getHighlightViews().size() == 1) {
+                        mCrop = mImageView.getHighlightViews().get(0);
                         mCrop.setFocus(true);
                     }
                 }

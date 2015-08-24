@@ -37,9 +37,9 @@ public abstract class ImageViewTouchBase extends ImageView {
     protected Matrix mBaseMatrix = new Matrix();
     protected Handler mHandler = new Handler();
     protected Matrix mSuppMatrix = new Matrix();
-    float mMaxZoom;
-    int mThisHeight = -1;
-    int mThisWidth = -1;
+    private float mMaxZoom;
+    private int mThisHeight = -1;
+    private int mThisWidth = -1;
     private Runnable mOnLayoutRunnable;
     private Recycler mRecycler;
 
