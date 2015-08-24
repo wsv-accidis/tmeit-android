@@ -172,7 +172,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void startOnboardingActivity() {
-        Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
+        Intent intent = new Intent(this, OnboardingActivity.class);
         startActivity(intent);
         finish();
     }

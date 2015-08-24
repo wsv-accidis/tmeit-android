@@ -8,14 +8,13 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-public class CropImageView extends ImageViewTouchBase {
-
-    ArrayList<HighlightView> mHighlightViews = new ArrayList<HighlightView>();
-    HighlightView mMotionHighlightView;
-    float mLastX, mLastY;
-    int mMotionEdge;
-
+public final class CropImageView extends ImageViewTouchBase {
     Context mContext;
+    ArrayList<HighlightView> mHighlightViews = new ArrayList<HighlightView>();
+    float mLastX;
+    float mLastY;
+    int mMotionEdge;
+    HighlightView mMotionHighlightView;
 
     @SuppressWarnings("UnusedDeclaration")
     public CropImageView(Context context) {
@@ -30,6 +29,78 @@ public class CropImageView extends ImageViewTouchBase {
     @SuppressWarnings("UnusedDeclaration")
     public CropImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public void add(HighlightView hv) {
+        mHighlightViews.add(hv);
+        invalidate();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        CropImageActivity cropImageActivity = (CropImageActivity) mContext;
+        if (cropImageActivity.isSaving()) {
+            return false;
+        }
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (HighlightView hv : mHighlightViews) {
+                    int edge = hv.getHit(event.getX(), event.getY());
+                    if (edge != HighlightView.GROW_NONE) {
+                        mMotionEdge = edge;
+                        mMotionHighlightView = hv;
+                        mLastX = event.getX();
+                        mLastY = event.getY();
+                        mMotionHighlightView.setMode((edge == HighlightView.MOVE)
+                                ? HighlightView.ModifyMode.Move
+                                : HighlightView.ModifyMode.Grow);
+                        break;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mMotionHighlightView != null) {
+                    centerBasedOnHighlightView(mMotionHighlightView);
+                    mMotionHighlightView.setMode(HighlightView.ModifyMode.None);
+                }
+                mMotionHighlightView = null;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (mMotionHighlightView != null) {
+                    mMotionHighlightView.handleMotion(mMotionEdge, event.getX()
+                            - mLastX, event.getY() - mLastY);
+                    mLastX = event.getX();
+                    mLastY = event.getY();
+                    ensureVisible(mMotionHighlightView);
+                }
+                break;
+        }
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                center(true, true);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // if we're not zoomed then there's no point in even allowing
+                // the user to move the image around. This call to center puts
+                // it back to the normalized location (with false meaning don't
+                // animate).
+                if (getScale() == 1F) {
+                    center(true, true);
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        for (HighlightView mHighlightView : mHighlightViews) {
+            mHighlightView.draw(canvas);
+        }
     }
 
     @Override
@@ -48,10 +119,10 @@ public class CropImageView extends ImageViewTouchBase {
     }
 
     @Override
-    protected void zoomTo(float scale, float centerX, float centerY) {
-        super.zoomTo(scale, centerX, centerY);
+    protected void postTranslate(float deltaX, float deltaY) {
+        super.postTranslate(deltaX, deltaY);
         for (HighlightView hv : mHighlightViews) {
-            hv.mMatrix.set(getUnrotatedMatrix());
+            hv.mMatrix.postTranslate(deltaX, deltaY);
             hv.invalidate();
         }
     }
@@ -75,88 +146,11 @@ public class CropImageView extends ImageViewTouchBase {
     }
 
     @Override
-    protected void postTranslate(float deltaX, float deltaY) {
-        super.postTranslate(deltaX, deltaY);
+    protected void zoomTo(float scale, float centerX, float centerY) {
+        super.zoomTo(scale, centerX, centerY);
         for (HighlightView hv : mHighlightViews) {
-            hv.mMatrix.postTranslate(deltaX, deltaY);
+            hv.mMatrix.set(getUnrotatedMatrix());
             hv.invalidate();
-        }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        CropImageActivity cropImageActivity = (CropImageActivity) mContext;
-        if (cropImageActivity.isSaving()) {
-            return false;
-        }
-
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            for (HighlightView hv : mHighlightViews) {
-                int edge = hv.getHit(event.getX(), event.getY());
-                if (edge != HighlightView.GROW_NONE) {
-                    mMotionEdge = edge;
-                    mMotionHighlightView = hv;
-                    mLastX = event.getX();
-                    mLastY = event.getY();
-                    mMotionHighlightView.setMode((edge == HighlightView.MOVE)
-                            ? HighlightView.ModifyMode.Move
-                            : HighlightView.ModifyMode.Grow);
-                    break;
-                }
-            }
-            break;
-        case MotionEvent.ACTION_UP:
-            if (mMotionHighlightView != null) {
-                centerBasedOnHighlightView(mMotionHighlightView);
-                mMotionHighlightView.setMode(HighlightView.ModifyMode.None);
-            }
-            mMotionHighlightView = null;
-            break;
-        case MotionEvent.ACTION_MOVE:
-            if (mMotionHighlightView != null) {
-                mMotionHighlightView.handleMotion(mMotionEdge, event.getX()
-                        - mLastX, event.getY() - mLastY);
-                mLastX = event.getX();
-                mLastY = event.getY();
-                ensureVisible(mMotionHighlightView);
-            }
-            break;
-        }
-
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_UP:
-            center(true, true);
-            break;
-        case MotionEvent.ACTION_MOVE:
-            // if we're not zoomed then there's no point in even allowing
-            // the user to move the image around. This call to center puts
-            // it back to the normalized location (with false meaning don't
-            // animate).
-            if (getScale() == 1F) {
-                center(true, true);
-            }
-            break;
-        }
-
-        return true;
-    }
-
-    // Pan the displayed image to make sure the cropping rectangle is visible.
-    private void ensureVisible(HighlightView hv) {
-        Rect r = hv.mDrawRect;
-
-        int panDeltaX1 = Math.max(0, getLeft() - r.left);
-        int panDeltaX2 = Math.min(0, getRight() - r.right);
-
-        int panDeltaY1 = Math.max(0, getTop() - r.top);
-        int panDeltaY2 = Math.min(0, getBottom() - r.bottom);
-
-        int panDeltaX = panDeltaX1 != 0 ? panDeltaX1 : panDeltaX2;
-        int panDeltaY = panDeltaY1 != 0 ? panDeltaY1 : panDeltaY2;
-
-        if (panDeltaX != 0 || panDeltaY != 0) {
-            panBy(panDeltaX, panDeltaY);
         }
     }
 
@@ -179,7 +173,7 @@ public class CropImageView extends ImageViewTouchBase {
         zoom = Math.max(1F, zoom);
 
         if ((Math.abs(zoom - getScale()) / zoom) > .1) {
-            float[] coordinates = new float[] { hv.mCropRect.centerX(), hv.mCropRect.centerY() };
+            float[] coordinates = new float[]{hv.mCropRect.centerX(), hv.mCropRect.centerY()};
             getUnrotatedMatrix().mapPoints(coordinates);
             zoomTo(zoom, coordinates[0], coordinates[1], 300F);
         }
@@ -187,16 +181,21 @@ public class CropImageView extends ImageViewTouchBase {
         ensureVisible(hv);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        for (HighlightView mHighlightView : mHighlightViews) {
-            mHighlightView.draw(canvas);
-        }
-    }
+    // Pan the displayed image to make sure the cropping rectangle is visible.
+    private void ensureVisible(HighlightView hv) {
+        Rect r = hv.mDrawRect;
 
-    public void add(HighlightView hv) {
-        mHighlightViews.add(hv);
-        invalidate();
+        int panDeltaX1 = Math.max(0, getLeft() - r.left);
+        int panDeltaX2 = Math.min(0, getRight() - r.right);
+
+        int panDeltaY1 = Math.max(0, getTop() - r.top);
+        int panDeltaY2 = Math.min(0, getBottom() - r.bottom);
+
+        int panDeltaX = panDeltaX1 != 0 ? panDeltaX1 : panDeltaX2;
+        int panDeltaY = panDeltaY1 != 0 ? panDeltaY1 : panDeltaY2;
+
+        if (panDeltaX != 0 || panDeltaY != 0) {
+            panBy(panDeltaX, panDeltaY);
+        }
     }
 }

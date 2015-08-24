@@ -22,8 +22,7 @@ import android.graphics.Matrix;
 /*
  * Modified from original in AOSP.
  */
-class RotateBitmap {
-
+public final class RotateBitmap {
     private Bitmap mBitmap;
     private int mRotation;
 
@@ -32,20 +31,21 @@ class RotateBitmap {
         mRotation = rotation % 360;
     }
 
-    public void setRotation(int rotation) {
-        mRotation = rotation;
-    }
-
-    public int getRotation() {
-        return mRotation;
-    }
-
     public Bitmap getBitmap() {
         return mBitmap;
     }
 
     public void setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
+    }
+
+    public int getHeight() {
+        if (mBitmap == null) return 0;
+        if (isOrientationChanged()) {
+            return mBitmap.getWidth();
+        } else {
+            return mBitmap.getHeight();
+        }
     }
 
     public Matrix getRotateMatrix() {
@@ -64,17 +64,12 @@ class RotateBitmap {
         return matrix;
     }
 
-    public boolean isOrientationChanged() {
-        return (mRotation / 90) % 2 != 0;
+    public int getRotation() {
+        return mRotation;
     }
 
-    public int getHeight() {
-        if (mBitmap == null) return 0;
-        if (isOrientationChanged()) {
-            return mBitmap.getWidth();
-        } else {
-            return mBitmap.getHeight();
-        }
+    public void setRotation(int rotation) {
+        mRotation = rotation;
     }
 
     public int getWidth() {
@@ -84,6 +79,10 @@ class RotateBitmap {
         } else {
             return mBitmap.getWidth();
         }
+    }
+
+    public boolean isOrientationChanged() {
+        return (mRotation / 90) % 2 != 0;
     }
 
     public void recycle() {

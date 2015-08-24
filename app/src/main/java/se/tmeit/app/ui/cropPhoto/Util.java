@@ -33,12 +33,10 @@ import java.io.IOException;
 /*
  * Modified from original in AOSP.
  */
-class Util {
-
+public final class Util {
     public static final String TAG = "android-crop";
-
-    private static final String SCHEME_FILE = "file";
     private static final String SCHEME_CONTENT = "content";
+    private static final String SCHEME_FILE = "file";
 
     public static void closeSilently(Closeable c) {
         if (c == null) return;
@@ -46,6 +44,20 @@ class Util {
             c.close();
         } catch (Throwable t) {
             // Do nothing
+        }
+    }
+
+    public static boolean copyExifRotation(File sourceFile, File destFile) {
+        if (sourceFile == null || destFile == null) return false;
+        try {
+            ExifInterface exifSource = new ExifInterface(sourceFile.getAbsolutePath());
+            ExifInterface exifDest = new ExifInterface(destFile.getAbsolutePath());
+            exifDest.setAttribute(ExifInterface.TAG_ORIENTATION, exifSource.getAttribute(ExifInterface.TAG_ORIENTATION));
+            exifDest.saveAttributes();
+            return true;
+        } catch (IOException e) {
+            Log.e(TAG, "Error copying Exif data", e);
+            return false;
         }
     }
 
@@ -70,27 +82,13 @@ class Util {
         }
     }
 
-    public static boolean copyExifRotation(File sourceFile, File destFile) {
-        if (sourceFile == null || destFile == null) return false;
-        try {
-            ExifInterface exifSource = new ExifInterface(sourceFile.getAbsolutePath());
-            ExifInterface exifDest = new ExifInterface(destFile.getAbsolutePath());
-            exifDest.setAttribute(ExifInterface.TAG_ORIENTATION, exifSource.getAttribute(ExifInterface.TAG_ORIENTATION));
-            exifDest.saveAttributes();
-            return true;
-        } catch (IOException e) {
-            Log.e(TAG, "Error copying Exif data", e);
-            return false;
-        }
-    }
-
     public static File getFromMediaUri(ContentResolver resolver, Uri uri) {
         if (uri == null) return null;
 
         if (SCHEME_FILE.equals(uri.getScheme())) {
             return new File(uri.getPath());
         } else if (SCHEME_CONTENT.equals(uri.getScheme())) {
-            final String[] filePathColumn = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME };
+            final String[] filePathColumn = {MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME};
             Cursor cursor = null;
             try {
                 cursor = resolver.query(uri, filePathColumn, null, null, null);
@@ -116,7 +114,7 @@ class Util {
     }
 
     public static void startBackgroundJob(MonitoredActivity activity,
-            String title, String message, Runnable job, Handler handler) {
+                                          String title, String message, Runnable job, Handler handler) {
         // Make the progress dialog uncancelable, so that we can gurantee
         // the thread will be done before the activity getting destroyed
         ProgressDialog dialog = ProgressDialog.show(
@@ -128,14 +126,14 @@ class Util {
 
         private final MonitoredActivity mActivity;
         private final ProgressDialog mDialog;
-        private final Runnable mJob;
-        private final Handler mHandler;
         private final Runnable mCleanupRunner = new Runnable() {
             public void run() {
                 mActivity.removeLifeCycleListener(BackgroundJob.this);
                 if (mDialog.getWindow() != null) mDialog.dismiss();
             }
         };
+        private final Handler mHandler;
+        private final Runnable mJob;
 
         public BackgroundJob(MonitoredActivity activity, Runnable job,
                              ProgressDialog dialog, Handler handler) {
@@ -144,14 +142,6 @@ class Util {
             mJob = job;
             mActivity.addLifeCycleListener(this);
             mHandler = handler;
-        }
-
-        public void run() {
-            try {
-                mJob.run();
-            } finally {
-                mHandler.post(mCleanupRunner);
-            }
         }
 
         @Override
@@ -163,13 +153,21 @@ class Util {
         }
 
         @Override
+        public void onActivityStarted(MonitoredActivity activity) {
+            mDialog.show();
+        }
+
+        @Override
         public void onActivityStopped(MonitoredActivity activity) {
             mDialog.hide();
         }
 
-        @Override
-        public void onActivityStarted(MonitoredActivity activity) {
-            mDialog.show();
+        public void run() {
+            try {
+                mJob.run();
+            } finally {
+                mHandler.post(mCleanupRunner);
+            }
         }
     }
 

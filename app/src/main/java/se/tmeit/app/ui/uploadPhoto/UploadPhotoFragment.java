@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import se.tmeit.app.R;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.cropPhoto.Crop;
+import se.tmeit.app.ui.cropPhoto.CropImageActivity;
 import se.tmeit.app.utils.ImageUtils;
 
 /**
@@ -147,19 +147,14 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
             mPendingImageCropUri = ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
             Log.d(TAG, "Created image crop uri = \"" + mPendingImageCropUri + "\".");
 
-            Crop intentBuilder = new Crop(sourceUri);
-            intentBuilder.output(mPendingImageCropUri);
-            intentBuilder.withAspect(BASE_OUTPUT_WIDTH, BASE_OUTPUT_HEIGHT);
-            intentBuilder.withMaxSize(OUTPUT_SCALE_FACTOR * BASE_OUTPUT_WIDTH, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT);
-            startActivityForResult(intentBuilder.getIntent(getContext()), ACTIVITY_RESULT_CROPPED_PHOTO);
-
-            /*
-            CropImageIntentBuilder intentBuilder = new CropImageIntentBuilder(OUTPUT_SCALE_FACTOR * BASE_OUTPUT_WIDTH, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT, mPendingImageCropUri);
-            intentBuilder.setSourceImage(sourceUri);
-            intentBuilder.setDoFaceDetection(false);
-            intentBuilder.setScaleUpIfNeeded(false);
-            startActivityForResult(intentBuilder.getIntent(getContext()), ACTIVITY_RESULT_CROPPED_PHOTO);
-            */
+            Intent cropIntent = new Intent(getContext(), CropImageActivity.class);
+            cropIntent.setData(sourceUri);
+            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPendingImageCropUri);
+            cropIntent.putExtra(CropImageActivity.EXTRA_ASPECT_X, BASE_OUTPUT_WIDTH);
+            cropIntent.putExtra(CropImageActivity.EXTRA_ASPECT_Y, BASE_OUTPUT_HEIGHT);
+            cropIntent.putExtra(CropImageActivity.EXTRA_MAX_X, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_WIDTH);
+            cropIntent.putExtra(CropImageActivity.EXTRA_MAX_Y, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT);
+            startActivityForResult(cropIntent, ACTIVITY_RESULT_CROPPED_PHOTO);
         } catch (Exception ex) {
             Log.e(TAG, "Caught an exception while attempting to crop image.", ex);
         }
