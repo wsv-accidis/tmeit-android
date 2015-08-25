@@ -14,7 +14,7 @@
     <string name="auth_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
-    <string name="crop_photo_done">Spara</string>
+    <string name="crop_photo_done">Fortsätt</string>
     <string name="crop_photo_saving">Sparar fotot…</string>
     <string name="crop_photo_please_wait">Vänta lite…</string>
 
@@ -95,8 +95,10 @@
     <string name="repository_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Kontrollera att du har senaste versionen av appen.</string>
 
     <string name="upload_photo_chooser_title">Välj bild</string>
+    <string name="upload_photo_finish_nav_title">Välj medlem</string>
     <string name="upload_photo_nav_title">Ladda upp foto</string>
     <string name="upload_photo_rules">Absolut inga bilder som är stötande eller som personen på bilden skulle ha invändningar mot att publicera på Internet får laddas upp. Bilden ska vara ett foto på personens ansikte och personen ska gå att känna igen. Bilder som bryter mot detta tas bort. Om detta inte respekteras kommer funktionen att stängas av.</string>
     <string name="upload_photo_select_existing">Välj ett existerande foto</string>
     <string name="upload_photo_use_camera">Ta ett foto med kameran</string>
+    <string name="upload_photo_submit">Skicka</string>
 </resources>

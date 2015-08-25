@@ -29,7 +29,7 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 
     @Override
     public int getTitle() {
-        return R.string.upload_photo_nav_title;
+        return R.string.upload_photo_finish_nav_title;
     }
 
     @Nullable
