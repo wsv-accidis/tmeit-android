@@ -30,7 +30,7 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for the list of members.
  */
-public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu {
+public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu, MainActivity.HasTitle {
     private static final int MENU_CLEAR_FILTER_ID = 1;
     private static final int MENU_GROUPS_ID = 10000;
     private static final int MENU_TEAMS_ID = 20000;

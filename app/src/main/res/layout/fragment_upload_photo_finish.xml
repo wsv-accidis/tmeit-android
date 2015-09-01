@@ -5,22 +5,28 @@
 
     <ImageView
         android:id="@+id/upload_photo_image"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:scaleType="fitStart"
+        android:layout_width="77dp"
+        android:layout_height="84dp"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/bg_simple_border"
+        android:scaleType="fitXY"
         android:src="@drawable/member_placeholder"/>
 
-    <ListView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/upload_image_button_bar"
-        android:layout_below="@id/upload_photo_image"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/upload_photo_image"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_toRightOf="@id/upload_photo_image"
+        android:text="@string/upload_photo_select_member"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="16sp"/>
 
     <LinearLayout
-        android:id="@id/upload_image_button_bar"
+        android:id="@+id/upload_photo_button_bar"
         style="?android:buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,23 +38,37 @@
         android:paddingTop="@dimen/button_bar_vertical_margin">
 
         <Button
-            android:id="@+id/upload_image_cancel_button"
+            android:id="@+id/upload_photo_finish_button"
             style="?android:buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_cancel_circle"
-            android:text="@android:string/cancel"/>
-
-        <Button
-            android:id="@+id/upload_image_finish_button"
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_check_circle"
+            android:enabled="false"
             android:text="@string/upload_photo_submit"/>
     </LinearLayout>
+
+    <fragment
+        android:id="@+id/upload_photo_member_list"
+        android:name="se.tmeit.app.ui.members.MembersSimpleListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/upload_photo_button_bar"
+        android:layout_below="@id/upload_photo_image"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/upload_photo_image"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@android:color/darker_gray"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/upload_photo_button_bar"
+        android:background="@android:color/darker_gray"/>
 </RelativeLayout>

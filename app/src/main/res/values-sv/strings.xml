@@ -59,7 +59,7 @@
     <string name="members_show_all">Visa alla</string>
     <string name="members_groups">Grupper</string>
     <string name="members_nav_title">Medlemmar</string>
-    <string name="members_no_results">Inga träffar. Kontrollera filtren.</string>
+    <string name="members_no_results">Inga medlemmar funna.</string>
     <string name="members_no_title_placeholder">(ingen)</string>
     <string name="members_no_team_placeholder">(inget)</string>
     <string name="members_teams">Arbetslag</string>
@@ -99,6 +99,7 @@
     <string name="upload_photo_nav_title">Ladda upp foto</string>
     <string name="upload_photo_rules">Absolut inga bilder som är stötande eller som personen på bilden skulle ha invändningar mot att publicera på Internet får laddas upp. Bilden ska vara ett foto på personens ansikte och personen ska gå att känna igen. Bilder som bryter mot detta tas bort. Om detta inte respekteras kommer funktionen att stängas av.</string>
     <string name="upload_photo_select_existing">Välj ett existerande foto</string>
+    <string name="upload_photo_select_member">Välj medlemmen som fotot föreställer.</string>
     <string name="upload_photo_use_camera">Ta ett foto med kameran</string>
     <string name="upload_photo_submit">Skicka</string>
 </resources>

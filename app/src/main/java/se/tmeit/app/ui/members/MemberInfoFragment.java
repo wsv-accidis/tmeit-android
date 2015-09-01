@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -186,7 +187,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         String prefixStr = getString(prefixResId);
         SpannableString teamStr = new SpannableString(prefixStr + " " + str);
         teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        int foregroundColor = getResources().getColor(R.color.color_insektionen, null);
+        int foregroundColor = ContextCompat.getColor(getContext(), R.color.color_insektionen);
         teamStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(teamStr);
     }

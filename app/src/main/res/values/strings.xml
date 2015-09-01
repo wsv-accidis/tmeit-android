@@ -67,7 +67,7 @@
     <string name="members_show_all">Show all</string>
     <string name="members_groups">Groups</string>
     <string name="members_nav_title">Members</string>
-    <string name="members_no_results">No results. Check filters.</string>
+    <string name="members_no_results">No members found.</string>
     <string name="members_no_title_placeholder">(none)</string>
     <string name="members_no_team_placeholder">(none)</string>
     <string name="members_teams">Teams</string>
@@ -107,6 +107,7 @@
     <string name="upload_photo_nav_title">Upload photo</string>
     <string name="upload_photo_rules">Offensive images, or images that a depicted person would object to having published on the Internet may not be uploaded. The image should be a recognizable photo of the persons\'s face. Images that violate these rules will be deleted. Repeated violations will result in this functionality being disabled for everyone.</string>
     <string name="upload_photo_select_existing">Select an existing photo</string>
+    <string name="upload_photo_select_member">Select the member who is in this photo.</string>
     <string name="upload_photo_use_camera">Use camera to take photo</string>
-    <string name="upload_photo_submit">Submit</string>
+    <string name="upload_photo_submit">Upload</string>
 </resources>

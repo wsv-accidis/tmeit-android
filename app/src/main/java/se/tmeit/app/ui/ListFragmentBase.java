@@ -16,7 +16,7 @@ import se.tmeit.app.storage.Preferences;
 /**
  * Base class containing some shared functionality for list fragments that load from the repository.
  */
-public abstract class ListFragmentBase extends ListFragment implements MainActivity.HasTitle {
+public abstract class ListFragmentBase extends ListFragment {
     private final Handler mHandler = new Handler();
     private boolean mIsLoaded;
     private Parcelable mListState;

@@ -18,7 +18,7 @@ import se.tmeit.app.ui.MainActivity;
 /**
  * Fragment for the list of external events.
  */
-public final class ExternalEventsListFragment extends ListFragmentBase {
+public final class ExternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle {
     private static final String STATE_LIST_VIEW = "extEventsListState";
     private static final String TAG = ExternalEventsListFragment.class.getSimpleName();
     private final ExternalEventsResultHandler mRepositoryResultHandler = new ExternalEventsResultHandler();
