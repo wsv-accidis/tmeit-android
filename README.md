@@ -51,5 +51,8 @@ SDKs provided by Google:
 
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
 * [Picasso Image downloading and caching for Android](http://square.github.io/picasso/)
-* [Android CropImage (from AOSP 4.4.4)](https://github.com/lvillani/android-cropimage)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
+
+TMEIT for Android integrates code from the
+[image cropper library by SoundCloud](https://github.com/jdamcd/android-crop) (which is based on
+[AOSP](https://source.android.com/)).
