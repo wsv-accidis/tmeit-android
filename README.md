@@ -54,5 +54,6 @@ SDKs provided by Google:
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
 
 TMEIT for Android integrates code from the
-[image cropper library by SoundCloud](https://github.com/jdamcd/android-crop) (which is based on
+[Image cropping library by SoundCloud](https://github.com/jdamcd/android-crop) (which is based on
+[Android CropImage](https://github.com/lvillani/android-cropimage), which is based on
 [AOSP](https://source.android.com/)).
