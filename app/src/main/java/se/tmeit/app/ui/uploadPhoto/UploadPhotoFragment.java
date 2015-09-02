@@ -35,8 +35,8 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
     private static final String STATE_PENDING_IMAGE_CAPTURE_URI = "uploadPhotoPendingCaptureUri";
     private static final String STATE_PENDING_IMAGE_CROP_URI = "uploadPhotoPendingCropUri";
     private static final String TAG = UploadPhotoFragment.class.getSimpleName();
-    private Uri mPendingImageCaptureUri;
-    private Uri mPendingImageCropUri;
+    private Uri mPendingCaptureUri;
+    private Uri mPendingCropUri;
 
     @Override
     public int getTitle() {
@@ -64,13 +64,13 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
         View view = inflater.inflate(R.layout.fragment_upload_photo, container, false);
 
         if (null != savedInstanceState && savedInstanceState.containsKey(STATE_PENDING_IMAGE_CAPTURE_URI)) {
-            mPendingImageCaptureUri = Uri.parse(savedInstanceState.getString(STATE_PENDING_IMAGE_CAPTURE_URI));
-            Log.d(TAG, "Pending image capture uri = \"" + mPendingImageCaptureUri + "\".");
+            mPendingCaptureUri = Uri.parse(savedInstanceState.getString(STATE_PENDING_IMAGE_CAPTURE_URI));
+            Log.d(TAG, "Pending capture uri = \"" + mPendingCaptureUri + "\".");
         }
 
         if (null != savedInstanceState && savedInstanceState.containsKey(STATE_PENDING_IMAGE_CROP_URI)) {
-            mPendingImageCropUri = Uri.parse(savedInstanceState.getString(STATE_PENDING_IMAGE_CROP_URI));
-            Log.d(TAG, "Pending image crop uri = \"" + mPendingImageCropUri + "\".");
+            mPendingCropUri = Uri.parse(savedInstanceState.getString(STATE_PENDING_IMAGE_CROP_URI));
+            Log.d(TAG, "Pending crop uri = \"" + mPendingCropUri + "\".");
         }
 
         Button takePhotoButton = (Button) view.findViewById(R.id.upload_photo_use_camera);
@@ -84,11 +84,11 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (null != mPendingImageCaptureUri) {
-            outState.putString(STATE_PENDING_IMAGE_CAPTURE_URI, mPendingImageCaptureUri.toString());
+        if (null != mPendingCaptureUri) {
+            outState.putString(STATE_PENDING_IMAGE_CAPTURE_URI, mPendingCaptureUri.toString());
         }
-        if (null != mPendingImageCropUri) {
-            outState.putString(STATE_PENDING_IMAGE_CROP_URI, mPendingImageCropUri.toString());
+        if (null != mPendingCropUri) {
+            outState.putString(STATE_PENDING_IMAGE_CROP_URI, mPendingCropUri.toString());
         }
     }
 
@@ -108,8 +108,8 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
     }
 
     private void handleCropPhotoActivityResult() {
-        Uri uri = mPendingImageCropUri;
-        mPendingImageCropUri = null;
+        Uri uri = mPendingCropUri;
+        mPendingCropUri = null;
 
         if (null == uri) {
             Log.e(TAG, "Tried to handle photo crop but didn't get a uri.");
@@ -130,8 +130,8 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
         Uri sourceUri = null;
 
         if (ACTIVITY_RESULT_TAKE_PHOTO == requestCode) {
-            sourceUri = mPendingImageCaptureUri;
-            mPendingImageCaptureUri = null;
+            sourceUri = mPendingCaptureUri;
+            mPendingCaptureUri = null;
             broadcastMediaScanIntent(sourceUri);
         } else if (ACTIVITY_RESULT_SELECT_EXISTING == requestCode) {
             sourceUri = data.getData();
@@ -143,20 +143,20 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
         }
 
         try {
-            Log.i(TAG, "Captured/selected image from uri = \"" + sourceUri + "\".");
-            mPendingImageCropUri = ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-            Log.d(TAG, "Created image crop uri = \"" + mPendingImageCropUri + "\".");
+            Log.i(TAG, "Captured/selected photo from uri = \"" + sourceUri + "\".");
+            mPendingCropUri = ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+            Log.d(TAG, "Created crop uri = \"" + mPendingCropUri + "\".");
 
             Intent cropIntent = new Intent(getContext(), CropImageActivity.class);
             cropIntent.setData(sourceUri);
-            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPendingImageCropUri);
+            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPendingCropUri);
             cropIntent.putExtra(CropImageActivity.EXTRA_ASPECT_X, BASE_OUTPUT_WIDTH);
             cropIntent.putExtra(CropImageActivity.EXTRA_ASPECT_Y, BASE_OUTPUT_HEIGHT);
             cropIntent.putExtra(CropImageActivity.EXTRA_MAX_X, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_WIDTH);
             cropIntent.putExtra(CropImageActivity.EXTRA_MAX_Y, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT);
             startActivityForResult(cropIntent, ACTIVITY_RESULT_CROPPED_PHOTO);
         } catch (Exception ex) {
-            Log.e(TAG, "Caught an exception while attempting to crop image.", ex);
+            Log.e(TAG, "Caught an exception while attempting to crop photo.", ex);
         }
     }
 
@@ -180,13 +180,13 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
             try {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-                    mPendingImageCaptureUri = createTemporaryImageFile();
-                    Log.d(TAG, "Created image capture uri = \"" + mPendingImageCaptureUri + "\".");
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPendingImageCaptureUri);
+                    mPendingCaptureUri = createTemporaryImageFile();
+                    Log.d(TAG, "Created capture uri = \"" + mPendingCaptureUri + "\".");
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPendingCaptureUri);
                     startActivityForResult(takePictureIntent, ACTIVITY_RESULT_TAKE_PHOTO);
                 }
             } catch (Exception ex) {
-                Log.e(TAG, "Caught an exception while attempting to start image capture.", ex);
+                Log.e(TAG, "Caught an exception while attempting to start capture.", ex);
             }
         }
     }

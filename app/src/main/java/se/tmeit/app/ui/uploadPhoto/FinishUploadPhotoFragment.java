@@ -19,14 +19,15 @@ import se.tmeit.app.ui.members.MembersSimpleListFragment;
  * Fragment which displays the image captured and allows the user to select a member.
  */
 public final class FinishUploadPhotoFragment extends Fragment implements MainActivity.HasTitle {
-    private static final String CAPTURED_IMAGE_URI = "capturedImageUri";
+    private static final String CAPTURED_PHOTO_URI = "capturedPhotoUri";
     private static final String TAG = FinishUploadPhotoFragment.class.getSimpleName();
     private Button mFinishButton;
     private Member mMember;
+    private Uri mCaptureUri;
 
-    public static FinishUploadPhotoFragment createInstance(Uri capturedImageUri) {
+    public static FinishUploadPhotoFragment createInstance(Uri capturedPhotoUri) {
         Bundle bundle = new Bundle();
-        bundle.putString(CAPTURED_IMAGE_URI, capturedImageUri.toString());
+        bundle.putString(CAPTURED_PHOTO_URI, capturedPhotoUri.toString());
 
         FinishUploadPhotoFragment instance = new FinishUploadPhotoFragment();
         instance.setArguments(bundle);
@@ -44,10 +45,10 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
         View view = inflater.inflate(R.layout.fragment_upload_photo_finish, container, false);
 
         Bundle args = getArguments();
-        if (args.containsKey(CAPTURED_IMAGE_URI)) {
-            Uri capturedImageUri = Uri.parse(args.getString(CAPTURED_IMAGE_URI));
+        if (args.containsKey(CAPTURED_PHOTO_URI)) {
+            mCaptureUri = Uri.parse(args.getString(CAPTURED_PHOTO_URI));
             ImageView imageView = (ImageView) view.findViewById(R.id.upload_photo_image);
-            imageView.setImageURI(capturedImageUri);
+            imageView.setImageURI(mCaptureUri);
         }
 
         mFinishButton = (Button) view.findViewById(R.id.upload_photo_finish_button);
@@ -55,7 +56,9 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
         mFinishButton.setOnClickListener(new OnFinishClickedListener());
 
         MembersSimpleListFragment membersList = (MembersSimpleListFragment) getChildFragmentManager().findFragmentById(R.id.upload_photo_member_list);
-        membersList.setOnMemberSelectedListener(new OnMemberSelectedListener());
+        if (null != mCaptureUri) {
+            membersList.setOnMemberSelectedListener(new OnMemberSelectedListener());
+        }
 
         return view;
     }
@@ -63,9 +66,12 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
     private final class OnFinishClickedListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            if (null == mMember) {
+            if (null == mMember || null == mCaptureUri) {
                 return;
             }
+
+            UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(getContext(), mMember.getUsername(), mCaptureUri);
+            uploadPhotoTask.execute();
         }
     }
 

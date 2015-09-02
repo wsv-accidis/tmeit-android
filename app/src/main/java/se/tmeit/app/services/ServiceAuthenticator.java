@@ -118,7 +118,7 @@ public final class ServiceAuthenticator {
 
         @Override
         public void onResponse(Response response) throws IOException {
-            Log.i(TAG, "Authentication response received with HTTP status = " + response.code());
+            Log.i(TAG, "Authentication response received with HTTP status = " + response.code() + ".");
 
             JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
             if (null == responseBody) {
