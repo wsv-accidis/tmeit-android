@@ -10,8 +10,8 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.5 has been published to Google Play. This version adds a simple feature to check if
-someone is over 18 and thus of legal age to be served alcohol.
+Version 1.6 has been published to Google Play. This version adds a feature that allows members
+to upload photos of each other.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended
@@ -21,7 +21,7 @@ to be used in its current state.
 2. DONE - Show general information for TMEIT members, such as the member list
 3. DONE - Handle signups for external events
 4. Handle signups for working at TMEIT events
-5. Allow members to take and upload photos of each other
+5. DONE - Allow members to take and upload photos of each other
 6. Handle reporting of TMEIT events for team leaders
 7. More stuff.
 
