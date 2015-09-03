@@ -33,12 +33,14 @@ public final class UploadPhotoTask extends AsyncTask<Void, Void, Boolean> {
     private final Context mContext;
     private final Uri mSourceUri;
     private final String mUsername;
+    private final UploadPhotoResultListener mResultListener;
     private long mStartTime;
 
-    public UploadPhotoTask(Context context, String username, Uri sourceUri) {
+    public UploadPhotoTask(Context context, String username, Uri sourceUri, UploadPhotoResultListener resultListener) {
         mContext = context;
         mSourceUri = sourceUri;
         mUsername = username;
+        mResultListener = resultListener;
     }
 
     @Override
@@ -93,6 +95,17 @@ public final class UploadPhotoTask extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
+    @Override
+    protected void onPostExecute(Boolean result) {
+        if (null != mResultListener) {
+            if (result) {
+                mResultListener.onSuccess();
+            } else {
+                mResultListener.onFailure();
+            }
+        }
+    }
+
     private boolean uploadPhoto(String imageBase64) throws Exception {
         try {
             Preferences prefs = new Preferences(mContext);
@@ -126,5 +139,11 @@ public final class UploadPhotoTask extends AsyncTask<Void, Void, Boolean> {
             Log.e(TAG, "Could not upload photo because an unexpected exception occurred.", ex);
             throw ex;
         }
+    }
+
+    public interface UploadPhotoResultListener {
+        void onSuccess();
+
+        void onFailure();
     }
 }
