@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +24,15 @@ import se.tmeit.app.ui.members.MembersSimpleListFragment;
  */
 public final class FinishUploadPhotoFragment extends Fragment implements MainActivity.HasTitle {
     private static final String CAPTURED_PHOTO_URI = "capturedPhotoUri";
+    private static final String SELECTED_USER = "selectedUser";
     private static final String TAG = FinishUploadPhotoFragment.class.getSimpleName();
     private final UploadPhotoResultListener mUploadResultListener = new UploadPhotoResultListener();
-    private Button mFinishButton;
-    private Member mMember;
     private Uri mCaptureUri;
+    private Button mFinishButton;
     private View mFinishView;
-    private View mProgressView;
+    private String mSelectedUser;
     private ProgressBar mProgressBar;
+    private View mProgressView;
 
     public static FinishUploadPhotoFragment createInstance(Uri capturedPhotoUri) {
         Bundle bundle = new Bundle();
@@ -58,12 +60,16 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
             imageView.setImageURI(mCaptureUri);
         }
 
+        if (null != savedInstanceState && savedInstanceState.containsKey(SELECTED_USER)) {
+            mSelectedUser = savedInstanceState.getString(SELECTED_USER);
+        }
+
         mFinishView = view.findViewById(R.id.upload_photo_finish_layout);
         mProgressView = view.findViewById(R.id.upload_photo_progress_layout);
         mProgressBar = (ProgressBar) view.findViewById(R.id.upload_photo_progress_bar);
 
         mFinishButton = (Button) view.findViewById(R.id.upload_photo_finish_button);
-        mFinishButton.setEnabled(false);
+        mFinishButton.setEnabled(!TextUtils.isEmpty(mSelectedUser));
         mFinishButton.setOnClickListener(new OnFinishClickedListener());
 
         MembersSimpleListFragment membersList = (MembersSimpleListFragment) getChildFragmentManager().findFragmentById(R.id.upload_photo_member_list);
@@ -74,10 +80,15 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(SELECTED_USER, mSelectedUser);
+    }
+
     private final class OnFinishClickedListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            if (null == mMember || null == mCaptureUri) {
+            if (null == mSelectedUser || null == mCaptureUri) {
                 return;
             }
 
@@ -85,24 +96,20 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
             mProgressView.setVisibility(View.VISIBLE);
             mProgressBar.setIndeterminate(true);
 
-            UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(getContext(), mMember.getUsername(), mCaptureUri, mUploadResultListener);
+            UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(getContext(), mSelectedUser, mCaptureUri, mUploadResultListener);
             uploadPhotoTask.execute();
         }
     }
 
-    private final class UploadPhotoResultListener implements UploadPhotoTask.UploadPhotoResultListener {
+    private final class OnMemberSelectedListener implements MembersSimpleListFragment.OnMemberSelectedListener {
         @Override
-        public void onSuccess() {
-            Activity activity = getActivity();
-            if (null != activity && isVisible() && activity instanceof MainActivity) {
-                MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.openFragment(new UploadPhotoFragment(), true);
-            }
-
-            Toast toast = Toast.makeText(getContext(), R.string.upload_photo_succeeded, Toast.LENGTH_LONG);
-            toast.show();
+        public void onMemberSelected(Member member) {
+            mFinishButton.setEnabled(true);
+            mSelectedUser = member.getUsername();
         }
+    }
 
+    private final class UploadPhotoResultListener implements UploadPhotoTask.UploadPhotoResultListener {
         @Override
         public void onFailure() {
             if (isVisible()) {
@@ -114,13 +121,17 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
             Toast toast = Toast.makeText(getContext(), R.string.upload_photo_failed, Toast.LENGTH_LONG);
             toast.show();
         }
-    }
 
-    private final class OnMemberSelectedListener implements MembersSimpleListFragment.OnMemberSelectedListener {
         @Override
-        public void onMemberSelected(Member member) {
-            mFinishButton.setEnabled(true);
-            mMember = member;
+        public void onSuccess() {
+            Activity activity = getActivity();
+            if (null != activity && isVisible() && activity instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) activity;
+                mainActivity.openFragment(new UploadPhotoFragment(), true);
+            }
+
+            Toast toast = Toast.makeText(getContext(), R.string.upload_photo_succeeded, Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 }
