@@ -10,23 +10,16 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.6 has been published to Google Play. This version adds a feature that allows members
+Version 1.61 has been published to Google Play. This version adds a feature that allows members
 to upload photos of each other.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended
-to be used in its current state.
+to be used in its current state. It is intended to function as a complement to TMEIT.se but once
+enough features are implemented it could replace the website completely for many members.
 
-1. DONE - Show push notifications regarding new activities being published on the TMEIT web site
-2. DONE - Show general information for TMEIT members, such as the member list
-3. DONE - Handle signups for external events
-4. Handle signups for working at TMEIT events
-5. DONE - Allow members to take and upload photos of each other
-6. Handle reporting of TMEIT events for team leaders
-7. More stuff.
-
-This app is intended to function as a complement to TMEIT.se but eventually, it could be
-a full replacement for those who prefer a smartphone or tablet instead of a computer.
+See the project [Issues](https://github.com/wsv-accidis/tmeit-android/issues) for the current
+development backlog. This includes bugs as well as enhancements and upcoming features.
 
 This project is open-source to facilitate porting to other platforms.
 
