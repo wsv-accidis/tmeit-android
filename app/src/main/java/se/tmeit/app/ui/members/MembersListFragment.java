@@ -102,7 +102,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             subMenu.clear();
 
             if (null != mMembers) {
-                subMenu.add(Menu.NONE, MENU_CLEAR_FILTER_ID, Menu.NONE, R.string.members_show_all);
+                subMenu.add(Menu.NONE, MENU_CLEAR_FILTER_ID, Menu.NONE, (isShowingEverything() ? R.string.members_hide_all : R.string.members_show_all));
 
                 subMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.members_groups).setEnabled(false);
                 for (Map.Entry<Integer, String> group : mMembers.getGroups().entrySet()) {
@@ -154,7 +154,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         return false;
     }
 
-
     @Override
     protected void getDataFromRepository(Repository repository) {
         repository.getMembers(mRepositoryResultHandler);
@@ -179,9 +178,24 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         refreshFilter();
     }
 
+    private boolean isShowingEverything() {
+        return mFilteredGroups.isEmpty() && mFilteredTeams.isEmpty();
+    }
+
     private void onClearFilterSelected() {
-        mFilteredGroups.clear();
-        mFilteredTeams.clear();
+        if (null == mMembers) {
+            return;
+        }
+
+        if (isShowingEverything()) {
+            mFilteredTeams.addAll(mMembers.getTeams().keySet());
+            mFilteredGroups.addAll(mMembers.getGroups().keySet());
+        } else {
+            mFilteredGroups.clear();
+            mFilteredTeams.clear();
+        }
+
+        setClearFilterItemState();
         setMenuItemStates();
         refreshFilter();
     }
@@ -195,6 +209,8 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             mFilteredGroups.add(groupId);
             item.setChecked(false);
         }
+
+        setClearFilterItemState();
         refreshFilter();
     }
 
@@ -207,6 +223,8 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             mFilteredTeams.add(teamId);
             item.setChecked(false);
         }
+
+        setClearFilterItemState();
         refreshFilter();
     }
 
@@ -252,6 +270,17 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         }
     }
 
+    private void setClearFilterItemState() {
+        if (null == mFilterMenu) {
+            return;
+        }
+
+        MenuItem clearItem = mFilterMenu.findItem(MENU_CLEAR_FILTER_ID);
+        if (null != clearItem) {
+            clearItem.setTitle(isShowingEverything() ? R.string.members_hide_all : R.string.members_show_all);
+        }
+    }
+
     private void setMenuItemStates() {
         if (null == mMembers || null == mFilterMenu) {
             return;
@@ -259,14 +288,14 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
         for (Integer groupId : mMembers.getGroups().keySet()) {
             MenuItem groupItem = mFilterMenu.findItem(MENU_GROUPS_ID + groupId);
-            if (null != groupItem && !mFilteredGroups.contains(groupId)) {
-                groupItem.setChecked(true);
+            if (null != groupItem) {
+                groupItem.setChecked(!mFilteredGroups.contains(groupId));
             }
         }
         for (Integer teamId : mMembers.getTeams().keySet()) {
             MenuItem teamItem = mFilterMenu.findItem(MENU_TEAMS_ID + teamId);
-            if (null != teamItem && !mFilteredTeams.contains(teamId)) {
-                teamItem.setChecked(true);
+            if (null != teamItem) {
+                teamItem.setChecked(!mFilteredTeams.contains(teamId));
             }
         }
     }

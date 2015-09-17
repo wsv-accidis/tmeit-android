@@ -56,12 +56,13 @@
     <string name="member_team">Arbetslag</string>
     <string name="member_title">Titel</string>
 
-    <string name="members_show_all">Visa alla</string>
     <string name="members_groups">Grupper</string>
+    <string name="members_hide_all">Dölj alla</string>
     <string name="members_nav_title">Medlemmar</string>
     <string name="members_no_results">Inga medlemmar funna.</string>
     <string name="members_no_title_placeholder">(ingen)</string>
     <string name="members_no_team_placeholder">(inget)</string>
+    <string name="members_show_all">Visa alla</string>
     <string name="members_teams">Arbetslag</string>
 
     <string name="network_error_not_available">Det finns inget tillgängligt nätverk. Appen kommer inte att fungera utan nätåtkomst.</string>
