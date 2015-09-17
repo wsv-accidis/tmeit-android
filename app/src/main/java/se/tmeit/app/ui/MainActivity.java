@@ -150,7 +150,7 @@ public final class MainActivity extends AppCompatActivity {
         Fragment nextFragment = NavigationItem.createFragment(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
-            openFragment(nextFragment, false);
+            openFragment(nextFragment, true);
         } else {
             Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
         }
