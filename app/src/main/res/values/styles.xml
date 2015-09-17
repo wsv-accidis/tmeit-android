@@ -5,6 +5,10 @@
     <color name="color_insektionen_light">#70AACC</color>
     <color name="color_insektionen_verylight">#A0CCE5</color>
 
+    <style name="AboutText">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
     <style name="AgeCheckLargeText">
         <item name="android:textColor">@android:color/primary_text_light</item>
         <item name="android:textSize">36sp</item>
@@ -81,11 +85,11 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="OnboardingLabel" parent="TextAppearance.AppCompat.Medium">
+    <style name="OnboardingText" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
-    <style name="SettingsLabel" parent="TextAppearance.AppCompat.Medium">
+    <style name="SettingsText" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 </resources>

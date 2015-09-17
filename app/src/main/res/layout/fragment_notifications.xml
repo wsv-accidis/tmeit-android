@@ -11,7 +11,7 @@
     <TableRow>
 
         <TextView
-            style="@style/SettingsLabel"
+            style="@style/SettingsText"
             android:text="@string/notifications_receive_notifications"/>
 
         <Switch
