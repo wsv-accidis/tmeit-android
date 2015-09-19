@@ -66,7 +66,7 @@ public final class MemberActions {
 
     public static void makeCallTo(String phoneNo, Fragment fragment) {
         try {
-            Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNo, null));
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNo, null));
             fragment.startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, "Exception while trying to start a call.", e);

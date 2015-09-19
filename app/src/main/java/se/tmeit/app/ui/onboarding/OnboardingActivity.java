@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import se.tmeit.app.R;
+import se.tmeit.app.services.AuthenticationResultHandler;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
@@ -18,7 +19,7 @@ public final class OnboardingActivity extends FragmentActivity {
     private final static String TAG = OnboardingActivity.class.getSimpleName();
     private final Handler mHandler = new Handler();
     private final ScanResultHandler mResultHandler = new ScanResultHandler();
-    private AuthenticationResultHandler mAuthResultHandler;
+    private OnboardingAuthenticationResultHandler mAuthResultHandler;
     private FragmentManager mFragmentManager;
     private boolean mHasShownNetworkAlert;
     private Preferences mPrefs;
@@ -58,11 +59,11 @@ public final class OnboardingActivity extends FragmentActivity {
         }
     }
 
-    private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
+    private final class OnboardingAuthenticationResultHandler implements AuthenticationResultHandler {
         private boolean mAbandoned;
         private WaitingFragment mWaitingFragment;
 
-        public AuthenticationResultHandler(WaitingFragment waitingFragment) {
+        public OnboardingAuthenticationResultHandler(WaitingFragment waitingFragment) {
             mWaitingFragment = waitingFragment;
         }
 
@@ -87,14 +88,14 @@ public final class OnboardingActivity extends FragmentActivity {
         }
 
         @Override
-        public void onSuccess(String serviceAuth, String authenticatedUser) {
+        public void onSuccess(String serviceAuth, String userName, int userId) {
             if (mAbandoned) {
                 return;
             }
 
-            Log.i(TAG, "Completed onboarding flow. Authenticated user = " + authenticatedUser);
+            Log.i(TAG, "Completed onboarding flow. Authenticated user name = " + userName + ", id = " + userId);
             mPrefs.setServiceAuthentication(serviceAuth);
-            mPrefs.setAuthenticatedUser(authenticatedUser);
+            mPrefs.setAuthenticatedUser(userName, userId);
 
             mHandler.post(new Runnable() {
                 @Override
@@ -132,7 +133,7 @@ public final class OnboardingActivity extends FragmentActivity {
                     .commit();
 
             ServiceAuthenticator authenticator = new ServiceAuthenticator();
-            mAuthResultHandler = new AuthenticationResultHandler(waitingFragment);
+            mAuthResultHandler = new OnboardingAuthenticationResultHandler(waitingFragment);
             authenticator.authenticateFromCode(authCode, mAuthResultHandler);
         }
     }

@@ -1,6 +1,7 @@
 package se.tmeit.app.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -15,7 +16,7 @@ import se.tmeit.app.storage.Preferences;
 /**
  * Base class containing some shared functionality for list fragments that load from the repository.
  */
-public abstract class ListFragmentBase extends ListFragment implements MainActivity.HasTitle {
+public abstract class ListFragmentBase extends ListFragment {
     private final Handler mHandler = new Handler();
     private boolean mIsLoaded;
     private Parcelable mListState;
@@ -30,9 +31,9 @@ public abstract class ListFragmentBase extends ListFragment implements MainActiv
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPrefs = new Preferences(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mPrefs = new Preferences(context);
     }
 
     @Override
@@ -40,7 +41,7 @@ public abstract class ListFragmentBase extends ListFragment implements MainActiv
         super.onResume();
 
         if (!mIsLoaded) {
-            String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
+            String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
             getDataFromRepository(new Repository(username, serviceAuth));
         } else {
             initializeList();

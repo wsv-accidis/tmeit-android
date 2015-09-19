@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -82,9 +83,9 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mFaceHelper = MemberFaceHelper.getInstance(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mFaceHelper = MemberFaceHelper.getInstance(context);
     }
 
     @Override
@@ -106,7 +107,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
         ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
         List<String> faces = args.getStringArrayList(Member.Keys.FACES);
-        if (!faces.isEmpty()) {
+        if (null != faces && !faces.isEmpty()) {
             mFaceHelper.picasso(faces)
                     .placeholder(R.drawable.member_placeholder)
                     .into(imageView);
@@ -186,7 +187,8 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         String prefixStr = getString(prefixResId);
         SpannableString teamStr = new SpannableString(prefixStr + " " + str);
         teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        teamStr.setSpan(new ForegroundColorSpan(R.color.color_insektionen), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int foregroundColor = ContextCompat.getColor(getContext(), R.color.color_insektionen);
+        teamStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(teamStr);
     }
 

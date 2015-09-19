@@ -19,12 +19,14 @@
             android:id="@+id/event_button_attending"
             style="?android:buttonBarButtonStyle"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_check_circle"
-            android:text="@string/event_attending"/>
+            android:enabled="false"
+            android:text="@string/event_not_attending"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ScrollView
@@ -45,9 +47,90 @@
                 android:id="@+id/event_title"
                 style="@style/EventInfoHeader"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Foo bar"/>
+                android:layout_height="wrap_content"/>
 
+            <TextView
+                android:id="@+id/event_start_date"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_invitation"
+                android:drawablePadding="8dp"/>
+
+            <TextView
+                android:id="@+id/event_last_signup"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/ic_event_busy"
+                android:drawablePadding="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/event_progress_bar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:indeterminate="true"/>
+
+            <LinearLayout
+                android:id="@+id/event_details_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/event_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:autoLink="email|web"/>
+
+                <TextView
+                    android:id="@+id/event_external_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:autoLink="web"
+                    android:ellipsize="end"
+                    android:singleLine="true"/>
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    style="@style/EventInfoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/ic_group"
+                    android:drawablePadding="8dp"
+                    android:text="@string/event_attendees_title"/>
+
+                <TextView
+                    android:id="@+id/event_no_attendees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/event_no_attendees_yet"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/event_attendees"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

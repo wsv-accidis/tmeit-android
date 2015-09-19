@@ -39,9 +39,9 @@ public final class MemberImagesFragment extends Fragment implements MainActivity
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mFaceHelper = MemberFaceHelper.getInstance(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mFaceHelper = MemberFaceHelper.getInstance(context);
     }
 
     @Override
@@ -51,7 +51,7 @@ public final class MemberImagesFragment extends Fragment implements MainActivity
         Bundle args = getArguments();
 
         List<String> faces = args.getStringArrayList(Member.Keys.FACES);
-        if (!faces.isEmpty()) {
+        if (null != faces && !faces.isEmpty()) {
             GridView gridView = (GridView) view;
             gridView.setAdapter(new MemberImageAdapter(getActivity(), faces, mFaceHelper));
         }

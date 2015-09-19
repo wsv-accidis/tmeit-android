@@ -1,19 +1,29 @@
 package se.tmeit.app.ui.externalEvents;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+
 import java.util.List;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
+import se.tmeit.app.ui.MainActivity;
 
 /**
  * Fragment for the list of external events.
  */
-public final class ExternalEventsListFragment extends ListFragmentBase {
+public final class ExternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle {
     private static final String STATE_LIST_VIEW = "extEventsListState";
-    private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
+    private static final String TAG = ExternalEventsListFragment.class.getSimpleName();
+    private final ExternalEventsResultHandler mRepositoryResultHandler = new ExternalEventsResultHandler();
     private List<ExternalEvent> mEvents;
+    private ExternalEventsListAdapter mListAdapter;
 
     @Override
     public int getTitle() {
@@ -32,11 +42,11 @@ public final class ExternalEventsListFragment extends ListFragmentBase {
 
     @Override
     protected void initializeList() {
-        ExternalEventsListAdapter listAdapter = new ExternalEventsListAdapter(getActivity(), mEvents);
-        finishInitializeList(listAdapter);
+        mListAdapter = new ExternalEventsListAdapter(getActivity(), mEvents);
+        finishInitializeList(mListAdapter);
     }
 
-    private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<List<ExternalEvent>> {
+    private final class ExternalEventsResultHandler implements RepositoryResultHandler<List<ExternalEvent>> {
         @Override
         public void onError(int errorMessage) {
             mEvents = null;
@@ -47,6 +57,22 @@ public final class ExternalEventsListFragment extends ListFragmentBase {
         public void onSuccess(List<ExternalEvent> result) {
             mEvents = result;
             onRepositorySuccess();
+        }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (position < mListAdapter.getCount()) {
+            ExternalEvent externalEvent = (ExternalEvent) mListAdapter.getItem(position);
+            Fragment eventInfoFragment = ExternalEventInfoFragment.createInstance(externalEvent);
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                saveInstanceState();
+                MainActivity mainActivity = (MainActivity) activity;
+                mainActivity.openFragment(eventInfoFragment, true);
+            } else {
+                Log.e(TAG, "Activity holding fragment is not MainActivity!");
+            }
         }
     }
 }

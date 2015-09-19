@@ -3,10 +3,14 @@ package se.tmeit.app.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Model object for external events.
  */
 public final class ExternalEvent {
+    private String mBody;
+    private String mExternalUrl;
     private int mId;
     private boolean mIsAttending;
     private boolean mIsNearSignup;
@@ -19,16 +23,34 @@ public final class ExternalEvent {
 
     public static ExternalEvent fromJson(JSONObject obj) throws JSONException {
         ExternalEvent event = new ExternalEvent();
+        event.setBody(obj.optString(Keys.BODY));
+        event.setExternalUrl(obj.optString(Keys.EXTERNAL_URL));
         event.setId(obj.getInt(Keys.ID));
-        event.setIsAttending(obj.getBoolean(Keys.IS_ATTENDING));
-        event.setIsNearSignup(obj.getBoolean(Keys.IS_NEAR_SIGNUP));
+        event.setIsAttending(obj.optBoolean(Keys.IS_ATTENDING));
+        event.setIsNearSignup(obj.optBoolean(Keys.IS_NEAR_SIGNUP));
         event.setIsPast(obj.getBoolean(Keys.IS_PAST));
         event.setIsPastSignup(obj.getBoolean(Keys.IS_PAST_SIGNUP));
         event.setLastSignupDate(obj.getString(Keys.LAST_SIGNUP));
-        event.setNumberOfAttendees(obj.getInt(Keys.ATTENDEES));
+        event.setNumberOfAttendees(obj.optInt(Keys.ATTENDEES));
         event.setStartDate(obj.getString(Keys.START_DATE));
         event.setTitle(obj.getString(Keys.TITLE));
         return event;
+    }
+
+    public String getBody() {
+        return mBody;
+    }
+
+    private void setBody(String body) {
+        mBody = body;
+    }
+
+    public String getExternalUrl() {
+        return mExternalUrl;
+    }
+
+    private void setExternalUrl(String value) {
+        mExternalUrl = value;
     }
 
     public int getId() {
@@ -87,7 +109,7 @@ public final class ExternalEvent {
         return mIsPastSignup;
     }
 
-    private void setIsAttending(boolean value) {
+    public void setIsAttending(boolean value) {
         mIsAttending = value;
     }
 
@@ -105,6 +127,8 @@ public final class ExternalEvent {
 
     public static class Keys {
         public static final String ATTENDEES = "attendees";
+        public static final String BODY = "body";
+        public static final String EXTERNAL_URL = "external_url";
         public static final String ID = "id";
         public static final String IS_ATTENDING = "is_attending";
         public static final String IS_NEAR_SIGNUP = "is_near_signup";
@@ -115,6 +139,40 @@ public final class ExternalEvent {
         public static final String TITLE = "title";
 
         private Keys() {
+        }
+    }
+
+    public static class RepositoryData {
+        private final List<ExternalEventAttendee> mAttendees;
+        private final ExternalEventAttendee mCurrentAttendee;
+        private final ExternalEvent mExternalEvent;
+
+        public RepositoryData(ExternalEvent externalEvent, ExternalEventAttendee currentAttendee, List<ExternalEventAttendee> attendees) {
+            mExternalEvent = externalEvent;
+            mCurrentAttendee = currentAttendee;
+            mAttendees = attendees;
+        }
+
+        public List<ExternalEventAttendee> getAttendees() {
+            return mAttendees;
+        }
+
+        public ExternalEventAttendee getCurrentAttendee() {
+            return mCurrentAttendee;
+        }
+
+        public ExternalEvent getExternalEvent() {
+            return mExternalEvent;
+        }
+
+        public boolean isUserAttending(int userId) {
+            for (ExternalEventAttendee attendee : mAttendees) {
+                if (userId == attendee.getId()) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

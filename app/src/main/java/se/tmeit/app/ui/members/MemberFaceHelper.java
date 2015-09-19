@@ -10,6 +10,7 @@ import com.squareup.picasso.RequestCreator;
 import java.util.List;
 import java.util.Random;
 
+import se.tmeit.app.R;
 import se.tmeit.app.services.TmeitHttpClient;
 import se.tmeit.app.services.TmeitServiceConfig;
 
@@ -42,5 +43,9 @@ public final class MemberFaceHelper {
     public RequestCreator picasso(List<String> faces, int index) {
         String face = faces.get(index);
         return mPicasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(face).build());
+    }
+
+    public RequestCreator placeholder() {
+        return mPicasso.load(R.drawable.member_placeholder);
     }
 }

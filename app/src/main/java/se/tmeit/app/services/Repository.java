@@ -2,11 +2,12 @@ package se.tmeit.app.services;
 
 import android.util.Log;
 
+import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,15 +20,13 @@ import java.util.Map;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
-import se.tmeit.app.model.InternalEvent;
+import se.tmeit.app.model.ExternalEventAttendee;
 import se.tmeit.app.model.Member;
 
 /**
  * Downloads data entities from TMEIT web services.
  */
 public final class Repository {
-    private static final String FIELD_ID = "id";
-    private static final String FIELD_TITLE = "title";
     private static final String HEADER_SERVICE_AUTH = "X-TMEIT-Service-Auth";
     private static final String HEADER_USERNAME = "X-TMEIT-Username";
     private static final String TAG = Repository.class.getSimpleName();
@@ -39,14 +38,31 @@ public final class Repository {
         mServiceAuth = serviceAuth;
     }
 
+    public void attendExternalEvent(int id, ExternalEventAttendee attendee, RepositoryResultHandler<Void> resultHandler) {
+        try {
+            Request request = new Request.Builder()
+                    .url(TmeitServiceConfig.SERVICE_BASE_URL + "AttendExternalEvent.php")
+                    .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForAttendExternalEvent(id, attendee)))
+                    .build();
+
+            TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
+        } catch (JSONException ex) {
+            Log.e(TAG, "Unexpected JSON exception while creating request.", ex);
+            resultHandler.onError(R.string.network_error_unspecified_protocol);
+        }
+    }
+
+    public void getExternalEventDetails(int id, boolean noCache, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
+        Request.Builder requestBuilder = getRequestBuilder("GetExternalEventDetails.php/" + id);
+        if(noCache) {
+            requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
+        }
+        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventDetailsCallback(resultHandler));
+    }
+
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
         Request request = getRequestBuilder("GetExternalEvents.php").build();
         TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventsCallback(resultHandler));
-    }
-
-    public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
-        Request request = getRequestBuilder("GetEvents.php").build();
-        TmeitHttpClient.getInstance().enqueueRequest(request, new GetInternalEventsCallback(resultHandler));
     }
 
     public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
@@ -58,23 +74,82 @@ public final class Repository {
         Map<Integer, String> result = new LinkedHashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            result.put(obj.getInt(FIELD_ID), obj.getString(FIELD_TITLE));
+            result.put(obj.getInt(Keys.ID), obj.getString(Keys.TITLE));
         }
         return result;
+    }
+
+    private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put(TmeitServiceConfig.USERNAME_KEY, mUsername);
+        json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, mServiceAuth);
+        json.put(Keys.EVENT_ID, id);
+
+        if (null != attendee) {
+            JSONObject attending = new JSONObject();
+            attending.put(Keys.DOB, attendee.getDateOfBirth());
+            attending.put(Keys.DRINK_PREFS, attendee.getDrinkPreferences());
+            attending.put(Keys.FOOD_PREFS, attendee.getFoodPreferences());
+            attending.put(Keys.NOTES, attendee.getNotes());
+            json.put(Keys.ATTENDING, attending);
+        }
+
+        return json.toString();
     }
 
     private Request.Builder getRequestBuilder(String relativeUrl) {
         return new Request.Builder()
                 .url(TmeitServiceConfig.SERVICE_BASE_URL + relativeUrl)
                 .addHeader(HEADER_USERNAME, mUsername)
-                .addHeader(HEADER_SERVICE_AUTH, mServiceAuth)
-                .get();
+                .addHeader(HEADER_SERVICE_AUTH, mServiceAuth);
     }
 
-    public static interface RepositoryResultHandler<TResult> {
-        public void onError(int errorMessage);
+    private static class Keys {
+        public static final String ATTENDEE = "attendee";
+        public static final String ATTENDEES = "attendees";
+        public static final String ATTENDING = "attending";
+        public static final String DOB = "dob";
+        public static final String DRINK_PREFS = "drink_prefs";
+        public static final String EVENT = "event";
+        public static final String EVENT_ID = "event_id";
+        public static final String FOOD_PREFS = "food_prefs";
+        public static final String GROUPS = "groups";
+        public static final String ID = "id";
+        public static final String NOTES = "notes";
+        public static final String TEAMS = "teams";
+        public static final String TITLE = "title";
+        public static final String TITLES = "titles";
+        public static final String USERS = "users";
 
-        public void onSuccess(TResult result);
+        private Keys() {
+        }
+    }
+
+    private final class AttendExternalEventCallback extends GetResultCallback<Void> {
+        public AttendExternalEventCallback(RepositoryResultHandler<Void> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected Void getResult(JSONObject responseBody) throws JSONException {
+            return null;
+        }
+    }
+
+    private final class GetExternalEventDetailsCallback extends GetResultCallback<ExternalEvent.RepositoryData> {
+        public GetExternalEventDetailsCallback(RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected ExternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
+            JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
+            JSONObject jsonAttendee = responseBody.getJSONObject(Keys.ATTENDEE);
+            JSONArray jsonAttendees = responseBody.getJSONArray(Keys.ATTENDEES);
+            return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent),
+                    ExternalEventAttendee.fromJson(jsonAttendee),
+                    ExternalEventAttendee.fromJsonArray(jsonAttendees));
+        }
     }
 
     private final class GetExternalEventsCallback extends GetResultCallback<List<ExternalEvent>> {
@@ -90,29 +165,8 @@ public final class Repository {
 
             ArrayList<ExternalEvent> events = new ArrayList<>();
             for (int i = 0; i < jsonEvents.length(); i++) {
-                JSONObject jsonEvent = jsonEvents.getJSONObject(i);
-                events.add(ExternalEvent.fromJson(jsonEvent));
-            }
-
-            return events;
-        }
-    }
-
-    private final class GetInternalEventsCallback extends GetResultCallback<List<InternalEvent>> {
-        private static final String EVENTS = "events";
-
-        public GetInternalEventsCallback(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
-            super(resultHandler);
-        }
-
-        @Override
-        protected List<InternalEvent> getResult(JSONObject responseBody) throws JSONException {
-            JSONArray jsonEvents = responseBody.getJSONArray(EVENTS);
-
-            ArrayList<InternalEvent> events = new ArrayList<>();
-            for(int i = 0; i < jsonEvents.length(); i++) {
-                JSONObject jsonEvent = jsonEvents.getJSONObject(i);
-                events.add(InternalEvent.fromJson(jsonEvent));
+                JSONObject jsonUser = jsonEvents.getJSONObject(i);
+                events.add(ExternalEvent.fromJson(jsonUser));
             }
 
             return events;
@@ -120,22 +174,17 @@ public final class Repository {
     }
 
     private final class GetMembersCallback extends GetResultCallback<Member.RepositoryData> {
-        private static final String GROUPS = "groups";
-        private static final String TEAMS = "teams";
-        private static final String TITLES = "titles";
-        private static final String USERS = "users";
-
         public GetMembersCallback(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
         @Override
         protected Member.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(GROUPS));
-            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(TEAMS));
-            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(TITLES));
+            Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(Keys.GROUPS));
+            Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TEAMS));
+            Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TITLES));
 
-            JSONArray jsonUsers = responseBody.getJSONArray(USERS);
+            JSONArray jsonUsers = responseBody.getJSONArray(Keys.USERS);
 
             ArrayList<Member> members = new ArrayList<>();
             for (int i = 0; i < jsonUsers.length(); i++) {
@@ -164,7 +213,7 @@ public final class Repository {
         public void onResponse(Response response) throws IOException {
             Log.i(TAG, "Download response received with HTTP status = " + response.code() + ", cached = " + (null == response.networkResponse()) + ".");
 
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 Log.e(TAG, "Downloading data failed because an unsuccessful HTTP status code (" + response.code() + ") was returned.");
                 mResultHandler.onError(R.string.repository_error_unspecified_protocol);
                 return;

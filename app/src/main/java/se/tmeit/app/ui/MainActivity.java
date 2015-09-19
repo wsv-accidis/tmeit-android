@@ -20,6 +20,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
+import se.tmeit.app.services.AuthenticationResultHandler;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
@@ -65,9 +66,9 @@ public final class MainActivity extends AppCompatActivity {
 
     public void openFragment(Fragment fragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
         if (addToBackStack) {
             transaction.addToBackStack(null);
@@ -127,6 +128,7 @@ public final class MainActivity extends AppCompatActivity {
                 showNoNetworkAlert(this);
             }
 
+            // TODO Perhaps we don't need to call this if we already did a few seconds ago (e.g. screen rotation)
             validateAndRegisterServicesIfNeeded();
         }
     }
@@ -148,7 +150,7 @@ public final class MainActivity extends AppCompatActivity {
         Fragment nextFragment = NavigationItem.createFragment(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
-            openFragment(nextFragment, false);
+            openFragment(nextFragment, true);
         } else {
             Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
         }
@@ -170,7 +172,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void startOnboardingActivity() {
-        Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
+        Intent intent = new Intent(this, OnboardingActivity.class);
         startActivity(intent);
         finish();
     }
@@ -195,22 +197,22 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void validateAndRegisterServicesIfNeeded() {
-        String username = mPrefs.getAuthenticatedUser(), serviceAuth = mPrefs.getServiceAuthentication();
+        String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
         ServiceAuthenticator authenticator = new ServiceAuthenticator();
-        authenticator.authenticateFromCredentials(username, serviceAuth, new AuthenticationResultHandler());
+        authenticator.authenticateFromCredentials(username, serviceAuth, new MainAuthenticationResultHandler());
     }
 
-    public static interface HasMenu {
+    public interface HasMenu {
         int getMenu();
 
         boolean onMenuItemSelected(MenuItem item);
     }
 
-    public static interface HasTitle {
+    public interface HasTitle {
         int getTitle();
     }
 
-    private final class AuthenticationResultHandler implements ServiceAuthenticator.AuthenticationResultHandler {
+    private final class MainAuthenticationResultHandler implements AuthenticationResultHandler {
         @Override
         public void onAuthenticationError(int errorMessage) {
             showErrorMessage(errorMessage);
@@ -233,7 +235,10 @@ public final class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSuccess(String serviceAuth, String authenticatedUser) {
+        public void onSuccess(String serviceAuth, String userName, int userId) {
+            mPrefs.setServiceAuthentication(serviceAuth);
+            mPrefs.setAuthenticatedUser(userName, userId);
+
             GcmRegistration.getInstance(MainActivity.this)
                     .registerIfRegistrationExpired(new RegistrationResultHandler());
         }

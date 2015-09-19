@@ -23,13 +23,14 @@ import java.util.Set;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 
 /**
  * Fragment for the list of members.
  */
-public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu {
+public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu, MainActivity.HasTitle {
     private static final int MENU_CLEAR_FILTER_ID = 1;
     private static final int MENU_GROUPS_ID = 10000;
     private static final int MENU_TEAMS_ID = 20000;
@@ -37,7 +38,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
     private static final String TAG = MembersListFragment.class.getSimpleName();
     private final Set<Integer> mFilteredGroups = new HashSet<>();
     private final Set<Integer> mFilteredTeams = new HashSet<>();
-    private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
+    private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
     private Menu mFilterMenu;
     private MembersListAdapter mListAdapter;
     private Member.RepositoryData mMembers;
@@ -101,7 +102,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             subMenu.clear();
 
             if (null != mMembers) {
-                subMenu.add(Menu.NONE, MENU_CLEAR_FILTER_ID, Menu.NONE, R.string.members_show_all);
+                subMenu.add(Menu.NONE, MENU_CLEAR_FILTER_ID, Menu.NONE, (isShowingEverything() ? R.string.members_hide_all : R.string.members_show_all));
 
                 subMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.members_groups).setEnabled(false);
                 for (Map.Entry<Integer, String> group : mMembers.getGroups().entrySet()) {
@@ -153,7 +154,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         return false;
     }
 
-
     @Override
     protected void getDataFromRepository(Repository repository) {
         repository.getMembers(mRepositoryResultHandler);
@@ -178,9 +178,24 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         refreshFilter();
     }
 
+    private boolean isShowingEverything() {
+        return mFilteredGroups.isEmpty() && mFilteredTeams.isEmpty();
+    }
+
     private void onClearFilterSelected() {
-        mFilteredGroups.clear();
-        mFilteredTeams.clear();
+        if (null == mMembers) {
+            return;
+        }
+
+        if (isShowingEverything()) {
+            mFilteredTeams.addAll(mMembers.getTeams().keySet());
+            mFilteredGroups.addAll(mMembers.getGroups().keySet());
+        } else {
+            mFilteredGroups.clear();
+            mFilteredTeams.clear();
+        }
+
+        setClearFilterItemState();
         setMenuItemStates();
         refreshFilter();
     }
@@ -194,6 +209,8 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             mFilteredGroups.add(groupId);
             item.setChecked(false);
         }
+
+        setClearFilterItemState();
         refreshFilter();
     }
 
@@ -206,6 +223,8 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             mFilteredTeams.add(teamId);
             item.setChecked(false);
         }
+
+        setClearFilterItemState();
         refreshFilter();
     }
 
@@ -251,6 +270,17 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         }
     }
 
+    private void setClearFilterItemState() {
+        if (null == mFilterMenu) {
+            return;
+        }
+
+        MenuItem clearItem = mFilterMenu.findItem(MENU_CLEAR_FILTER_ID);
+        if (null != clearItem) {
+            clearItem.setTitle(isShowingEverything() ? R.string.members_hide_all : R.string.members_show_all);
+        }
+    }
+
     private void setMenuItemStates() {
         if (null == mMembers || null == mFilterMenu) {
             return;
@@ -258,19 +288,19 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
         for (Integer groupId : mMembers.getGroups().keySet()) {
             MenuItem groupItem = mFilterMenu.findItem(MENU_GROUPS_ID + groupId);
-            if (null != groupItem && !mFilteredGroups.contains(groupId)) {
-                groupItem.setChecked(true);
+            if (null != groupItem) {
+                groupItem.setChecked(!mFilteredGroups.contains(groupId));
             }
         }
         for (Integer teamId : mMembers.getTeams().keySet()) {
             MenuItem teamItem = mFilterMenu.findItem(MENU_TEAMS_ID + teamId);
-            if (null != teamItem && !mFilteredTeams.contains(teamId)) {
-                teamItem.setChecked(true);
+            if (null != teamItem) {
+                teamItem.setChecked(!mFilteredTeams.contains(teamId));
             }
         }
     }
 
-    private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<Member.RepositoryData> {
+    private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
         @Override
         public void onError(int errorMessage) {
             mMembers = null;

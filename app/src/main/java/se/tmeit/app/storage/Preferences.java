@@ -27,13 +27,18 @@ public final class Preferences {
         mPrefs = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
     }
 
-    public String getAuthenticatedUser() {
-        return mPrefs.getString(Keys.AUTHENTICATED_USER, "");
+    public String getAuthenticatedUserName() {
+        return mPrefs.getString(Keys.AUTHENTICATED_USER_NAME, "");
     }
 
-    public void setAuthenticatedUser(String username) {
+    public int getAuthenticatedUserId() {
+        return mPrefs.getInt(Keys.AUTHENTICATED_USER_ID, 0);
+    }
+
+    public void setAuthenticatedUser(String username, int userId) {
         SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(Keys.AUTHENTICATED_USER, username);
+        editor.putString(Keys.AUTHENTICATED_USER_NAME, username);
+        editor.putInt(Keys.AUTHENTICATED_USER_ID, userId);
         editor.commit();
     }
 
@@ -132,13 +137,17 @@ public final class Preferences {
         return array.toString();
     }
 
-    private static interface Keys {
-        public static final String AUTHENTICATED_USER = "authenticatedUser";
+    private static class Keys {
+        public static final String AUTHENTICATED_USER_NAME = "authenticatedUser";
+        public static final String AUTHENTICATED_USER_ID = "authenticatedUserId";
         public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
         public static final String GCM_REGISTRATION_VERSION = "gcmRegistrationVersion";
         public static final String LATEST_NOTIFICATION = "latestNotification";
         public static final String MEMBERS_LIST_GROUPS_FILTER = "membersListGroupsFilter";
         public static final String MEMBERS_LIST_TEAMS_FILTER = "membersListTeamsFilter";
         public static final String SERVICE_AUTHENTICATION = "serviceAuthentication";
+
+        private Keys() {
+        }
     }
 }

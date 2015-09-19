@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/crop_done_cancel_bar"
+        style="?android:buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="@dimen/button_bar_vertical_margin"
+        android:paddingLeft="@dimen/button_bar_horizontal_margin"
+        android:paddingRight="@dimen/button_bar_horizontal_margin"
+        android:paddingTop="@dimen/button_bar_vertical_margin">
+
+        <Button
+            android:id="@+id/crop_cancel_button"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_cancel_circle"
+            android:text="@android:string/cancel"/>
+
+        <Button
+            android:id="@+id/crop_done_button"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_check_circle"
+            android:text="@string/crop_photo_done"/>
+    </LinearLayout>
+
+    <se.tmeit.app.ui.cropPhoto.CropImageView
+        android:id="@+id/crop_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/crop_done_cancel_bar"
+        android:background="@drawable/crop_texture"/>
+</RelativeLayout>

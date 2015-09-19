@@ -1,6 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_nav_title">Om</string>
-    <string name="about_text_intro">TMEIT för Android är utvecklad av <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> för <a href="http://tmeit.se">TMEIT</a>. Du kan hämta källkoden, rapportera buggar och lämna synpunkter på <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
+    <string name="about_text_intro">TMEIT för Android är utvecklad av <a href="http://se.linkedin.com/in/wilhelmsvenselius">Wilhelm Svenselius</a> med flera för <a href="http://tmeit.se">TMEIT</a>. Du kan hämta källkoden, rapportera buggar och lämna synpunkter på <a href="https://github.com/wsv-accidis/tmeit-android">GitHub</a>.</string>
+
+    <string name="age_check_begin">Alla som är födda</string>
+    <string name="age_check_end">…eller tidigare, är över 18 idag.</string>
+    <string name="age_check_nav_title">Över 18?</string>
+    <string name="age_check_legal">Personer under 18 får inte serveras alkohol. Ansvaret för ålderskontroll ligger alltid hos den som serverar. Saknas legitimation ska servering vägras. Överträdelse kan straffas med böter eller fängelse i upp till fyra år.</string>
 
     <string name="auth_error_code_denied">Koden godkändes inte av servern. Den kan vara utgången. Prova att logga in igen och kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_code_not_valid">Koden är ogiltig. Prova att logga in igen. Kontrollera också att du har senaste versionen av appen.</string>
@@ -8,15 +14,27 @@
     <string name="auth_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
     <string name="auth_error_invalid_data">Inloggningsuppgifterna är inte längre giltiga. Prova att logga in igen.</string>
 
+    <string name="crop_photo_done">Fortsätt</string>
+    <string name="crop_photo_saving">Sparar fotot…</string>
+    <string name="crop_photo_please_wait">Vänta lite…</string>
+
     <string name="event_attendee">anmäld</string>
     <string name="event_attendees">anmälda</string>
+    <string name="event_attendees_title">Deltagare</string>
     <string name="event_attending">Anmäld</string>
+    <string name="event_date_of_birth">Födelsedatum (YYYY-MM-DD)</string>
+    <string name="event_delete">Ta bort</string>
+    <string name="event_drink_prefs">Dryckespreferenser</string>
+    <string name="event_external_info_nav_title">Event</string>
     <string name="event_external_nav_title">Externa event</string>
+    <string name="event_food_prefs">Matpreferenser</string>
     <string name="event_last_signup_date">Sista anmälan</string>
     <string name="event_last_signup_passed">Sista anmälan har varit</string>
+    <string name="event_more_information_at_url">Mer info på </string>
+    <string name="event_no_attendees_yet">Ingen är anmäld.</string>
     <string name="event_not_attending">Inte anmäld</string>
-    <string name="event_internal_nav_title">Interna event</string>
-    <string name="event_internal_workers">arbetare</string>
+    <string name="event_notes">Övrigt (bara synligt för mästare)</string>
+    <string name="event_save">Spara</string>
 
     <string name="member_add_contact">Lägg till kontakt</string>
     <string name="member_call">Ring</string>
@@ -38,16 +56,18 @@
     <string name="member_team">Arbetslag</string>
     <string name="member_title">Titel</string>
 
-    <string name="members_show_all">Visa alla</string>
     <string name="members_groups">Grupper</string>
+    <string name="members_hide_all">Dölj alla</string>
     <string name="members_nav_title">Medlemmar</string>
-    <string name="members_no_results">Inga träffar. Kontrollera filtren.</string>
+    <string name="members_no_results">Inga medlemmar funna.</string>
     <string name="members_no_title_placeholder">(ingen)</string>
     <string name="members_no_team_placeholder">(inget)</string>
+    <string name="members_show_all">Visa alla</string>
     <string name="members_teams">Arbetslag</string>
 
     <string name="network_error_not_available">Det finns inget tillgängligt nätverk. Appen kommer inte att fungera utan nätåtkomst.</string>
     <string name="network_error_not_available_title">Ej ansluten</string>
+    <string name="network_error_unspecified_protocol">Ett oväntat fel uppstod. Försök igen. Om felet kvarstår, kontrollera att du har senaste versionen av appen.</string>
 
     <string name="navigation_drawer_close">Stäng navigation</string>
     <string name="navigation_drawer_open">Öppna navigation</string>
@@ -74,4 +94,15 @@
 
     <string name="repository_error_unspecified_network">Det gick inte att kontakta servern. Kontrollera att du har nätåtkomst och försök sedan igen.</string>
     <string name="repository_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Kontrollera att du har senaste versionen av appen.</string>
+
+    <string name="upload_photo_chooser_title">Välj bild</string>
+    <string name="upload_photo_failed">Uppladdningen misslyckades av någon anledning. Försök igen.</string>
+    <string name="upload_photo_finish_nav_title">Välj medlem</string>
+    <string name="upload_photo_nav_title">Ladda upp foto</string>
+    <string name="upload_photo_rules">Absolut inga bilder som är stötande eller som personen på bilden skulle ha invändningar mot att publicera på Internet får laddas upp. Bilden ska vara ett foto på personens ansikte och personen ska gå att känna igen. Bilder som bryter mot detta tas bort. Om detta inte respekteras kommer funktionen att stängas av.</string>
+    <string name="upload_photo_select_existing">Välj ett existerande foto</string>
+    <string name="upload_photo_select_member">Välj medlemmen som fotot föreställer.</string>
+    <string name="upload_photo_succeeded">Uppladdningen lyckades!</string>
+    <string name="upload_photo_use_camera">Ta ett foto med kameran</string>
+    <string name="upload_photo_submit">Skicka</string>
 </resources>

@@ -8,11 +8,11 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import se.tmeit.app.R;
 
@@ -60,7 +60,7 @@ public final class ServiceAuthenticator {
 
         } catch (JSONException ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
-            Log.e(TAG, "Unexpected exception while authenticating.", ex);
+            Log.e(TAG, "Unexpected JSON exception while authenticating.", ex);
             resultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
         }
     }
@@ -99,16 +99,6 @@ public final class ServiceAuthenticator {
         return json.toString();
     }
 
-    public static interface AuthenticationResultHandler {
-        public void onAuthenticationError(int errorMessage);
-
-        public void onNetworkError(int errorMessage);
-
-        public void onProtocolError(int errorMessage);
-
-        public void onSuccess(String serviceAuth, String authenticatedUser);
-    }
-
     private static class AuthenticationCallback implements Callback {
         private final AuthenticationResultHandler mResultHandler;
         private final String mServiceAuth;
@@ -128,15 +118,16 @@ public final class ServiceAuthenticator {
 
         @Override
         public void onResponse(Response response) throws IOException {
-            Log.i(TAG, "Authentication response received with HTTP status = " + response.code());
+            Log.i(TAG, "Authentication response received with HTTP status = " + response.code() + ".");
 
             JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
             if (null == responseBody) {
                 Log.e(TAG, "Got empty response from authentication request.");
                 mResultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
-            } else if (HttpStatus.SC_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
-                mResultHandler.onSuccess(mServiceAuth, mUsername);
-            } else if (HttpStatus.SC_FORBIDDEN == response.code()) {
+            } else if (HttpURLConnection.HTTP_OK == response.code() && TmeitServiceConfig.isSuccessful(responseBody)) {
+                int userId = responseBody.optInt(TmeitServiceConfig.USER_ID_KEY);
+                mResultHandler.onSuccess(mServiceAuth, mUsername, userId);
+            } else if (HttpURLConnection.HTTP_FORBIDDEN == response.code()) {
                 mResultHandler.onAuthenticationError(R.string.auth_error_code_denied);
             } else {
                 String errorMessage = TmeitServiceConfig.getErrorMessage(responseBody);

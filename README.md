@@ -10,22 +10,16 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.2 has been published to Google Play. This version adds a list of members with filtering
-and quick actions for calling, sending messages or e-mail.
+Version 1.7 has been published to Google Play. This is mainly a bugfix release with some minor
+improvements.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended
-to be used in its current state.
+to be used in its current state. It is intended to function as a complement to TMEIT.se but once
+enough features are implemented it could replace the website completely for many members.
 
-1. DONE - Show push notifications regarding new activities being published on the TMEIT web site
-2. DONE - Show general information for TMEIT members, such as the member list
-3. Handle signups for external events
-4. Handle signups for working at TMEIT events
-5. Handle reporting of TMEIT events for team leaders
-6. More stuff.
-
-This app is intended to function as a complement to TMEIT.se but eventually, it could be
-a full replacement for those who prefer a smartphone or tablet instead of a computer.
+See the project [Issues](https://github.com/wsv-accidis/tmeit-android/issues) for the current
+development backlog. This includes bugs as well as enhancements and upcoming features.
 
 This project is open-source to facilitate porting to other platforms.
 
@@ -35,12 +29,11 @@ are used for, here is a brief summary.
 
 * ACCESS_NETWORK_STATE - For checking if we are connected to a network and putting up a warning
   if we're not, since the app won't work without Internet access.
-* CALL_PHONE - For opening the dialer app when the user tries to call someone in the list of
-  members, or the member info page.
 * INTERNET - For accessing the TMEIT web site and services.
 * WAKE_LOCK - For (very briefly) keeping the phone awake when a push notification is received.
 * WRITE_CONTACTS - For creating a contact in the phone when the user tries to add a contact
   from someone in the list of members, or the member info page.
+* WRITE_EXTERNAL_STORAGE - For storing images in external storage when taking a photo.
 
 ## Licensing
 TMEIT for Android is distributed according to the terms of the **Apache License version 2.0**.
@@ -52,3 +45,8 @@ SDKs provided by Google:
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
 * [Picasso Image downloading and caching for Android](http://square.github.io/picasso/)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
+
+TMEIT for Android integrates code from the
+[Image cropping library by SoundCloud](https://github.com/jdamcd/android-crop) (which is based on
+[Android CropImage](https://github.com/lvillani/android-cropimage), which is based on
+[AOSP](https://source.android.com/)).

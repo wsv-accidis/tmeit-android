@@ -81,7 +81,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
                     .placeholder(R.drawable.member_placeholder)
                     .into(imageView);
         } else {
-            imageView.setImageResource(R.drawable.member_placeholder);
+            mFaceHelper.placeholder().into(imageView);
         }
 
         TextView nameView = (TextView) view.findViewById(R.id.member_real_name);
