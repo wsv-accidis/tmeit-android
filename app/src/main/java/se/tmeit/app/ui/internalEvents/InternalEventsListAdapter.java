@@ -17,7 +17,7 @@ import se.tmeit.app.R;
 import se.tmeit.app.model.InternalEvent;
 
 /**
- * List adapter for internal events list
+ * List adapter for internal events list.
  */
 public class InternalEventsListAdapter extends BaseAdapter {
     private static final String FORMAT_DESCRIPTION = "%s - %d/%d %s";

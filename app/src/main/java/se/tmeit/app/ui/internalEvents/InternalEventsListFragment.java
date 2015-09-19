@@ -1,25 +1,51 @@
 package se.tmeit.app.ui.internalEvents;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+
 import java.util.List;
 
 import se.tmeit.app.R;
+import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.externalEvents.ExternalEventInfoFragment;
 
 /**
  * Fragment for the list of internal events.
  */
 public final class InternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle {
     private static final String STATE_LIST_VIEW = "intEventsListState";
-    private final RepositoryResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
+    private static final String TAG = InternalEventsListFragment.class.getSimpleName();
+    private final InternalEventsResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
     private List<InternalEvent> mEvents;
+    private InternalEventsListAdapter mListAdapter;
 
     @Override
     public int getTitle() {
         return R.string.event_internal_nav_title;
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (position >= 0 && position < mListAdapter.getCount()) {
+            InternalEvent event = (InternalEvent) mListAdapter.getItem(position);
+            Fragment eventInfoFragment = InternalEventInfoFragment.createInstance(event);
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                saveInstanceState();
+                MainActivity mainActivity = (MainActivity) activity;
+                mainActivity.openFragment(eventInfoFragment, true);
+            } else {
+                Log.e(TAG, "Activity holding fragment is not MainActivity!");
+            }
+        }
     }
 
     @Override
@@ -34,8 +60,8 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
 
     @Override
     protected void initializeList() {
-        InternalEventsListAdapter listAdapter = new InternalEventsListAdapter(getActivity(), mEvents);
-        finishInitializeList(listAdapter);
+        mListAdapter = new InternalEventsListAdapter(getActivity(), mEvents);
+        finishInitializeList(mListAdapter);
     }
 
     private final class InternalEventsResultHandler implements RepositoryResultHandler<List<InternalEvent>> {

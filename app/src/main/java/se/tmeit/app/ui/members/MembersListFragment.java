@@ -124,7 +124,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position < mListAdapter.getCount()) {
+        if (position >= 0 && position < mListAdapter.getCount()) {
             Member member = (Member) mListAdapter.getItem(position);
             Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), member, mMembers);
             Activity activity = getActivity();

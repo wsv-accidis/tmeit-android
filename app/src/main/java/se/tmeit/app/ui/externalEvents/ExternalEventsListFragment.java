@@ -31,6 +31,22 @@ public final class ExternalEventsListFragment extends ListFragmentBase implement
     }
 
     @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (position >= 0 && position < mListAdapter.getCount()) {
+            ExternalEvent event = (ExternalEvent) mListAdapter.getItem(position);
+            Fragment eventInfoFragment = ExternalEventInfoFragment.createInstance(event);
+            Activity activity = getActivity();
+            if (activity instanceof MainActivity) {
+                saveInstanceState();
+                MainActivity mainActivity = (MainActivity) activity;
+                mainActivity.openFragment(eventInfoFragment, true);
+            } else {
+                Log.e(TAG, "Activity holding fragment is not MainActivity!");
+            }
+        }
+    }
+
+    @Override
     protected void getDataFromRepository(Repository repository) {
         repository.getExternalEvents(mRepositoryResultHandler);
     }
@@ -57,22 +73,6 @@ public final class ExternalEventsListFragment extends ListFragmentBase implement
         public void onSuccess(List<ExternalEvent> result) {
             mEvents = result;
             onRepositorySuccess();
-        }
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position < mListAdapter.getCount()) {
-            ExternalEvent externalEvent = (ExternalEvent) mListAdapter.getItem(position);
-            Fragment eventInfoFragment = ExternalEventInfoFragment.createInstance(externalEvent);
-            Activity activity = getActivity();
-            if (activity instanceof MainActivity) {
-                saveInstanceState();
-                MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.openFragment(eventInfoFragment, true);
-            } else {
-                Log.e(TAG, "Activity holding fragment is not MainActivity!");
-            }
         }
     }
 }
