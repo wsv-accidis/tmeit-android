@@ -21,6 +21,7 @@ import java.util.Map;
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.model.ExternalEventAttendee;
+import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.model.Member;
 
 /**
@@ -54,7 +55,7 @@ public final class Repository {
 
     public void getExternalEventDetails(int id, boolean noCache, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
         Request.Builder requestBuilder = getRequestBuilder("GetExternalEventDetails.php/" + id);
-        if(noCache) {
+        if (noCache) {
             requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
         }
         TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventDetailsCallback(resultHandler));
@@ -63,6 +64,11 @@ public final class Repository {
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
         Request request = getRequestBuilder("GetExternalEvents.php").build();
         TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventsCallback(resultHandler));
+    }
+
+    public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
+        Request request = getRequestBuilder("GetEvents.php").build();
+        TmeitHttpClient.getInstance().enqueueRequest(request, new GetInternalEventsCallback(resultHandler));
     }
 
     public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
@@ -104,27 +110,6 @@ public final class Repository {
                 .addHeader(HEADER_SERVICE_AUTH, mServiceAuth);
     }
 
-    private static class Keys {
-        public static final String ATTENDEE = "attendee";
-        public static final String ATTENDEES = "attendees";
-        public static final String ATTENDING = "attending";
-        public static final String DOB = "dob";
-        public static final String DRINK_PREFS = "drink_prefs";
-        public static final String EVENT = "event";
-        public static final String EVENT_ID = "event_id";
-        public static final String FOOD_PREFS = "food_prefs";
-        public static final String GROUPS = "groups";
-        public static final String ID = "id";
-        public static final String NOTES = "notes";
-        public static final String TEAMS = "teams";
-        public static final String TITLE = "title";
-        public static final String TITLES = "titles";
-        public static final String USERS = "users";
-
-        private Keys() {
-        }
-    }
-
     private final class AttendExternalEventCallback extends GetResultCallback<Void> {
         public AttendExternalEventCallback(RepositoryResultHandler<Void> resultHandler) {
             super(resultHandler);
@@ -161,12 +146,33 @@ public final class Repository {
 
         @Override
         protected List<ExternalEvent> getResult(JSONObject responseBody) throws JSONException {
-            JSONArray jsonEvents = responseBody.getJSONArray(EVENTS);
+            JSONArray jsonArray = responseBody.getJSONArray(EVENTS);
 
             ArrayList<ExternalEvent> events = new ArrayList<>();
-            for (int i = 0; i < jsonEvents.length(); i++) {
-                JSONObject jsonUser = jsonEvents.getJSONObject(i);
-                events.add(ExternalEvent.fromJson(jsonUser));
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject json = jsonArray.getJSONObject(i);
+                events.add(ExternalEvent.fromJson(json));
+            }
+
+            return events;
+        }
+    }
+
+    private final class GetInternalEventsCallback extends GetResultCallback<List<InternalEvent>> {
+        private static final String EVENTS = "events";
+
+        public GetInternalEventsCallback(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected List<InternalEvent> getResult(JSONObject responseBody) throws JSONException {
+            JSONArray jsonArray = responseBody.getJSONArray(EVENTS);
+
+            ArrayList<InternalEvent> events = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject json = jsonArray.getJSONObject(i);
+                events.add(InternalEvent.fromJson(json));
             }
 
             return events;
@@ -184,12 +190,12 @@ public final class Repository {
             Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TEAMS));
             Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TITLES));
 
-            JSONArray jsonUsers = responseBody.getJSONArray(Keys.USERS);
+            JSONArray jsonArray = responseBody.getJSONArray(Keys.USERS);
 
             ArrayList<Member> members = new ArrayList<>();
-            for (int i = 0; i < jsonUsers.length(); i++) {
-                JSONObject jsonUser = jsonUsers.getJSONObject(i);
-                members.add(Member.fromJson(jsonUser));
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject json = jsonArray.getJSONObject(i);
+                members.add(Member.fromJson(json));
             }
 
             return new Member.RepositoryData(members, groups, teams, titles);
@@ -234,5 +240,26 @@ public final class Repository {
         }
 
         protected abstract TResult getResult(JSONObject responseBody) throws JSONException;
+    }
+
+    private static class Keys {
+        public static final String ATTENDEE = "attendee";
+        public static final String ATTENDEES = "attendees";
+        public static final String ATTENDING = "attending";
+        public static final String DOB = "dob";
+        public static final String DRINK_PREFS = "drink_prefs";
+        public static final String EVENT = "event";
+        public static final String EVENT_ID = "event_id";
+        public static final String FOOD_PREFS = "food_prefs";
+        public static final String GROUPS = "groups";
+        public static final String ID = "id";
+        public static final String NOTES = "notes";
+        public static final String TEAMS = "teams";
+        public static final String TITLE = "title";
+        public static final String TITLES = "titles";
+        public static final String USERS = "users";
+
+        private Keys() {
+        }
     }
 }

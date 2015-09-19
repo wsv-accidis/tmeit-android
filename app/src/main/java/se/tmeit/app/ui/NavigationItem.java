@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import se.tmeit.app.R;
 import se.tmeit.app.ui.externalEvents.ExternalEventsListFragment;
+import se.tmeit.app.ui.internalEvents.InternalEventsListFragment;
 import se.tmeit.app.ui.members.MembersListFragment;
 import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.uploadPhoto.UploadPhotoFragment;
@@ -14,15 +15,16 @@ import se.tmeit.app.ui.uploadPhoto.UploadPhotoFragment;
  */
 public enum NavigationItem {
     MEMBERS_ITEM(0),
-    EXTERNAL_EVENTS_ITEM(1),
-    UPLOAD_PHOTO_ITEM(2),
-    AGE_CHECK_ITEM(3),
-    NOTIFICATIONS_ITEM(4),
-    ABOUT_ITEM(5);
+    INTERNAL_EVENTS_ITEM(1),
+    EXTERNAL_EVENTS_ITEM(2),
+    UPLOAD_PHOTO_ITEM(3),
+    AGE_CHECK_ITEM(4),
+    NOTIFICATIONS_ITEM(5),
+    ABOUT_ITEM(6);
 
     private final int mPosition;
 
-    private NavigationItem(int position) {
+    NavigationItem(int position) {
         mPosition = position;
     }
 
@@ -30,6 +32,7 @@ public enum NavigationItem {
         // The index of each item in this array _MUST_ match its position in the enum
         return new String[]{
                 resources.getString(R.string.members_nav_title),
+                resources.getString(R.string.event_internal_nav_title),
                 resources.getString(R.string.event_external_nav_title),
                 resources.getString(R.string.upload_photo_nav_title),
                 resources.getString(R.string.age_check_nav_title),
@@ -46,6 +49,8 @@ public enum NavigationItem {
                 return new AgeCheckFragment();
             case EXTERNAL_EVENTS_ITEM:
                 return new ExternalEventsListFragment();
+            case INTERNAL_EVENTS_ITEM:
+                return new InternalEventsListFragment();
             case MEMBERS_ITEM:
                 return new MembersListFragment();
             case NOTIFICATIONS_ITEM:

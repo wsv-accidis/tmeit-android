@@ -5,16 +5,17 @@ import java.util.List;
 import se.tmeit.app.R;
 import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.services.Repository;
+import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
+import se.tmeit.app.ui.MainActivity;
 
 /**
- * Fragment for the list of Internal events.
+ * Fragment for the list of internal events.
  */
-public class InternalEventsListFragment extends ListFragmentBase {
+public final class InternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle {
     private static final String STATE_LIST_VIEW = "intEventsListState";
-    private final RepositoryResultHandler mRepositoryResultHandler = new RepositoryResultHandler();
+    private final RepositoryResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
     private List<InternalEvent> mEvents;
-
 
     @Override
     public int getTitle() {
@@ -37,8 +38,7 @@ public class InternalEventsListFragment extends ListFragmentBase {
         finishInitializeList(listAdapter);
     }
 
-    private final class RepositoryResultHandler implements Repository.RepositoryResultHandler<List<InternalEvent>> {
-
+    private final class InternalEventsResultHandler implements RepositoryResultHandler<List<InternalEvent>> {
         @Override
         public void onError(int errorMessage) {
             mEvents = null;
