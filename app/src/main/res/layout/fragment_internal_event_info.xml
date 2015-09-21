@@ -3,4 +3,164 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/event_button_bar"
+        style="?android:buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="@dimen/button_bar_vertical_margin"
+        android:paddingLeft="@dimen/button_bar_horizontal_margin"
+        android:paddingRight="@dimen/button_bar_horizontal_margin"
+        android:paddingTop="@dimen/button_bar_vertical_margin">
+
+        <!--
+        <Button
+            android:id="@+id/event_button_attending"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_check_circle"
+            android:enabled="false"
+            android:text="@string/event_not_attending"
+            android:visibility="gone"/>
+        -->
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/event_button_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/event_title"
+                style="@style/EventInfoHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/event_start_date"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_invitation"
+                android:drawablePadding="8dp"/>
+
+            <TextView
+                android:id="@+id/event_number_of_workers"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/ic_assignment"
+                android:drawablePadding="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/event_progress_bar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:indeterminate="true"/>
+
+            <LinearLayout
+                android:id="@+id/event_workers_yes_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    style="@style/EventInfoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/ic_check_circle"
+                    android:drawablePadding="8dp"
+                    android:text="@string/event_workers_yes"/>
+
+                <LinearLayout
+                    android:id="@+id/event_workers_yes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/event_workers_maybe_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    style="@style/EventInfoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/ic_help_circle"
+                    android:drawablePadding="8dp"
+                    android:text="@string/event_workers_maybe"/>
+
+                <LinearLayout
+                    android:id="@+id/event_workers_maybe"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/event_workers_no_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    style="@style/Divider"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    style="@style/EventInfoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/ic_cancel_circle"
+                    android:drawablePadding="8dp"
+                    android:text="@string/event_workers_no"/>
+
+                <LinearLayout
+                    android:id="@+id/event_workers_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

@@ -39,7 +39,12 @@
     <string name="event_not_attending">Not attending</string>
     <string name="event_notes">Notes (only visible to masters)</string>
     <string name="event_save">Save</string>
+    <string name="event_worker">worker</string>
     <string name="event_workers">workers</string>
+    <string name="event_workers_maybe">Said Maybe</string>
+    <string name="event_workers_no">Said No</string>
+    <string name="event_workers_of">of</string>
+    <string name="event_workers_yes">Said Yes</string>
 
     <string name="member_add_contact">Add as contact</string>
     <string name="member_call">Call</string>

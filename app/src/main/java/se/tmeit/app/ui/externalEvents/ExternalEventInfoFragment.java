@@ -107,7 +107,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
             return;
         }
 
-        mEvent = repositoryData.getExternalEvent();
+        mEvent = repositoryData.getEvent();
         mCurrentAttendee = repositoryData.getCurrentAttendee();
         mEvent.setIsAttending(repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId()));
 

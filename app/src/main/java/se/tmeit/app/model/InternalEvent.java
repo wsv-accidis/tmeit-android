@@ -3,6 +3,8 @@ package se.tmeit.app.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Model object for internal events.
  */
@@ -24,14 +26,14 @@ public final class InternalEvent {
         event.setId(obj.getInt(Keys.ID));
         event.setLocation(obj.getString(Keys.LOCATION));
         event.setPast(obj.getBoolean(Keys.IS_PAST));
-        event.setReported(obj.getBoolean(Keys.IS_REPORTED));
-        event.setStartDate(obj.getString(Keys.START_DATE));
-        event.setStartTime(obj.getString(Keys.START_TIME));
+        event.setReported(obj.optBoolean(Keys.IS_REPORTED));
+        event.setStartDate(obj.optString(Keys.START_DATE));
+        event.setStartTime(obj.optString(Keys.START_TIME));
         event.setTeamId(obj.getInt(Keys.TEAM_ID));
-        event.setTeamTitle(obj.getString(Keys.TEAM_TITLE));
+        event.setTeamTitle(obj.optString(Keys.TEAM_TITLE));
         event.setTitle(obj.getString(Keys.TITLE));
-        event.setWorkersCount(obj.getInt(Keys.WORKERS_COUNT));
-        event.setWorkersMax(obj.getInt(Keys.WORKERS_MAX));
+        event.setWorkersCount(obj.optInt(Keys.WORKERS_COUNT));
+        event.setWorkersMax(obj.optInt(Keys.WORKERS_MAX));
         return event;
     }
 
@@ -39,7 +41,7 @@ public final class InternalEvent {
         return mId;
     }
 
-    public void setId(int id) {
+    private void setId(int id) {
         mId = id;
     }
 
@@ -47,7 +49,7 @@ public final class InternalEvent {
         return mLocation;
     }
 
-    public void setLocation(String value) {
+    private void setLocation(String value) {
         mLocation = value;
     }
 
@@ -55,7 +57,7 @@ public final class InternalEvent {
         return mStartDate;
     }
 
-    public void setStartDate(String date) {
+    private void setStartDate(String date) {
         mStartDate = date;
     }
 
@@ -63,7 +65,7 @@ public final class InternalEvent {
         return mStartTime;
     }
 
-    public void setStartTime(String time) {
+    private void setStartTime(String time) {
         mStartTime = time;
     }
 
@@ -71,7 +73,7 @@ public final class InternalEvent {
         return mTeamId;
     }
 
-    public void setTeamId(int value) {
+    private void setTeamId(int value) {
         mTeamId = value;
     }
 
@@ -79,7 +81,7 @@ public final class InternalEvent {
         return mTeamTitle;
     }
 
-    public void setTeamTitle(String value) {
+    private void setTeamTitle(String value) {
         mTeamTitle = value;
     }
 
@@ -87,7 +89,7 @@ public final class InternalEvent {
         return mTitle;
     }
 
-    public void setTitle(String value) {
+    private void setTitle(String value) {
         mTitle = value;
     }
 
@@ -111,7 +113,7 @@ public final class InternalEvent {
         return mIsPast;
     }
 
-    public void setPast(boolean value) {
+    private void setPast(boolean value) {
         mIsPast = value;
     }
 
@@ -119,7 +121,7 @@ public final class InternalEvent {
         return mIsReported;
     }
 
-    public void setReported(boolean value) {
+    private void setReported(boolean value) {
         mIsReported = value;
     }
 
@@ -137,6 +139,24 @@ public final class InternalEvent {
         public static final String WORKERS_MAX = "workers_max";
 
         private Keys() {
+        }
+    }
+
+    public static class RepositoryData {
+        private final InternalEvent mEvent;
+        private final List<InternalEventWorker> mWorkers;
+
+        public RepositoryData(InternalEvent internalEvent, List<InternalEventWorker> workers) {
+            mEvent = internalEvent;
+            mWorkers = workers;
+        }
+
+        public InternalEvent getEvent() {
+            return mEvent;
+        }
+
+        public List<InternalEventWorker> getWorkers() {
+            return mWorkers;
         }
     }
 }

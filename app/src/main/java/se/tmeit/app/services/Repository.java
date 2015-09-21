@@ -22,6 +22,7 @@ import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.model.ExternalEventAttendee;
 import se.tmeit.app.model.InternalEvent;
+import se.tmeit.app.model.InternalEventWorker;
 import se.tmeit.app.model.Member;
 
 /**
@@ -64,6 +65,14 @@ public final class Repository {
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
         Request request = getRequestBuilder("GetExternalEvents.php").build();
         TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventsCallback(resultHandler));
+    }
+
+    public void getInternalEventDetails(int id, boolean noCache, RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
+        Request.Builder requestBuilder = getRequestBuilder("GetEventDetails.php/" + id);
+        if (noCache) {
+            requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
+        }
+        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetInternalEventDetailsCallback(resultHandler));
     }
 
     public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
@@ -155,6 +164,20 @@ public final class Repository {
             }
 
             return events;
+        }
+    }
+
+    private final class GetInternalEventDetailsCallback extends GetResultCallback<InternalEvent.RepositoryData> {
+        public GetInternalEventDetailsCallback(RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
+            super(resultHandler);
+        }
+
+        @Override
+        protected InternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
+            JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
+            JSONArray jsonWorkers = responseBody.getJSONArray(Keys.WORKERS);
+            return new InternalEvent.RepositoryData(InternalEvent.fromJson(jsonEvent),
+                    InternalEventWorker.fromJsonArray(jsonWorkers));
         }
     }
 
@@ -258,6 +281,7 @@ public final class Repository {
         public static final String TITLE = "title";
         public static final String TITLES = "titles";
         public static final String USERS = "users";
+        public static final String WORKERS = "workers";
 
         private Keys() {
         }

@@ -145,10 +145,10 @@ public final class ExternalEvent {
     public static class RepositoryData {
         private final List<ExternalEventAttendee> mAttendees;
         private final ExternalEventAttendee mCurrentAttendee;
-        private final ExternalEvent mExternalEvent;
+        private final ExternalEvent mEvent;
 
         public RepositoryData(ExternalEvent externalEvent, ExternalEventAttendee currentAttendee, List<ExternalEventAttendee> attendees) {
-            mExternalEvent = externalEvent;
+            mEvent = externalEvent;
             mCurrentAttendee = currentAttendee;
             mAttendees = attendees;
         }
@@ -161,8 +161,8 @@ public final class ExternalEvent {
             return mCurrentAttendee;
         }
 
-        public ExternalEvent getExternalEvent() {
-            return mExternalEvent;
+        public ExternalEvent getEvent() {
+            return mEvent;
         }
 
         public boolean isUserAttending(int userId) {

@@ -36,7 +36,12 @@
     <string name="event_not_attending">Inte anmäld</string>
     <string name="event_notes">Övrigt (bara synligt för mästare)</string>
     <string name="event_save">Spara</string>
+    <string name="event_worker">arbetare</string>
     <string name="event_workers">arbetare</string>
+    <string name="event_workers_maybe">Svarat Kanske</string>
+    <string name="event_workers_no">Svarat Nej</string>
+    <string name="event_workers_of">av</string>
+    <string name="event_workers_yes">Svarat Ja</string>
 
     <string name="member_add_contact">Lägg till kontakt</string>
     <string name="member_call">Ring</string>
