@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/event_worker_name"
+        style="@style/EventAttendeesListPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:paddingBottom="3dp" />
+
+    <TextView
+        android:id="@+id/event_worker_range_text"
+        style="@style/EventAttendeesListSecondary"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="right" />
+
+    <TextView
+        android:id="@+id/event_worker_comment"
+        style="@style/EventAttendeesListSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/event_worker_name"
+        android:paddingBottom="3dp" />
+
+    <View
+        android:id="@+id/event_worker_range_bg"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/event_worker_comment"
+        android:layout_marginBottom="3dp"
+        android:background="@color/color_darkred"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/event_worker_range"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_below="@id/event_worker_comment"
+        android:background="@color/color_green"
+        android:visibility="gone" />
+</RelativeLayout>

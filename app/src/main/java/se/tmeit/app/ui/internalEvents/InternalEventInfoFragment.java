@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +19,6 @@ import java.util.List;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
-import se.tmeit.app.model.ExternalEventAttendee;
 import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.model.InternalEventWorker;
 import se.tmeit.app.services.Repository;
@@ -32,6 +32,8 @@ import se.tmeit.app.ui.MainActivity;
 public final class InternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
     private final Handler mHandler = new Handler();
     private final InternalEventResultHandler mRepositoryResultHandler = new InternalEventResultHandler();
+    private final static int RANGE_MIN_HOUR = 8;
+    private final static int RANGE_MAX_HOUR = 29;
     private View mMaybeLayout;
     private View mNoLayout;
     private TextView mNumberOfWorkersText;
@@ -122,23 +124,57 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     }
 
     private void initializeListOfWorkers(View listLayout, LinearLayout listView, List<InternalEventWorker> workers) {
-        if(null == workers || workers.isEmpty()) {
+        if (null == workers || workers.isEmpty()) {
             listLayout.setVisibility(View.GONE);
             return;
         }
+
+        View mainView = getView();
+        if (null == mainView) {
+            return;
+        }
+
+        int marginWidth = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        int listWidth = mainView.getWidth() - 2 * marginWidth;
+        double widthHour = listWidth / (double) (RANGE_MAX_HOUR - RANGE_MIN_HOUR);
 
         listView.removeAllViews();
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         for (InternalEventWorker worker : workers) {
-            TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, null);
+            View view = layoutInflater.inflate(R.layout.list_item_internal_event_worker, null);
 
-            StringBuilder builder = new StringBuilder();
-            builder.append(worker.getName());
+            TextView nameText = (TextView) view.findViewById(R.id.event_worker_name);
+            nameText.setText(worker.getName());
 
-            // TODO More stuff
+            TextView commentText = (TextView) view.findViewById(R.id.event_worker_comment);
+            if (!TextUtils.isEmpty(worker.getComment())) {
+                commentText.setText(worker.getComment());
+                commentText.setVisibility(View.VISIBLE);
+            } else {
+                commentText.setVisibility(View.GONE);
+            }
 
-            view.setText(builder.toString());
+            TextView rangeTextView = (TextView) view.findViewById(R.id.event_worker_range_text);
+            View rangeView = view.findViewById(R.id.event_worker_range);
+            View rangeBgView = view.findViewById(R.id.event_worker_range_bg);
+
+            if (worker.hasRange() || worker.getWorking() == InternalEventWorker.Working.YES) {
+                rangeBgView.setVisibility(View.VISIBLE);
+                if (worker.hasRange()) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
+                    params.leftMargin = (int) Math.ceil((worker.getRangeStart() - RANGE_MIN_HOUR) * widthHour);
+                    params.width = (int) Math.ceil((worker.getRangeEnd() - worker.getRangeStart()) * widthHour);
+                    rangeView.setLayoutParams(params);
+                    rangeView.setVisibility(View.VISIBLE);
+
+                    int rangeStart = worker.getRangeStart() % 24, rangeEnd = worker.getRangeEnd() % 24;
+                    rangeTextView.setText(String.format("%02d-%02d", rangeStart, rangeEnd));
+                }
+            } else {
+                rangeView.setVisibility(View.GONE);
+                rangeBgView.setVisibility(View.GONE);
+            }
 
             listView.addView(view);
         }

@@ -14,6 +14,10 @@ public final class InternalEventWorker {
     private int mId;
     private String mName;
     private Working mWorking;
+    private String mComment;
+    private boolean mHasRange;
+    private int mRangeStart;
+    private int mRangeEnd;
 
     public static List<InternalEventWorker> filterByWorking(List<InternalEventWorker> list, Working filter) {
         ArrayList<InternalEventWorker> result = new ArrayList<>();
@@ -26,11 +30,17 @@ public final class InternalEventWorker {
         return result;
     }
 
-    public static InternalEventWorker fromJson(JSONObject json) {
+    public static InternalEventWorker fromJson(JSONObject json) throws JSONException {
         InternalEventWorker worker = new InternalEventWorker();
-        worker.setName(json.optString(Keys.NAME));
+        worker.setComment(json.optString(Keys.COMMENT));
         worker.setId(json.optInt(Keys.ID));
+        worker.setName(json.optString(Keys.NAME));
         worker.setWorking(Working.fromInt(json.optInt(Keys.WORKING)));
+
+        if (json.optBoolean(Keys.HAS_RANGE)) {
+            worker.setRange(json.getInt(Keys.RANGE_START), json.getInt(Keys.RANGE_END));
+        }
+
         return worker;
     }
 
@@ -51,6 +61,14 @@ public final class InternalEventWorker {
         mId = id;
     }
 
+    public String getComment() {
+        return mComment;
+    }
+
+    private void setComment(String comment) {
+        mComment = comment;
+    }
+
     public String getName() {
         return mName;
     }
@@ -65,6 +83,24 @@ public final class InternalEventWorker {
 
     private void setWorking(Working working) {
         mWorking = working;
+    }
+
+    public boolean hasRange() {
+        return mHasRange;
+    }
+
+    public int getRangeStart() {
+        return mRangeStart;
+    }
+
+    public int getRangeEnd() {
+        return mRangeEnd;
+    }
+
+    public void setRange(int start, int end) {
+        mRangeStart = start;
+        mRangeEnd = end;
+        mHasRange = true;
     }
 
     public enum Working {
@@ -83,8 +119,12 @@ public final class InternalEventWorker {
     }
 
     public static class Keys {
+        public static final String COMMENT = "comment";
+        public static final String HAS_RANGE = "has_range";
         public static final String ID = "id";
         public static final String NAME = "realname";
+        public static final String RANGE_START = "range_start";
+        public static final String RANGE_END = "range_end";
         public static final String WORKING = "working";
 
         private Keys() {
