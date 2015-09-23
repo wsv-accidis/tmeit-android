@@ -73,7 +73,7 @@
     </style>
 
     <style name="EventWorkersListSecondary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="EventWorkersListRange" parent="TextAppearance.AppCompat.Small">

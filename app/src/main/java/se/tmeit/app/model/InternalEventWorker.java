@@ -11,13 +11,15 @@ import java.util.List;
  * Model objects for workers at an internal event.
  */
 public final class InternalEventWorker {
-    private int mId;
-    private String mName;
-    private Working mWorking;
+    public final static int RANGE_MAX_HOUR = 29;
+    public final static int RANGE_MIN_HOUR = 8;
     private String mComment;
     private boolean mHasRange;
-    private int mRangeStart;
+    private int mId;
+    private String mName;
     private int mRangeEnd;
+    private int mRangeStart;
+    private Working mWorking;
 
     public static List<InternalEventWorker> filterByWorking(List<InternalEventWorker> list, Working filter) {
         ArrayList<InternalEventWorker> result = new ArrayList<>();
@@ -53,14 +55,6 @@ public final class InternalEventWorker {
         return result;
     }
 
-    public int getId() {
-        return mId;
-    }
-
-    private void setId(int id) {
-        mId = id;
-    }
-
     public String getComment() {
         return mComment;
     }
@@ -69,12 +63,28 @@ public final class InternalEventWorker {
         mComment = comment;
     }
 
+    public int getId() {
+        return mId;
+    }
+
+    private void setId(int id) {
+        mId = id;
+    }
+
     public String getName() {
         return mName;
     }
 
     private void setName(String name) {
         mName = name;
+    }
+
+    public int getRangeEnd() {
+        return mRangeEnd;
+    }
+
+    public int getRangeStart() {
+        return mRangeStart;
     }
 
     public Working getWorking() {
@@ -87,14 +97,6 @@ public final class InternalEventWorker {
 
     public boolean hasRange() {
         return mHasRange;
-    }
-
-    public int getRangeStart() {
-        return mRangeStart;
-    }
-
-    public int getRangeEnd() {
-        return mRangeEnd;
     }
 
     public void setRange(int start, int end) {
@@ -122,9 +124,10 @@ public final class InternalEventWorker {
         public static final String COMMENT = "comment";
         public static final String HAS_RANGE = "has_range";
         public static final String ID = "id";
+        public static final String IS_SAVED = "is_saved"; // bundle only
         public static final String NAME = "realname";
-        public static final String RANGE_START = "range_start";
         public static final String RANGE_END = "range_end";
+        public static final String RANGE_START = "range_start";
         public static final String WORKING = "working";
 
         private Keys() {

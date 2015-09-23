@@ -18,7 +18,11 @@ import se.tmeit.app.model.ExternalEventAttendee;
  * Dialog for attending/unattending an external event.
  */
 public final class ExternalEventAttendDialogFragment extends DialogFragment {
+    private EditText mDobText;
+    private EditText mDrinkPrefsText;
+    private EditText mFoodPrefsText;
     private ExternalEventAttendDialogListener mListener;
+    private EditText mNotesText;
 
     @NonNull
     @Override
@@ -36,32 +40,18 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 
         EditText nameText = (EditText) view.findViewById(R.id.event_attending_name);
         nameText.setText(name);
-        final EditText dobText = (EditText) view.findViewById(R.id.event_attending_dob);
-        dobText.setText(dob);
-        final EditText drinkPrefsText = (EditText) view.findViewById(R.id.event_attending_drink_prefs);
-        drinkPrefsText.setText(drinkPrefs);
-        final EditText foodPrefsText = (EditText) view.findViewById(R.id.event_attending_food_prefs);
-        foodPrefsText.setText(foodPrefs);
-        final EditText notesText = (EditText) view.findViewById(R.id.event_attending_notes);
-        notesText.setText(notes);
+        mDobText = (EditText) view.findViewById(R.id.event_attending_dob);
+        mDobText.setText(dob);
+        mDrinkPrefsText = (EditText) view.findViewById(R.id.event_attending_drink_prefs);
+        mDrinkPrefsText.setText(drinkPrefs);
+        mFoodPrefsText = (EditText) view.findViewById(R.id.event_attending_food_prefs);
+        mFoodPrefsText.setText(foodPrefs);
+        mNotesText = (EditText) view.findViewById(R.id.event_attending_notes);
+        mNotesText.setText(notes);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
-                .setPositiveButton(R.string.event_save, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (null == mListener) {
-                            return;
-                        }
-
-                        ExternalEventAttendee attendee = new ExternalEventAttendee();
-                        attendee.setDateOfBirth(dobText.getText().toString());
-                        attendee.setDrinkPreferences(drinkPrefsText.getText().toString());
-                        attendee.setFoodPreferences(foodPrefsText.getText().toString());
-                        attendee.setNotes(notesText.getText().toString());
-                        mListener.saveClicked(attendee);
-                    }
-                })
+                .setPositiveButton(R.string.event_save, new SaveButtonClickedListener())
                 .setNegativeButton(android.R.string.cancel, null);
 
         if (isAttending) {
@@ -86,5 +76,21 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
         void deleteClicked();
 
         void saveClicked(ExternalEventAttendee attendee);
+    }
+
+    private final class SaveButtonClickedListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (null == mListener) {
+                return;
+            }
+
+            ExternalEventAttendee attendee = new ExternalEventAttendee();
+            attendee.setDateOfBirth(mDobText.getText().toString());
+            attendee.setDrinkPreferences(mDrinkPrefsText.getText().toString());
+            attendee.setFoodPreferences(mFoodPrefsText.getText().toString());
+            attendee.setNotes(mNotesText.getText().toString());
+            mListener.saveClicked(attendee);
+        }
     }
 }

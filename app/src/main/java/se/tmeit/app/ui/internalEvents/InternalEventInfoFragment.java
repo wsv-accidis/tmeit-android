@@ -35,16 +35,14 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     private final Handler mHandler = new Handler();
     private final InternalEventResultHandler mRepositoryResultHandler = new InternalEventResultHandler();
     private final WorkButtonClickListener mWorkClickedListener = new WorkButtonClickListener();
-    private final static int RANGE_MIN_HOUR = 8;
-    private final static int RANGE_MAX_HOUR = 29;
     private View mMaybeLayout;
     private View mNoLayout;
     private TextView mNumberOfWorkersText;
     private Preferences mPrefs;
     private ProgressBar mProgressBar;
     private Repository mRepository;
-    private View mYesLayout;
     private Button mWorkButton;
+    private View mYesLayout;
 
     public static InternalEventInfoFragment createInstance(InternalEvent event) {
         Bundle bundle = new Bundle();
@@ -145,7 +143,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
         int marginWidth = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
         int listWidth = mainView.getWidth() - 2 * marginWidth;
-        double widthHour = listWidth / (double) (RANGE_MAX_HOUR - RANGE_MIN_HOUR);
+        double widthHour = listWidth / (double) (InternalEventWorker.RANGE_MAX_HOUR - InternalEventWorker.RANGE_MIN_HOUR);
 
         listView.removeAllViews();
 
@@ -166,7 +164,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
             if (worker.hasRange()) {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
-                params.leftMargin = (int) Math.ceil((worker.getRangeStart() - RANGE_MIN_HOUR) * widthHour);
+                params.leftMargin = (int) Math.ceil((worker.getRangeStart() - InternalEventWorker.RANGE_MIN_HOUR) * widthHour);
                 params.width = (int) Math.ceil((worker.getRangeEnd() - worker.getRangeStart()) * widthHour);
                 rangeView.setLayoutParams(params);
 
@@ -205,16 +203,6 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private final class WorkButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            InternalEventWorkDialogFragment dialog = new InternalEventWorkDialogFragment();
-            //dialog.setArguments(args);
-            //dialog.setListener(mAttendingDialogListener);
-            dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
-        }
-    }
-
     private final class InternalEventResultHandler implements RepositoryResultHandler<InternalEvent.RepositoryData> {
         @Override
         public void onError(final int errorMessage) {
@@ -242,6 +230,18 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
                     }
                 }
             });
+        }
+    }
+
+    private final class WorkButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Bundle args = new Bundle();
+
+            InternalEventWorkDialogFragment dialog = new InternalEventWorkDialogFragment();
+            dialog.setArguments(args);
+            //dialog.setListener(mAttendingDialogListener);
+            dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
         }
     }
 }

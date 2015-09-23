@@ -3,13 +3,63 @@
               xmlns:rsb="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/dialog_margin"
+              android:paddingLeft="@dimen/dialog_margin"
+              android:paddingRight="@dimen/dialog_margin"
+              android:paddingTop="@dimen/dialog_margin">
+
+    <Spinner
+        android:id="@+id/event_work_options"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="3dp">
+
+        <RadioButton
+            android:id="@+id/event_work_dont_know"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/event_work_dont_know"
+            android:textSize="16sp"/>
+
+        <RadioButton
+            android:id="@+id/event_work_between"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/event_work_between"
+            android:textSize="16sp"/>
+    </RadioGroup>
 
     <org.florescu.android.rangeseekbar.RangeSeekBar
+        android:id="@+id/event_work_range"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         rsb:absoluteMaxValue="29"
         rsb:absoluteMinValue="8"
         rsb:showLabels="false"
         rsb:valuesAboveThumbs="false"/>
+
+    <TextView
+        style="@style/EventWorkersListSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/event_work_use_slider"/>
+
+    <EditText
+        android:id="@+id/event_work_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/event_work_comment"
+        android:inputType="text|textAutoCorrect|textMultiLine"
+        android:singleLine="false"/>
 </LinearLayout>
