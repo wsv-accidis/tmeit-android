@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/event_worker_range_empty"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/color_gray"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/event_worker_range_bg"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/color_darkred"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/event_worker_range"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@color/color_green"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/event_worker_name"
@@ -9,38 +32,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="50dp"
-        android:paddingBottom="3dp" />
+        android:paddingTop="4dp"/>
 
     <TextView
         android:id="@+id/event_worker_range_text"
-        style="@style/EventAttendeesListSecondary"
+        style="@style/EventWorkersListRange"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:gravity="right" />
+        android:gravity="right"
+        android:paddingTop="4dp"/>
 
     <TextView
         android:id="@+id/event_worker_comment"
-        style="@style/EventAttendeesListSecondary"
+        style="@style/EventWorkersListSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/event_worker_name"
-        android:paddingBottom="3dp" />
-
-    <View
-        android:id="@+id/event_worker_range_bg"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/event_worker_comment"
-        android:layout_marginBottom="3dp"
-        android:background="@color/color_darkred"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/event_worker_range"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:layout_below="@id/event_worker_comment"
-        android:background="@color/color_green"
-        android:visibility="gone" />
+        android:paddingBottom="10dp"/>
 </RelativeLayout>

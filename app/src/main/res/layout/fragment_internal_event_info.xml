@@ -15,20 +15,18 @@
         android:paddingRight="@dimen/button_bar_horizontal_margin"
         android:paddingTop="@dimen/button_bar_vertical_margin">
 
-        <!--
         <Button
-            android:id="@+id/event_button_attending"
+            android:id="@+id/event_button_work"
             style="?android:buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_check_circle"
+            android:drawableLeft="@drawable/ic_assignment"
             android:enabled="false"
-            android:text="@string/event_not_attending"
+            android:text="@string/event_work_this_event"
             android:visibility="gone"/>
-        -->
     </LinearLayout>
 
     <ScrollView
@@ -78,16 +76,18 @@
                 android:layout_marginTop="25dp"
                 android:indeterminate="true"/>
 
+            <View
+                android:id="@+id/event_divider"
+                style="@style/Divider"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
             <LinearLayout
                 android:id="@+id/event_workers_yes_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
-
-                <View
-                    style="@style/Divider"
-                    android:layout_marginTop="10dp"/>
 
                 <TextView
                     style="@style/EventInfoMedium"
@@ -113,10 +113,6 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <View
-                    style="@style/Divider"
-                    android:layout_marginTop="10dp"/>
-
                 <TextView
                     style="@style/EventInfoMedium"
                     android:layout_width="wrap_content"
@@ -140,10 +136,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
-
-                <View
-                    style="@style/Divider"
-                    android:layout_marginTop="10dp"/>
 
                 <TextView
                     style="@style/EventInfoMedium"

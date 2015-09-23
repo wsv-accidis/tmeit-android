@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -25,6 +26,7 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.externalEvents.ExternalEventAttendDialogFragment;
 
 /**
  * Fragment for an internal event.
@@ -32,6 +34,7 @@ import se.tmeit.app.ui.MainActivity;
 public final class InternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
     private final Handler mHandler = new Handler();
     private final InternalEventResultHandler mRepositoryResultHandler = new InternalEventResultHandler();
+    private final WorkButtonClickListener mWorkClickedListener = new WorkButtonClickListener();
     private final static int RANGE_MIN_HOUR = 8;
     private final static int RANGE_MAX_HOUR = 29;
     private View mMaybeLayout;
@@ -41,6 +44,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     private ProgressBar mProgressBar;
     private Repository mRepository;
     private View mYesLayout;
+    private Button mWorkButton;
 
     public static InternalEventInfoFragment createInstance(InternalEvent event) {
         Bundle bundle = new Bundle();
@@ -85,6 +89,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         mMaybeLayout = view.findViewById(R.id.event_workers_maybe_layout);
         mNoLayout = view.findViewById(R.id.event_workers_no_layout);
         mProgressBar = (ProgressBar) view.findViewById(R.id.event_progress_bar);
+        mWorkButton = (Button) view.findViewById(R.id.event_button_work);
 
         beginLoad(false);
 
@@ -108,6 +113,8 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
             return;
         }
 
+        view.findViewById(R.id.event_divider).setVisibility(View.VISIBLE);
+
         LinearLayout yesList = (LinearLayout) view.findViewById(R.id.event_workers_yes),
                 maybeList = (LinearLayout) view.findViewById(R.id.event_workers_maybe),
                 noList = (LinearLayout) view.findViewById(R.id.event_workers_no);
@@ -120,7 +127,9 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         initializeListOfWorkers(mMaybeLayout, maybeList, maybeWorkers);
         initializeListOfWorkers(mNoLayout, noList, noWorkers);
 
-        // TODO Show buttons
+        mWorkButton.setOnClickListener(mWorkClickedListener);
+        mWorkButton.setEnabled(!repositoryData.getEvent().isPast());
+        mWorkButton.setVisibility(View.VISIBLE);
     }
 
     private void initializeListOfWorkers(View listLayout, LinearLayout listView, List<InternalEventWorker> workers) {
@@ -148,32 +157,29 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
             nameText.setText(worker.getName());
 
             TextView commentText = (TextView) view.findViewById(R.id.event_worker_comment);
-            if (!TextUtils.isEmpty(worker.getComment())) {
-                commentText.setText(worker.getComment());
-                commentText.setVisibility(View.VISIBLE);
-            } else {
-                commentText.setVisibility(View.GONE);
-            }
+            commentText.setText(TextUtils.isEmpty(worker.getComment()) ? "-" : worker.getComment());
 
             TextView rangeTextView = (TextView) view.findViewById(R.id.event_worker_range_text);
             View rangeView = view.findViewById(R.id.event_worker_range);
             View rangeBgView = view.findViewById(R.id.event_worker_range_bg);
+            View rangeEmptyView = view.findViewById(R.id.event_worker_range_empty);
 
-            if (worker.hasRange() || worker.getWorking() == InternalEventWorker.Working.YES) {
+            if (worker.hasRange()) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
+                params.leftMargin = (int) Math.ceil((worker.getRangeStart() - RANGE_MIN_HOUR) * widthHour);
+                params.width = (int) Math.ceil((worker.getRangeEnd() - worker.getRangeStart()) * widthHour);
+                rangeView.setLayoutParams(params);
+
+                rangeView.setVisibility(View.VISIBLE);
                 rangeBgView.setVisibility(View.VISIBLE);
-                if (worker.hasRange()) {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
-                    params.leftMargin = (int) Math.ceil((worker.getRangeStart() - RANGE_MIN_HOUR) * widthHour);
-                    params.width = (int) Math.ceil((worker.getRangeEnd() - worker.getRangeStart()) * widthHour);
-                    rangeView.setLayoutParams(params);
-                    rangeView.setVisibility(View.VISIBLE);
+                rangeEmptyView.setVisibility(View.GONE);
 
-                    int rangeStart = worker.getRangeStart() % 24, rangeEnd = worker.getRangeEnd() % 24;
-                    rangeTextView.setText(String.format("%02d-%02d", rangeStart, rangeEnd));
-                }
+                int rangeStart = worker.getRangeStart() % 24, rangeEnd = worker.getRangeEnd() % 24;
+                rangeTextView.setText(String.format("%02d-%02d", rangeStart, rangeEnd));
             } else {
                 rangeView.setVisibility(View.GONE);
                 rangeBgView.setVisibility(View.GONE);
+                rangeEmptyView.setVisibility(View.VISIBLE);
             }
 
             listView.addView(view);
@@ -192,12 +198,21 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
             mYesLayout.setVisibility(View.GONE);
             mMaybeLayout.setVisibility(View.GONE);
             mNoLayout.setVisibility(View.GONE);
-
-            // TODO Hide buttons
+            mWorkButton.setVisibility(View.GONE);
         }
 
         mProgressBar.setIndeterminate(visible);
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    private final class WorkButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            InternalEventWorkDialogFragment dialog = new InternalEventWorkDialogFragment();
+            //dialog.setArguments(args);
+            //dialog.setListener(mAttendingDialogListener);
+            dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
+        }
     }
 
     private final class InternalEventResultHandler implements RepositoryResultHandler<InternalEvent.RepositoryData> {

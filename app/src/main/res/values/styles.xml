@@ -2,6 +2,7 @@
 <resources>
     <color name="color_black">#000000</color>
     <color name="color_darkred">#AA0000</color>
+    <color name="color_gray">#808080</color>
     <color name="color_green">#00FF00</color>
     <color name="color_insektionen">#44687D</color>
     <color name="color_insektionen_light">#70AACC</color>
@@ -36,9 +37,6 @@
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
-    <style name="EventAttendeesListSecondary" parent="TextAppearance.AppCompat.Small">
-    </style>
-
     <style name="EventInfoHeader" parent="TextAppearance.AppCompat.Headline">
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
@@ -66,6 +64,20 @@
     <style name="EventsListTime" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@android:color/primary_text_light</item>
         <item name="android:gravity">right</item>
+    </style>
+
+    <style name="EventWorkersListPrimary" parent="TextAppearance.AppCompat.Small">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="EventWorkersListSecondary" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="EventWorkersListRange" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
     <style name="MemberInfoHeader" parent="TextAppearance.AppCompat.Headline">

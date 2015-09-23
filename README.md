@@ -44,6 +44,7 @@ SDKs provided by Google:
 
 * [OkHttp HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
 * [Picasso Image downloading and caching for Android](http://square.github.io/picasso/)
+* [Android Range Seek Bar](https://github.com/anothem/android-range-seek-bar)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
 
 TMEIT for Android integrates code from the
