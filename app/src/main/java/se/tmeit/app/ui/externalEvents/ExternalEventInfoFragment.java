@@ -223,6 +223,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
                 public void run() {
                     Activity activity = getActivity();
                     if (null != activity && isVisible()) {
+                        setProgressBarVisible(false);
                         Toast toast = Toast.makeText(getActivity(), getString(errorMessage), Toast.LENGTH_LONG);
                         toast.show();
                     }

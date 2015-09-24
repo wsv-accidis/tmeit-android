@@ -55,11 +55,16 @@ public final class InternalEventWorker {
         return result;
     }
 
+    public void clearRange() {
+        mRangeStart = mRangeEnd = 0;
+        mHasRange = false;
+    }
+
     public String getComment() {
         return mComment;
     }
 
-    private void setComment(String comment) {
+    public void setComment(String comment) {
         mComment = comment;
     }
 
@@ -91,7 +96,7 @@ public final class InternalEventWorker {
         return mWorking;
     }
 
-    private void setWorking(Working working) {
+    public void setWorking(Working working) {
         mWorking = working;
     }
 
@@ -116,6 +121,17 @@ public final class InternalEventWorker {
                     return MAYBE;
                 default:
                     return NO;
+            }
+        }
+
+        public static int toInt(Working w) {
+            switch (w) {
+                case YES:
+                    return 2;
+                case MAYBE:
+                    return 1;
+                default:
+                    return 0;
             }
         }
     }

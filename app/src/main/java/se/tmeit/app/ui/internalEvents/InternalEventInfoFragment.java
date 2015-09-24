@@ -35,6 +35,10 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     private final Handler mHandler = new Handler();
     private final InternalEventResultHandler mRepositoryResultHandler = new InternalEventResultHandler();
     private final WorkButtonClickListener mWorkClickedListener = new WorkButtonClickListener();
+    private final WorkDialogListener mWorkDialogListener = new WorkDialogListener();
+    private final WorkingResultHandler mWorkingResultHandler = new WorkingResultHandler();
+    private InternalEventWorker mCurrentWorker;
+    private InternalEvent mEvent;
     private View mMaybeLayout;
     private View mNoLayout;
     private TextView mNumberOfWorkersText;
@@ -43,6 +47,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     private Repository mRepository;
     private Button mWorkButton;
     private View mYesLayout;
+    private View mDivider;
 
     public static InternalEventInfoFragment createInstance(InternalEvent event) {
         Bundle bundle = new Bundle();
@@ -83,6 +88,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         int workersCount = args.getInt(InternalEvent.Keys.WORKERS_COUNT), workersMax = args.getInt(InternalEvent.Keys.WORKERS_MAX);
         setNumberOfWorkersText(workersCount, workersMax);
 
+        mDivider = view.findViewById(R.id.event_divider);
         mYesLayout = view.findViewById(R.id.event_workers_yes_layout);
         mMaybeLayout = view.findViewById(R.id.event_workers_maybe_layout);
         mNoLayout = view.findViewById(R.id.event_workers_no_layout);
@@ -111,8 +117,6 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
             return;
         }
 
-        view.findViewById(R.id.event_divider).setVisibility(View.VISIBLE);
-
         LinearLayout yesList = (LinearLayout) view.findViewById(R.id.event_workers_yes),
                 maybeList = (LinearLayout) view.findViewById(R.id.event_workers_maybe),
                 noList = (LinearLayout) view.findViewById(R.id.event_workers_no);
@@ -125,9 +129,24 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         initializeListOfWorkers(mMaybeLayout, maybeList, maybeWorkers);
         initializeListOfWorkers(mNoLayout, noList, noWorkers);
 
+        mEvent = repositoryData.getEvent();
+        mCurrentWorker = getCurrentWorker(repositoryData.getWorkers());
+
         mWorkButton.setOnClickListener(mWorkClickedListener);
         mWorkButton.setEnabled(!repositoryData.getEvent().isPast());
         mWorkButton.setVisibility(View.VISIBLE);
+        mDivider.setVisibility(View.VISIBLE);
+    }
+
+    private InternalEventWorker getCurrentWorker(List<InternalEventWorker> workers) {
+        int userId = mPrefs.getAuthenticatedUserId();
+        for (InternalEventWorker worker : workers) {
+            if (worker.getId() == userId) {
+                return worker;
+            }
+        }
+
+        return null;
     }
 
     private void initializeListOfWorkers(View listLayout, LinearLayout listView, List<InternalEventWorker> workers) {
@@ -193,6 +212,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
     private void setProgressBarVisible(boolean visible) {
         if (visible) {
+            mDivider.setVisibility(View.GONE);
             mYesLayout.setVisibility(View.GONE);
             mMaybeLayout.setVisibility(View.GONE);
             mNoLayout.setVisibility(View.GONE);
@@ -237,11 +257,58 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         @Override
         public void onClick(View v) {
             Bundle args = new Bundle();
+            if (null != mCurrentWorker) {
+                args.putBoolean(InternalEventWorker.Keys.IS_SAVED, true);
+                args.putInt(InternalEventWorker.Keys.WORKING, InternalEventWorker.Working.toInt(mCurrentWorker.getWorking()));
+                args.putString(InternalEventWorker.Keys.COMMENT, mCurrentWorker.getComment());
+
+                if (mCurrentWorker.hasRange()) {
+                    args.putInt(InternalEventWorker.Keys.RANGE_START, mCurrentWorker.getRangeStart());
+                    args.putInt(InternalEventWorker.Keys.RANGE_END, mCurrentWorker.getRangeEnd());
+                }
+            }
 
             InternalEventWorkDialogFragment dialog = new InternalEventWorkDialogFragment();
             dialog.setArguments(args);
-            //dialog.setListener(mAttendingDialogListener);
+            dialog.setListener(mWorkDialogListener);
             dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
+        }
+    }
+
+    private final class WorkDialogListener implements InternalEventWorkDialogFragment.InternalEventWorkDialogListener {
+        @Override
+        public void saveClicked(InternalEventWorker worker) {
+            setProgressBarVisible(true);
+            mRepository.workInternalEvent(mEvent.getId(), worker, mWorkingResultHandler);
+        }
+    }
+
+    private final class WorkingResultHandler implements RepositoryResultHandler<Void> {
+        @Override
+        public void onError(final int errorMessage) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Activity activity = getActivity();
+                    if (null != activity && isVisible()) {
+                        setProgressBarVisible(false);
+                        Toast toast = Toast.makeText(getActivity(), getString(errorMessage), Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onSuccess(Void aVoid) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != getActivity() && isVisible()) {
+                        beginLoad(true);
+                    }
+                }
+            });
         }
     }
 }

@@ -41,6 +41,7 @@
     <string name="event_work_dont_know">Jag vet inte vilka tider jag kan jobba</string>
     <string name="event_work_this_event">Jobba detta event</string>
     <string name="event_work_use_slider">Dra i handtagen för att välja intervall.</string>
+    <string name="event_work_zero_hours">Du kan inte välja ett intervall kortare än en timme.</string>
     <string name="event_worker">arbetare</string>
     <string name="event_workers">arbetare</string>
     <string name="event_workers_maybe">Svarat Kanske</string>

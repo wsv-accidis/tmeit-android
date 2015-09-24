@@ -16,43 +16,50 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"/>
 
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="3dp">
-
-        <RadioButton
-            android:id="@+id/event_work_dont_know"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/event_work_dont_know"
-            android:textSize="16sp"/>
-
-        <RadioButton
-            android:id="@+id/event_work_between"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/event_work_between"
-            android:textSize="16sp"/>
-    </RadioGroup>
-
-    <org.florescu.android.rangeseekbar.RangeSeekBar
-        android:id="@+id/event_work_range"
+    <LinearLayout
+        android:id="@+id/event_work_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        rsb:absoluteMaxValue="29"
-        rsb:absoluteMinValue="8"
-        rsb:showLabels="false"
-        rsb:valuesAboveThumbs="false"/>
+        android:orientation="vertical">
 
-    <TextView
-        style="@style/EventWorkersListSecondary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/event_work_use_slider"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="3dp">
+
+            <RadioButton
+                android:id="@+id/event_work_dont_know"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_work_dont_know"
+                android:textSize="16sp"/>
+
+            <RadioButton
+                android:id="@+id/event_work_between"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_work_between"
+                android:textSize="16sp"/>
+        </RadioGroup>
+
+        <org.florescu.android.rangeseekbar.RangeSeekBar
+            android:id="@+id/event_work_range"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            rsb:absoluteMaxValue="29"
+            rsb:absoluteMinValue="8"
+            rsb:showLabels="false"
+            rsb:valuesAboveThumbs="false"/>
+
+        <TextView
+            style="@style/EventWorkersListSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/event_work_use_slider"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/event_work_comment"

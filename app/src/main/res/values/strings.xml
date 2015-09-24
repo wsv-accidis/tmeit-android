@@ -44,6 +44,7 @@
     <string name="event_work_dont_know">I don\'t know when I can work</string>
     <string name="event_work_this_event">Work this event</string>
     <string name="event_work_use_slider">Drag the handles to select an interval.</string>
+    <string name="event_work_zero_hours">You can\'t select an interval shorter than one hour.</string>
     <string name="event_worker">worker</string>
     <string name="event_workers">workers</string>
     <string name="event_workers_maybe">Said Maybe</string>

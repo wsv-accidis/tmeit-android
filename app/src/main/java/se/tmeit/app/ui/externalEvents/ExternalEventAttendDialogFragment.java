@@ -18,6 +18,7 @@ import se.tmeit.app.model.ExternalEventAttendee;
  * Dialog for attending/unattending an external event.
  */
 public final class ExternalEventAttendDialogFragment extends DialogFragment {
+    private final SaveButtonClickedListener mSaveClickedListener = new SaveButtonClickedListener();
     private EditText mDobText;
     private EditText mDrinkPrefsText;
     private EditText mFoodPrefsText;
@@ -51,7 +52,7 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
-                .setPositiveButton(R.string.event_save, new SaveButtonClickedListener())
+                .setPositiveButton(R.string.event_save, mSaveClickedListener)
                 .setNegativeButton(android.R.string.cancel, null);
 
         if (isAttending) {

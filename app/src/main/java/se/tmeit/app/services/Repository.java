@@ -85,6 +85,20 @@ public final class Repository {
         TmeitHttpClient.getInstance().enqueueRequest(request, new GetMembersCallback(resultHandler));
     }
 
+    public void workInternalEvent(int id, InternalEventWorker worker, RepositoryResultHandler<Void> resultHandler) {
+        try {
+            Request request = new Request.Builder()
+                    .url(TmeitServiceConfig.SERVICE_BASE_URL + "WorkEvent.php")
+                    .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForWorkInternalEvent(id, worker)))
+                    .build();
+
+            TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
+        } catch (JSONException ex) {
+            Log.e(TAG, "Unexpected JSON exception while creating request.", ex);
+            resultHandler.onError(R.string.network_error_unspecified_protocol);
+        }
+    }
+
     Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {
         Map<Integer, String> result = new LinkedHashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -107,6 +121,22 @@ public final class Repository {
             attending.put(Keys.FOOD_PREFS, attendee.getFoodPreferences());
             attending.put(Keys.NOTES, attendee.getNotes());
             json.put(Keys.ATTENDING, attending);
+        }
+
+        return json.toString();
+    }
+
+    private String createJsonForWorkInternalEvent(int id, InternalEventWorker worker) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put(TmeitServiceConfig.USERNAME_KEY, mUsername);
+        json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, mServiceAuth);
+        json.put(Keys.EVENT_ID, id);
+        json.put(Keys.COMMENT, worker.getComment());
+        json.put(Keys.WORKING, InternalEventWorker.Working.toInt(worker.getWorking()));
+
+        if (worker.hasRange()) {
+            json.put(Keys.RANGE_START, worker.getRangeStart());
+            json.put(Keys.RANGE_END, worker.getRangeEnd());
         }
 
         return json.toString();
@@ -269,6 +299,7 @@ public final class Repository {
         public static final String ATTENDEE = "attendee";
         public static final String ATTENDEES = "attendees";
         public static final String ATTENDING = "attending";
+        public static final String COMMENT = "comment";
         public static final String DOB = "dob";
         public static final String DRINK_PREFS = "drink_prefs";
         public static final String EVENT = "event";
@@ -277,11 +308,14 @@ public final class Repository {
         public static final String GROUPS = "groups";
         public static final String ID = "id";
         public static final String NOTES = "notes";
+        public static final String RANGE_END = "range_end";
+        public static final String RANGE_START = "range_start";
         public static final String TEAMS = "teams";
         public static final String TITLE = "title";
         public static final String TITLES = "titles";
         public static final String USERS = "users";
         public static final String WORKERS = "workers";
+        public static final String WORKING = "working";
 
         private Keys() {
         }
