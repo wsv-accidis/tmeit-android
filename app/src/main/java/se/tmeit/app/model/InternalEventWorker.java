@@ -14,11 +14,13 @@ public final class InternalEventWorker {
     public final static int RANGE_MAX_HOUR = 29;
     public final static int RANGE_MIN_HOUR = 8;
     private String mComment;
+    private String mGroupTitle;
     private boolean mHasRange;
     private int mId;
     private String mName;
     private int mRangeEnd;
     private int mRangeStart;
+    private String mTeamTitle;
     private Working mWorking;
 
     public static List<InternalEventWorker> filterByWorking(List<InternalEventWorker> list, Working filter) {
@@ -35,8 +37,10 @@ public final class InternalEventWorker {
     public static InternalEventWorker fromJson(JSONObject json) throws JSONException {
         InternalEventWorker worker = new InternalEventWorker();
         worker.setComment(json.optString(Keys.COMMENT));
+        worker.setGroupTitle(json.optString(Keys.GROUP_TITLE));
         worker.setId(json.optInt(Keys.ID));
         worker.setName(json.optString(Keys.NAME));
+        worker.setTeamTitle(json.optString(Keys.TEAM_TITLE));
         worker.setWorking(Working.fromInt(json.optInt(Keys.WORKING)));
 
         if (json.optBoolean(Keys.HAS_RANGE)) {
@@ -68,6 +72,14 @@ public final class InternalEventWorker {
         mComment = comment;
     }
 
+    public String getGroupTitle() {
+        return mGroupTitle;
+    }
+
+    private void setGroupTitle(String title) {
+        mGroupTitle = title;
+    }
+
     public int getId() {
         return mId;
     }
@@ -90,6 +102,14 @@ public final class InternalEventWorker {
 
     public int getRangeStart() {
         return mRangeStart;
+    }
+
+    public String getTeamTitle() {
+        return mTeamTitle;
+    }
+
+    private void setTeamTitle(String title) {
+        mTeamTitle = title;
     }
 
     public Working getWorking() {
@@ -138,12 +158,14 @@ public final class InternalEventWorker {
 
     public static class Keys {
         public static final String COMMENT = "comment";
+        public static final String GROUP_TITLE = "group_title";
         public static final String HAS_RANGE = "has_range";
         public static final String ID = "id";
         public static final String IS_SAVED = "is_saved"; // bundle only
         public static final String NAME = "realname";
         public static final String RANGE_END = "range_end";
         public static final String RANGE_START = "range_start";
+        public static final String TEAM_TITLE = "team_title";
         public static final String WORKING = "working";
 
         private Keys() {

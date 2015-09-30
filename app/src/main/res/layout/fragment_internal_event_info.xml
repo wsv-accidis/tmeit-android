@@ -67,6 +67,15 @@
                 android:drawableLeft="@drawable/ic_assignment"
                 android:drawablePadding="8dp"/>
 
+            <TextView
+                android:id="@+id/event_team"
+                style="@style/EventInfoMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@drawable/ic_group"
+                android:drawablePadding="8dp"/>
+
             <ProgressBar
                 android:id="@+id/event_progress_bar"
                 style="?android:attr/progressBarStyleLarge"

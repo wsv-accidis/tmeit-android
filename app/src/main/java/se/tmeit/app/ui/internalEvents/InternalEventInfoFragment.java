@@ -32,12 +32,14 @@ import se.tmeit.app.ui.externalEvents.ExternalEventAttendDialogFragment;
  * Fragment for an internal event.
  */
 public final class InternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
+    public static final String WORKER_NAME_FORMAT = "%s (%s/%s)";
     private final Handler mHandler = new Handler();
     private final InternalEventResultHandler mRepositoryResultHandler = new InternalEventResultHandler();
     private final WorkButtonClickListener mWorkClickedListener = new WorkButtonClickListener();
     private final WorkDialogListener mWorkDialogListener = new WorkDialogListener();
     private final WorkingResultHandler mWorkingResultHandler = new WorkingResultHandler();
     private InternalEventWorker mCurrentWorker;
+    private View mDivider;
     private InternalEvent mEvent;
     private View mMaybeLayout;
     private View mNoLayout;
@@ -47,13 +49,13 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     private Repository mRepository;
     private Button mWorkButton;
     private View mYesLayout;
-    private View mDivider;
 
     public static InternalEventInfoFragment createInstance(InternalEvent event) {
         Bundle bundle = new Bundle();
         bundle.putInt(InternalEvent.Keys.ID, event.getId());
         bundle.putString(InternalEvent.Keys.TITLE, event.getTitle());
         bundle.putString(InternalEvent.Keys.START_DATE, event.getStartDate());
+        bundle.putString(InternalEvent.Keys.TEAM_TITLE, event.getTeamTitle());
         bundle.putInt(InternalEvent.Keys.WORKERS_COUNT, event.getWorkersCount());
         bundle.putInt(InternalEvent.Keys.WORKERS_MAX, event.getWorkersMax());
 
@@ -87,6 +89,13 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         mNumberOfWorkersText = (TextView) view.findViewById(R.id.event_number_of_workers);
         int workersCount = args.getInt(InternalEvent.Keys.WORKERS_COUNT), workersMax = args.getInt(InternalEvent.Keys.WORKERS_MAX);
         setNumberOfWorkersText(workersCount, workersMax);
+
+        String teamTitle = args.getString(InternalEvent.Keys.TEAM_TITLE);
+        if(TextUtils.isEmpty(teamTitle)) {
+            teamTitle = getString(R.string.members_no_team_placeholder);
+        }
+        TextView teamText = (TextView) view.findViewById(R.id.event_team);
+        teamText.setText(teamTitle);
 
         mDivider = view.findViewById(R.id.event_divider);
         mYesLayout = view.findViewById(R.id.event_workers_yes_layout);
@@ -131,6 +140,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
         mEvent = repositoryData.getEvent();
         mCurrentWorker = getCurrentWorker(repositoryData.getWorkers());
+        setNumberOfWorkersText(yesWorkers.size(), mEvent.getWorkersMax());
 
         mWorkButton.setOnClickListener(mWorkClickedListener);
         mWorkButton.setEnabled(!repositoryData.getEvent().isPast());
@@ -171,7 +181,8 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
             View view = layoutInflater.inflate(R.layout.list_item_internal_event_worker, null);
 
             TextView nameText = (TextView) view.findViewById(R.id.event_worker_name);
-            nameText.setText(worker.getName());
+            String teamTitle = TextUtils.isEmpty(worker.getTeamTitle()) ? getString(R.string.event_worker_no_team_placeholder) : worker.getTeamTitle();
+            nameText.setText(String.format(WORKER_NAME_FORMAT, worker.getName(), worker.getGroupTitle(), teamTitle));
 
             TextView commentText = (TextView) view.findViewById(R.id.event_worker_comment);
             commentText.setText(TextUtils.isEmpty(worker.getComment()) ? "-" : worker.getComment());
