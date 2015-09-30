@@ -64,6 +64,10 @@ public final class MainActivity extends AppCompatActivity {
         return (null != mOptionsMenu && mOptionsMenu.onMenuItemSelected(item)) || super.onOptionsItemSelected(item);
     }
 
+    public void openFragment(Fragment fragment) {
+        openFragment(fragment, true);
+    }
+
     public void openFragment(Fragment fragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -76,6 +80,11 @@ public final class MainActivity extends AppCompatActivity {
 
         transaction.commit();
         updateViewFromFragment(fragment);
+    }
+
+    public void popFragmentFromBackStack() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack();
     }
 
     @Override
@@ -150,7 +159,7 @@ public final class MainActivity extends AppCompatActivity {
         Fragment nextFragment = NavigationItem.createFragment(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
-            openFragment(nextFragment, true);
+            openFragment(nextFragment);
         } else {
             Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
         }

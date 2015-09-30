@@ -131,7 +131,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
             if (activity instanceof MainActivity) {
                 saveInstanceState();
                 MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.openFragment(memberInfoFragment, true);
+                mainActivity.openFragment(memberInfoFragment);
             } else {
                 Log.e(TAG, "Activity holding fragment is not MainActivity!");
             }

@@ -127,7 +127,7 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
             Activity activity = getActivity();
             if (null != activity && isVisible() && activity instanceof MainActivity) {
                 MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.openFragment(new UploadPhotoFragment(), true);
+                mainActivity.popFragmentFromBackStack();
             }
 
             Toast toast = Toast.makeText(getContext(), R.string.upload_photo_succeeded, Toast.LENGTH_LONG);

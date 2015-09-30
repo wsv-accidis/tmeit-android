@@ -212,7 +212,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
                 Bundle args = getArguments();
                 List<String> faces = args.getStringArrayList(Member.Keys.FACES);
                 Fragment memberImagesFragment = MemberImagesFragment.createInstance(faces);
-                mainActivity.openFragment(memberImagesFragment, true);
+                mainActivity.openFragment(memberImagesFragment);
             } else {
                 Log.e(TAG, "Activity holding fragment is not MainActivity!");
             }

@@ -120,7 +120,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
         Activity activity = getActivity();
         if (activity instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) activity;
-            mainActivity.openFragment(finishFragment, true);
+            mainActivity.openFragment(finishFragment);
         } else {
             Log.e(TAG, "Activity holding fragment is not MainActivity!");
         }

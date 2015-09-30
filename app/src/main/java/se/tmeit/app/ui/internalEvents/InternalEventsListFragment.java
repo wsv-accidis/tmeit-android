@@ -41,7 +41,7 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
             if (activity instanceof MainActivity) {
                 saveInstanceState();
                 MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.openFragment(eventInfoFragment, true);
+                mainActivity.openFragment(eventInfoFragment);
             } else {
                 Log.e(TAG, "Activity holding fragment is not MainActivity!");
             }
