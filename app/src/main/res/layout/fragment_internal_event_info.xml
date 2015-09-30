@@ -59,7 +59,7 @@
                 android:drawablePadding="8dp"/>
 
             <TextView
-                android:id="@+id/event_number_of_workers"
+                android:id="@+id/event_team"
                 style="@style/EventInfoMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                 android:drawablePadding="8dp"/>
 
             <TextView
-                android:id="@+id/event_team"
+                android:id="@+id/event_number_of_workers"
                 style="@style/EventInfoMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

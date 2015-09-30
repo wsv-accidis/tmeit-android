@@ -55,6 +55,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         bundle.putInt(InternalEvent.Keys.ID, event.getId());
         bundle.putString(InternalEvent.Keys.TITLE, event.getTitle());
         bundle.putString(InternalEvent.Keys.START_DATE, event.getStartDate());
+        bundle.putString(InternalEvent.Keys.START_TIME, event.getStartTime());
         bundle.putString(InternalEvent.Keys.TEAM_TITLE, event.getTeamTitle());
         bundle.putInt(InternalEvent.Keys.WORKERS_COUNT, event.getWorkersCount());
         bundle.putInt(InternalEvent.Keys.WORKERS_MAX, event.getWorkersMax());
@@ -84,7 +85,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         titleText.setText(args.getString(InternalEvent.Keys.TITLE));
 
         TextView startDateText = (TextView) view.findViewById(R.id.event_start_date);
-        startDateText.setText(args.getString(InternalEvent.Keys.START_DATE));
+        startDateText.setText(args.getString(InternalEvent.Keys.START_DATE) + ' ' + args.getString(InternalEvent.Keys.START_TIME));
 
         mNumberOfWorkersText = (TextView) view.findViewById(R.id.event_number_of_workers);
         int workersCount = args.getInt(InternalEvent.Keys.WORKERS_COUNT), workersMax = args.getInt(InternalEvent.Keys.WORKERS_MAX);
