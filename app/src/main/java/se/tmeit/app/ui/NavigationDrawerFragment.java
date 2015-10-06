@@ -212,7 +212,7 @@ public class NavigationDrawerFragment extends Fragment {
         actionBar.setTitle(R.string.app_name);
     }
 
-    public static interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         void onNavigationDrawerItemSelected(NavigationItem item);
     }
 }

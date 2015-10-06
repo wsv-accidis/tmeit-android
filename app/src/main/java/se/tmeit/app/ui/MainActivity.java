@@ -104,14 +104,14 @@ public final class MainActivity extends AppCompatActivity {
             mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT_POS));
             if (null == mOpenFragmentItem) {
                 mOpenFragmentItem = NavigationItem.getDefault();
-                openNavigationItem(mOpenFragmentItem);
+                openNavigationItem(mOpenFragmentItem, false);
             } else {
                 Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
                 openFragment(lastFragment, false);
             }
         } else if (null == mOpenFragmentItem) {
             mOpenFragmentItem = NavigationItem.getDefault();
-            openNavigationItem(mOpenFragmentItem);
+            openNavigationItem(mOpenFragmentItem, false);
         }
 
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -155,11 +155,11 @@ public final class MainActivity extends AppCompatActivity {
         outState.putInt(STATE_LAST_OPENED_FRAGMENT_POS, mOpenFragmentItem.getPosition());
     }
 
-    private void openNavigationItem(NavigationItem item) {
+    private void openNavigationItem(NavigationItem item, boolean addToBackStack) {
         Fragment nextFragment = NavigationItem.createFragment(item);
         if (null != nextFragment) {
             mOpenFragmentItem = item;
-            openFragment(nextFragment);
+            openFragment(nextFragment, addToBackStack);
         } else {
             Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
         }
@@ -266,7 +266,7 @@ public final class MainActivity extends AppCompatActivity {
     private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
         @Override
         public void onNavigationDrawerItemSelected(NavigationItem item) {
-            openNavigationItem(item);
+            openNavigationItem(item, true);
         }
     }
 
