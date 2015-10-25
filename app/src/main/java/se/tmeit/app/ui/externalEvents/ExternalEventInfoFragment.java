@@ -24,17 +24,18 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for an external event.
  */
-public final class ExternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
+public final class ExternalEventInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final char FORMAT_SPACE = ' ';
     private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
     private final AttendingButtonClickListener mAttendingClickedListener = new AttendingButtonClickListener();
-    private final Handler mHandler = new Handler();
-    private final AttendingResultHandler mAttendingResultHandler = new AttendingResultHandler();
     private final AttendingDialogListener mAttendingDialogListener = new AttendingDialogListener();
+    private final AttendingResultHandler mAttendingResultHandler = new AttendingResultHandler();
+    private final Handler mHandler = new Handler();
     private final ExternalEventResultHandler mRepositoryResultHandler = new ExternalEventResultHandler();
     private Button mAttendingButton;
     private ExternalEventAttendee mCurrentAttendee;
@@ -54,6 +55,11 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         ExternalEventInfoFragment instance = new ExternalEventInfoFragment();
         instance.setArguments(bundle);
         return instance;
+    }
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.EXTERNAL_EVENTS_ITEM;
     }
 
     @Override
@@ -174,7 +180,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
     }
 
     private void setProgressBarVisible(boolean visible) {
-        if(visible) {
+        if (visible) {
             mDetailsLayout.setVisibility(View.GONE);
             mAttendingButton.setVisibility(View.GONE);
         }

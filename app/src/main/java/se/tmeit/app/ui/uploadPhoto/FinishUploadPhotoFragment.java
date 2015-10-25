@@ -17,12 +17,13 @@ import android.widget.Toast;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.members.MembersSimpleListFragment;
 
 /**
  * Fragment which displays the image captured and allows the user to select a member.
  */
-public final class FinishUploadPhotoFragment extends Fragment implements MainActivity.HasTitle {
+public final class FinishUploadPhotoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final String CAPTURED_PHOTO_URI = "capturedPhotoUri";
     private static final String SELECTED_USER = "selectedUser";
     private static final String TAG = FinishUploadPhotoFragment.class.getSimpleName();
@@ -30,9 +31,9 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
     private Uri mCaptureUri;
     private Button mFinishButton;
     private View mFinishView;
-    private String mSelectedUser;
     private ProgressBar mProgressBar;
     private View mProgressView;
+    private String mSelectedUser;
 
     public static FinishUploadPhotoFragment createInstance(Uri capturedPhotoUri) {
         Bundle bundle = new Bundle();
@@ -41,6 +42,11 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
         FinishUploadPhotoFragment instance = new FinishUploadPhotoFragment();
         instance.setArguments(bundle);
         return instance;
+    }
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.UPLOAD_PHOTO_ITEM;
     }
 
     @Override

@@ -17,12 +17,17 @@ import se.tmeit.app.R;
 /**
  * Fragment which helps determine the minimum legal age to be served alcohol.
  */
-public final class AgeCheckFragment extends Fragment implements MainActivity.HasTitle {
-    private TextView mBirthDateText;
-    private final Handler mHandler = new Handler();
-    private final Runnable mUpdateRunner = new UpdateRunner();
+public final class AgeCheckFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final int UPDATE_DELAY = 30000;
     private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private final Handler mHandler = new Handler();
+    private final Runnable mUpdateRunner = new UpdateRunner();
+    private TextView mBirthDateText;
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.AGE_CHECK_ITEM;
+    }
 
     @Override
     public int getTitle() {
@@ -37,16 +42,16 @@ public final class AgeCheckFragment extends Fragment implements MainActivity.Has
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(mUpdateRunner);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         updateBirthDate();
         mHandler.postDelayed(mUpdateRunner, UPDATE_DELAY);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mHandler.removeCallbacks(mUpdateRunner);
     }
 
     private void updateBirthDate() {

@@ -16,11 +16,12 @@ import java.util.List;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment displaying all available images for a member as a full-screen grid.
  */
-public final class MemberImagesFragment extends Fragment implements MainActivity.HasTitle {
+public final class MemberImagesFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private final static String TAG = MemberImagesFragment.class.getSimpleName();
     private MemberFaceHelper mFaceHelper;
 
@@ -31,6 +32,11 @@ public final class MemberImagesFragment extends Fragment implements MainActivity
         MemberImagesFragment instance = new MemberImagesFragment();
         instance.setArguments(bundle);
         return instance;
+    }
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.MEMBERS_ITEM;
     }
 
     @Override

@@ -15,17 +15,23 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.externalEvents.ExternalEventInfoFragment;
 
 /**
  * Fragment for the list of internal events.
  */
-public final class InternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle {
+public final class InternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final String STATE_LIST_VIEW = "intEventsListState";
     private static final String TAG = InternalEventsListFragment.class.getSimpleName();
     private final InternalEventsResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
     private List<InternalEvent> mEvents;
     private InternalEventsListAdapter mListAdapter;
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.INTERNAL_EVENTS_ITEM;
+    }
 
     @Override
     public int getTitle() {

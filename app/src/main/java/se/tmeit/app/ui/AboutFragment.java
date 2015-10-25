@@ -15,7 +15,11 @@ import se.tmeit.app.utils.AndroidUtils;
 /**
  * Fragment which displays information about the app.
  */
-public final class AboutFragment extends Fragment implements MainActivity.HasTitle {
+public final class AboutFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.ABOUT_ITEM;
+    }
 
     @Override
     public int getTitle() {

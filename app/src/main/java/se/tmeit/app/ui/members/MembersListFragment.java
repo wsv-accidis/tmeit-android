@@ -26,11 +26,12 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for the list of members.
  */
-public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu, MainActivity.HasTitle {
+public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu, MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final int MENU_CLEAR_FILTER_ID = 1;
     private static final int MENU_GROUPS_ID = 10000;
     private static final int MENU_TEAMS_ID = 20000;
@@ -42,6 +43,11 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
     private Menu mFilterMenu;
     private MembersListAdapter mListAdapter;
     private Member.RepositoryData mMembers;
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.MEMBERS_ITEM;
+    }
 
     @Override
     public int getMenu() {

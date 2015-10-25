@@ -18,13 +18,14 @@ import java.io.IOException;
 
 import se.tmeit.app.R;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.cropPhoto.CropImageActivity;
 import se.tmeit.app.utils.ImageUtils;
 
 /**
  * Fragment which allows the user to take/select a photo and upload it.
  */
-public final class UploadPhotoFragment extends Fragment implements MainActivity.HasTitle {
+public final class UploadPhotoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final int ACTIVITY_RESULT_CROPPED_PHOTO = 13;
     private static final int ACTIVITY_RESULT_SELECT_EXISTING = 12;
     private static final int ACTIVITY_RESULT_TAKE_PHOTO = 11;
@@ -37,6 +38,11 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
     private static final String TAG = UploadPhotoFragment.class.getSimpleName();
     private Uri mPendingCaptureUri;
     private Uri mPendingCropUri;
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.UPLOAD_PHOTO_ITEM;
+    }
 
     @Override
     public int getTitle() {

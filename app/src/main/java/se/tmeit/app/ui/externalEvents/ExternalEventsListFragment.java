@@ -14,16 +14,22 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for the list of external events.
  */
-public final class ExternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle {
+public final class ExternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final String STATE_LIST_VIEW = "extEventsListState";
     private static final String TAG = ExternalEventsListFragment.class.getSimpleName();
     private final ExternalEventsResultHandler mRepositoryResultHandler = new ExternalEventsResultHandler();
     private List<ExternalEvent> mEvents;
     private ExternalEventsListAdapter mListAdapter;
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.EXTERNAL_EVENTS_ITEM;
+    }
 
     @Override
     public int getTitle() {

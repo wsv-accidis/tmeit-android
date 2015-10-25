@@ -51,7 +51,8 @@ public abstract class ListFragmentBase extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (null != getView()) {
-            outState.putParcelable(getStateKey(), getListView().onSaveInstanceState());
+            mListState = getListView().onSaveInstanceState();
+            outState.putParcelable(getStateKey(), mListState);
         }
     }
 

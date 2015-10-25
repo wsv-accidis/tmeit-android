@@ -18,17 +18,23 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for configuring notification settings.
  */
-public class NotificationsFragment extends Fragment implements MainActivity.HasTitle {
+public class NotificationsFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     private static final String TAG = NotificationsFragment.class.getSimpleName();
     private final Handler mHandler = new Handler();
     private final RegistrationResultHandler mResultHandler = new RegistrationResultHandler();
     private GcmRegistration mGcmRegistration;
     private Switch mNotificationsSwitch;
     private boolean mSuppressSwitchListener;
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.NOTIFICATIONS_ITEM;
+    }
 
     @Override
     public int getTitle() {

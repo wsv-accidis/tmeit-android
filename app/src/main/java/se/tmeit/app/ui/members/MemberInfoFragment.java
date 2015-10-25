@@ -26,11 +26,12 @@ import java.util.List;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for an individual member.
  */
-public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu {
+public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu, MainActivity.HasNavigationItem {
     private final static String TAG = MemberInfoFragment.class.getSimpleName();
     private final OnImageClickedListener mOnImageClickedListener = new OnImageClickedListener();
     private MemberFaceHelper mFaceHelper;
@@ -70,6 +71,11 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         }
 
         return TextUtils.join(", ", strings);
+    }
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.MEMBERS_ITEM;
     }
 
     @Override

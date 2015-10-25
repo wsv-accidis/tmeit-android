@@ -26,12 +26,13 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.externalEvents.ExternalEventAttendDialogFragment;
 
 /**
  * Fragment for an internal event.
  */
-public final class InternalEventInfoFragment extends Fragment implements MainActivity.HasTitle {
+public final class InternalEventInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     public static final String WORKER_NAME_FORMAT = "%s (%s/%s)";
     private final Handler mHandler = new Handler();
     private final InternalEventResultHandler mRepositoryResultHandler = new InternalEventResultHandler();
@@ -63,6 +64,11 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         InternalEventInfoFragment instance = new InternalEventInfoFragment();
         instance.setArguments(bundle);
         return instance;
+    }
+
+    @Override
+    public NavigationItem getItem() {
+        return NavigationItem.INTERNAL_EVENTS_ITEM;
     }
 
     @Override
