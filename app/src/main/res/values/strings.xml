@@ -124,6 +124,7 @@
     <string name="repository_error_unspecified_protocol">An unexpected error occurred while downloading. Make sure you have the latest version of this app.</string>
 
     <string name="upload_photo_chooser_title">Select image</string>
+    <string name="upload_photo_error_permissions">The camera or gallery couldn't be opened. Please ensure the app has been granted the relevant permissions.</string>
     <string name="upload_photo_failed">Upload failed for some reason. Try again.</string>
     <string name="upload_photo_finish_nav_title">Select member</string>
     <string name="upload_photo_nav_title">Upload photo</string>

@@ -116,6 +116,7 @@
     <string name="repository_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Kontrollera att du har senaste versionen av appen.</string>
 
     <string name="upload_photo_chooser_title">Välj bild</string>
+    <string name="upload_photo_error_permissions">Kameran eller galleriet gick inte att öppna. Vänligen kontrollera att appen har fått de nödvändiga behörigheterna.</string>
     <string name="upload_photo_failed">Uppladdningen misslyckades av någon anledning. Försök igen.</string>
     <string name="upload_photo_finish_nav_title">Välj medlem</string>
     <string name="upload_photo_nav_title">Ladda upp foto</string>

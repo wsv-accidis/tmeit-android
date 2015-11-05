@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -176,6 +177,8 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
                 startActivityForResult(Intent.createChooser(intent, getString(R.string.upload_photo_chooser_title)), ACTIVITY_RESULT_SELECT_EXISTING);
             } catch (Exception ex) {
                 Log.e(TAG, "Caught an exception while attempting to start image selection.", ex);
+                Toast toast = Toast.makeText(getContext(), R.string.upload_photo_error_permissions, Toast.LENGTH_LONG);
+                toast.show();
             }
         }
     }
@@ -193,6 +196,8 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
                 }
             } catch (Exception ex) {
                 Log.e(TAG, "Caught an exception while attempting to start capture.", ex);
+                Toast toast = Toast.makeText(getContext(), R.string.upload_photo_error_permissions, Toast.LENGTH_LONG);
+                toast.show();
             }
         }
     }
