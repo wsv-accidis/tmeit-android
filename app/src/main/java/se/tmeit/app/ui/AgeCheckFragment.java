@@ -55,7 +55,7 @@ public final class AgeCheckFragment extends Fragment implements MainActivity.Has
     }
 
     private void updateBirthDate() {
-        if (isVisible() && null != mBirthDateText) {
+        if (null != mBirthDateText) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.YEAR, -18);
             mBirthDateText.setText(mDateFormat.format(calendar.getTime()));
