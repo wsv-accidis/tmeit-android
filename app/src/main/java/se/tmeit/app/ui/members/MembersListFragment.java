@@ -309,7 +309,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
     private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
         @Override
         public void onError(int errorMessage) {
-            mMembers = null;
+            mMembers = Member.RepositoryData.empty();
             onRepositoryError(errorMessage);
         }
 

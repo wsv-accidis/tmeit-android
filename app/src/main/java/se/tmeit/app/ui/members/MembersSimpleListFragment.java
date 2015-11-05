@@ -68,7 +68,7 @@ public final class MembersSimpleListFragment extends ListFragmentBase {
     private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
         @Override
         public void onError(int errorMessage) {
-            mMembers = null;
+            mMembers = Member.RepositoryData.empty();
             onRepositoryError(errorMessage);
         }
 

@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -249,12 +250,15 @@ public final class Member {
         private final List<Member> mMembers;
         private final Map<Integer, String> mTeams;
         private final Map<Integer, String> mTitles;
-
         public RepositoryData(List<Member> members, Map<Integer, String> groups, Map<Integer, String> teams, Map<Integer, String> titles) {
             mMembers = members;
             mGroups = groups;
             mTeams = teams;
             mTitles = titles;
+        }
+
+        public static RepositoryData empty() {
+            return new RepositoryData(Collections.<Member>emptyList(), Collections.<Integer, String>emptyMap(), Collections.<Integer, String>emptyMap(), Collections.<Integer, String>emptyMap());
         }
 
         public Map<Integer, String> getGroups() {

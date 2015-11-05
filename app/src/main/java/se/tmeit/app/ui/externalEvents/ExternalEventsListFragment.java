@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.Collections;
 import java.util.List;
 
 import se.tmeit.app.R;
@@ -71,7 +72,7 @@ public final class ExternalEventsListFragment extends ListFragmentBase implement
     private final class ExternalEventsResultHandler implements RepositoryResultHandler<List<ExternalEvent>> {
         @Override
         public void onError(int errorMessage) {
-            mEvents = null;
+            mEvents = Collections.emptyList();
             onRepositoryError(errorMessage);
         }
 
