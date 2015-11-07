@@ -2,6 +2,7 @@ package se.tmeit.app.ui.members;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,14 +18,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
+import se.tmeit.app.model.MemberBadge;
+import se.tmeit.app.services.TmeitHttpClient;
+import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.ui.NavigationItem;
 
@@ -32,6 +40,7 @@ import se.tmeit.app.ui.NavigationItem;
  * Fragment for an individual member.
  */
 public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu, MainActivity.HasNavigationItem {
+    private final static int EXPERIENCE_MIN = 100;
     private final static String TAG = MemberInfoFragment.class.getSimpleName();
     private final OnImageClickedListener mOnImageClickedListener = new OnImageClickedListener();
     private MemberFaceHelper mFaceHelper;
@@ -49,6 +58,8 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         bundle.putString(Member.Keys.DATE_PRAO, member.getDatePrao());
         bundle.putString(Member.Keys.DATE_MARSKALK, member.getDateMarskalk());
         bundle.putString(Member.Keys.DATE_VRAQ, member.getDateVraq());
+        bundle.putInt(Member.Keys.EXPERIENCE_POINTS, member.getExperiencePoints());
+        bundle.putParcelableArrayList(Member.Keys.EXPERIENCE_BADGES, new ArrayList<>(member.getExperienceBadges()));
 
         MemberInfoFragment instance = new MemberInfoFragment();
         instance.setArguments(bundle);
@@ -167,7 +178,48 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         setTextWithPrefixIfNotEmpty(view, R.id.member_marskalk, R.string.member_marskalk, args.getString(Member.Keys.DATE_MARSKALK));
         setTextWithPrefixIfNotEmpty(view, R.id.member_vraq, R.string.member_vraq, args.getString(Member.Keys.DATE_VRAQ));
 
+        int experiencePoints = args.getInt(Member.Keys.EXPERIENCE_POINTS);
+        TextView experienceText = (TextView) view.findViewById(R.id.member_experience);
+        if (experiencePoints >= EXPERIENCE_MIN) {
+            setTextWithPrefix(experienceText, R.string.member_exp, String.format(getString(R.string.member_points_format), experiencePoints));
+            experienceText.setVisibility(View.VISIBLE);
+        } else {
+            experienceText.setVisibility(View.GONE);
+        }
+
+        List<MemberBadge> experienceBadges = args.getParcelableArrayList(Member.Keys.EXPERIENCE_BADGES);
+        LinearLayout badgesLayout = (LinearLayout) view.findViewById(R.id.member_badges);
+        if (null != experienceBadges && !experienceBadges.isEmpty()) {
+            initializeListOfBadges(badgesLayout, experienceBadges);
+        } else {
+            badgesLayout.setVisibility(View.GONE);
+        }
+
         return view;
+    }
+
+    private void initializeListOfBadges(LinearLayout layout, List<MemberBadge> badges) {
+        layout.removeAllViews();
+
+        Picasso picasso = new Picasso.Builder(getContext())
+                .downloader(new OkHttpDownloader(TmeitHttpClient.getInstance()))
+                .build();
+
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        for (MemberBadge badge : badges) {
+            View view = layoutInflater.inflate(R.layout.list_item_member_badge, null);
+
+            TextView titleText = (TextView) view.findViewById(R.id.badge_title);
+            titleText.setText(badge.getTitle());
+
+            ImageView imageView = (ImageView) view.findViewById(R.id.badge_image);
+            picasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(badge.getSrc()).build())
+                    .resizeDimen(R.dimen.tmeit_member_badge_size, R.dimen.tmeit_member_badge_size)
+                    .centerInside()
+                    .into(imageView);
+
+            layout.addView(view);
+        }
     }
 
     @Override

@@ -129,13 +129,13 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         }
 
         List<ExternalEventAttendee> attendees = repositoryData.getAttendees();
-        LinearLayout attendeeListView = (LinearLayout) view.findViewById(R.id.event_attendees);
+        LinearLayout attendeesLayout = (LinearLayout) view.findViewById(R.id.event_attendees);
         View noAttendeesText = view.findViewById(R.id.event_no_attendees);
         if (null != attendees && !attendees.isEmpty()) {
             noAttendeesText.setVisibility(View.GONE);
-            initializeListOfAttendees(attendeeListView, attendees);
+            initializeListOfAttendees(attendeesLayout, attendees);
         } else {
-            attendeeListView.setVisibility(View.GONE);
+            attendeesLayout.setVisibility(View.GONE);
             noAttendeesText.setVisibility(View.VISIBLE);
         }
 
@@ -147,8 +147,8 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         mDetailsLayout.setVisibility(View.VISIBLE);
     }
 
-    private void initializeListOfAttendees(LinearLayout attendeeListView, List<ExternalEventAttendee> attendees) {
-        attendeeListView.removeAllViews();
+    private void initializeListOfAttendees(LinearLayout layout, List<ExternalEventAttendee> attendees) {
+        layout.removeAllViews();
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         for (ExternalEventAttendee attendee : attendees) {
@@ -175,7 +175,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
             }
 
             view.setText(builder.toString());
-            attendeeListView.addView(view);
+            layout.addView(view);
         }
     }
 

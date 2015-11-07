@@ -145,6 +145,22 @@
                     android:layout_marginTop="5dp"
                     android:drawableLeft="@drawable/ic_whatshot"
                     android:drawablePadding="8dp"/>
+
+                <TextView
+                    android:id="@+id/member_experience"
+                    style="@style/MemberInfoMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:drawableLeft="@drawable/ic_star_circle"
+                    android:drawablePadding="8dp"/>
+
+                <LinearLayout
+                    android:id="@+id/member_badges"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"/>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

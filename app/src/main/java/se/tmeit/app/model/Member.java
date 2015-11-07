@@ -21,6 +21,8 @@ public final class Member {
     private String mDatePrao;
     private String mDateVraq;
     private String mEmail;
+    private List<MemberBadge> mExperienceBadges;
+    private int mExperiencePoints;
     private List<String> mFaces;
     private long mFlags;
     private int mGroupId;
@@ -37,6 +39,7 @@ public final class Member {
         member.setDatePrao(obj.optString(Keys.DATE_PRAO));
         member.setDateVraq(obj.optString(Keys.DATE_VRAQ));
         member.setEmail(obj.getString(Keys.EMAIL));
+        member.setExperiencePoints(obj.optInt(Keys.EXPERIENCE_POINTS));
         member.setFlags(obj.optBoolean(Keys.HAS_STAD), obj.optBoolean(Keys.HAS_FEST), obj.optBoolean(Keys.HAS_PERMIT), obj.optBoolean(Keys.HAS_LICENSE));
         member.setGroupId(obj.optInt(Keys.GROUP_ID));
         member.setId(obj.getInt(Keys.ID));
@@ -54,6 +57,15 @@ public final class Member {
             }
         }
         member.setFaces(faces);
+
+        ArrayList<MemberBadge> badges = new ArrayList<>();
+        JSONArray jsonBadges = obj.optJSONArray(Keys.EXPERIENCE_BADGES);
+        if (null != jsonBadges) {
+            for (int i = 0; i < jsonBadges.length(); i++) {
+                badges.add(MemberBadge.fromJson(jsonBadges.getJSONObject(i)));
+            }
+        }
+        member.setExperienceBadges(badges);
 
         return member;
     }
@@ -88,6 +100,22 @@ public final class Member {
 
     private void setEmail(String email) {
         mEmail = email;
+    }
+
+    public List<MemberBadge> getExperienceBadges() {
+        return mExperienceBadges;
+    }
+
+    private void setExperienceBadges(List<MemberBadge> badges) {
+        mExperienceBadges = badges;
+    }
+
+    public int getExperiencePoints() {
+        return mExperiencePoints;
+    }
+
+    private void setExperiencePoints(int value) {
+        mExperiencePoints = value;
     }
 
     public List<String> getFaces() {
@@ -211,7 +239,7 @@ public final class Member {
 
         private final long mValue;
 
-        private Flags(long value) {
+        Flags(long value) {
             mValue = value;
         }
 
@@ -225,6 +253,8 @@ public final class Member {
         public static final String DATE_PRAO = "date_prao";
         public static final String DATE_VRAQ = "date_vraq";
         public static final String EMAIL = "email";
+        public static final String EXPERIENCE_BADGES = "experience_badges";
+        public static final String EXPERIENCE_POINTS = "experience_points";
         public static final String FACES = "faces";
         public static final String FLAGS = "flags"; // bundle only
         public static final String GROUP_ID = "group_id";
@@ -250,6 +280,7 @@ public final class Member {
         private final List<Member> mMembers;
         private final Map<Integer, String> mTeams;
         private final Map<Integer, String> mTitles;
+
         public RepositoryData(List<Member> members, Map<Integer, String> groups, Map<Integer, String> teams, Map<Integer, String> titles) {
             mMembers = members;
             mGroups = groups;
