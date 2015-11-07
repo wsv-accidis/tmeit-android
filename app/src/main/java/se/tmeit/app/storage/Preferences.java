@@ -27,19 +27,12 @@ public final class Preferences {
         mPrefs = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
     }
 
-    public String getAuthenticatedUserName() {
-        return mPrefs.getString(Keys.AUTHENTICATED_USER_NAME, "");
-    }
-
     public int getAuthenticatedUserId() {
         return mPrefs.getInt(Keys.AUTHENTICATED_USER_ID, 0);
     }
 
-    public void setAuthenticatedUser(String username, int userId) {
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(Keys.AUTHENTICATED_USER_NAME, username);
-        editor.putInt(Keys.AUTHENTICATED_USER_ID, userId);
-        editor.commit();
+    public String getAuthenticatedUserName() {
+        return mPrefs.getString(Keys.AUTHENTICATED_USER_NAME, "");
     }
 
     public String getGcmRegistrationId() {
@@ -47,9 +40,7 @@ public final class Preferences {
     }
 
     public void setGcmRegistrationId(String registrationId) {
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(Keys.GCM_REGISTRATION_ID, registrationId);
-        editor.commit();
+        mPrefs.edit().putString(Keys.GCM_REGISTRATION_ID, registrationId).apply();
     }
 
     public int getGcmRegistrationVersion() {
@@ -57,9 +48,7 @@ public final class Preferences {
     }
 
     public void setGcmRegistrationVersion(int registrationVersion) {
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putInt(Keys.GCM_REGISTRATION_VERSION, registrationVersion);
-        editor.commit();
+        mPrefs.edit().putInt(Keys.GCM_REGISTRATION_VERSION, registrationVersion).apply();
     }
 
     public Calendar getLatestNotification() {
@@ -68,9 +57,7 @@ public final class Preferences {
     }
 
     public void setLatestNotification(Calendar date) {
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(Keys.LATEST_NOTIFICATION, DateTimeUtils.formatIso8601(date));
-        editor.commit();
+        mPrefs.edit().putString(Keys.LATEST_NOTIFICATION, DateTimeUtils.formatIso8601(date)).apply();
     }
 
     public Set<Integer> getMembersListGroupsFilter() {
@@ -86,9 +73,7 @@ public final class Preferences {
     }
 
     public void setServiceAuthentication(String serviceAuth) {
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(Keys.SERVICE_AUTHENTICATION, serviceAuth);
-        editor.commit();
+        mPrefs.edit().putString(Keys.SERVICE_AUTHENTICATION, serviceAuth).apply();
     }
 
     public boolean hasGcmRegistrationId() {
@@ -99,11 +84,42 @@ public final class Preferences {
         return !getServiceAuthentication().isEmpty();
     }
 
+    public void setAuthenticatedUser(String username, int userId) {
+        mPrefs.edit()
+                .putString(Keys.AUTHENTICATED_USER_NAME, username)
+                .putInt(Keys.AUTHENTICATED_USER_ID, userId)
+                .apply();
+    }
+
     public void setMembersListFilters(Set<Integer> groupsFilter, Set<Integer> teamsFilter) {
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.putString(Keys.MEMBERS_LIST_GROUPS_FILTER, serializeIntSet(groupsFilter));
-        editor.putString(Keys.MEMBERS_LIST_TEAMS_FILTER, serializeIntSet(teamsFilter));
-        editor.commit();
+        mPrefs.edit()
+                .putString(Keys.MEMBERS_LIST_GROUPS_FILTER, serializeIntSet(groupsFilter))
+                .putString(Keys.MEMBERS_LIST_TEAMS_FILTER, serializeIntSet(teamsFilter))
+                .apply();
+    }
+
+    public void setShouldRefreshExternalEvents(boolean value) {
+        mPrefs.edit().putBoolean(Keys.REFRESH_EXTERNAL_EVENTS, value).apply();
+    }
+
+    public void setShouldRefreshInternalEvents(boolean value) {
+        mPrefs.edit().putBoolean(Keys.REFRESH_INTERNAL_EVENTS, value).apply();
+    }
+
+    public void setShouldRefreshMembers(boolean value) {
+        mPrefs.edit().putBoolean(Keys.REFRESH_MEMBERS, value).apply();
+    }
+
+    public boolean shouldRefreshExternalEvents() {
+        return mPrefs.getBoolean(Keys.REFRESH_EXTERNAL_EVENTS, false);
+    }
+
+    public boolean shouldRefreshInternalEvents() {
+        return mPrefs.getBoolean(Keys.REFRESH_INTERNAL_EVENTS, false);
+    }
+
+    public boolean shouldRefreshMembers() {
+        return mPrefs.getBoolean(Keys.REFRESH_MEMBERS, false);
     }
 
     private Set<Integer> deserializeIntSet(String str) {
@@ -138,13 +154,16 @@ public final class Preferences {
     }
 
     private static class Keys {
-        public static final String AUTHENTICATED_USER_NAME = "authenticatedUser";
         public static final String AUTHENTICATED_USER_ID = "authenticatedUserId";
+        public static final String AUTHENTICATED_USER_NAME = "authenticatedUser";
         public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
         public static final String GCM_REGISTRATION_VERSION = "gcmRegistrationVersion";
         public static final String LATEST_NOTIFICATION = "latestNotification";
         public static final String MEMBERS_LIST_GROUPS_FILTER = "membersListGroupsFilter";
         public static final String MEMBERS_LIST_TEAMS_FILTER = "membersListTeamsFilter";
+        public static final String REFRESH_EXTERNAL_EVENTS = "refreshExternalEvents";
+        public static final String REFRESH_INTERNAL_EVENTS = "refreshInternalEvents";
+        public static final String REFRESH_MEMBERS = "refreshMembers";
         public static final String SERVICE_AUTHENTICATION = "serviceAuthentication";
 
         private Keys() {

@@ -1,6 +1,7 @@
 package se.tmeit.app.ui.internalEvents;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
+import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.ui.NavigationItem;
@@ -28,6 +30,7 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
     private final InternalEventsResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
     private List<InternalEvent> mEvents;
     private InternalEventsListAdapter mListAdapter;
+    private Preferences mPrefs;
 
     @Override
     public NavigationItem getItem() {
@@ -37,6 +40,12 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
     @Override
     public int getTitle() {
         return R.string.event_internal_nav_title;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mPrefs = new Preferences(context);
     }
 
     @Override
@@ -57,7 +66,8 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
 
     @Override
     protected void getDataFromRepository(Repository repository) {
-        repository.getInternalEvents(mRepositoryResultHandler);
+        repository.getInternalEvents(mRepositoryResultHandler, mPrefs.shouldRefreshInternalEvents());
+        mPrefs.setShouldRefreshInternalEvents(false);
     }
 
     @Override

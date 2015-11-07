@@ -298,6 +298,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
         public void saveClicked(InternalEventWorker worker) {
             setProgressBarVisible(true);
             mRepository.workInternalEvent(mEvent.getId(), worker, mWorkingResultHandler);
+            mPrefs.setShouldRefreshInternalEvents(true);
         }
     }
 

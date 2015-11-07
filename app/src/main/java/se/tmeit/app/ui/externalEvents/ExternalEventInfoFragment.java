@@ -212,12 +212,14 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
         public void deleteClicked() {
             setProgressBarVisible(true);
             mRepository.attendExternalEvent(mEvent.getId(), null, mAttendingResultHandler);
+            mPrefs.setShouldRefreshExternalEvents(true);
         }
 
         @Override
         public void saveClicked(ExternalEventAttendee attendee) {
             setProgressBarVisible(true);
             mRepository.attendExternalEvent(mEvent.getId(), attendee, mAttendingResultHandler);
+            mPrefs.setShouldRefreshExternalEvents(true);
         }
     }
 

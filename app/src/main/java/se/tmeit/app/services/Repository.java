@@ -62,9 +62,12 @@ public final class Repository {
         TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventDetailsCallback(resultHandler));
     }
 
-    public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
-        Request request = getRequestBuilder("GetExternalEvents.php").build();
-        TmeitHttpClient.getInstance().enqueueRequest(request, new GetExternalEventsCallback(resultHandler));
+    public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler, boolean noCache) {
+        Request.Builder requestBuilder = getRequestBuilder("GetExternalEvents.php");
+        if (noCache) {
+            requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
+        }
+        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventsCallback(resultHandler));
     }
 
     public void getInternalEventDetails(int id, boolean noCache, RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
@@ -75,14 +78,20 @@ public final class Repository {
         TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetInternalEventDetailsCallback(resultHandler));
     }
 
-    public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
-        Request request = getRequestBuilder("GetEvents.php").build();
-        TmeitHttpClient.getInstance().enqueueRequest(request, new GetInternalEventsCallback(resultHandler));
+    public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler, boolean noCache) {
+        Request.Builder requestBuilder = getRequestBuilder("GetEvents.php");
+        if (noCache) {
+            requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
+        }
+        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetInternalEventsCallback(resultHandler));
     }
 
-    public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
-        Request request = getRequestBuilder("GetMembers.php").build();
-        TmeitHttpClient.getInstance().enqueueRequest(request, new GetMembersCallback(resultHandler));
+    public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler, boolean noCache) {
+        Request.Builder requestBuilder = getRequestBuilder("GetMembers.php");
+        if (noCache) {
+            requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
+        }
+        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetMembersCallback(resultHandler));
     }
 
     public void workInternalEvent(int id, InternalEventWorker worker, RepositoryResultHandler<Void> resultHandler) {

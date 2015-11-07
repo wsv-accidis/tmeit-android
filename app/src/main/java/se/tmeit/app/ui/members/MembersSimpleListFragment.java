@@ -47,7 +47,7 @@ public final class MembersSimpleListFragment extends ListFragmentBase {
 
     @Override
     protected void getDataFromRepository(Repository repository) {
-        repository.getMembers(mRepositoryResultHandler);
+        repository.getMembers(mRepositoryResultHandler, false);
     }
 
     @Override
