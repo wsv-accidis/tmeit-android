@@ -1,7 +1,6 @@
 package se.tmeit.app.ui.members;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,6 @@ import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
-import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.ui.NavigationItem;
@@ -45,7 +43,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
     private Menu mFilterMenu;
     private MembersListAdapter mListAdapter;
     private Member.RepositoryData mMembers;
-    private Preferences mPrefs;
 
     @Override
     public NavigationItem getItem() {
@@ -67,12 +64,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
         super.onActivityCreated(savedInstanceState);
         registerForContextMenu(getListView());
         setEmptyText(getString(R.string.members_no_results));
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mPrefs = new Preferences(context);
     }
 
     @Override
@@ -171,7 +162,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
     @Override
     protected void getDataFromRepository(Repository repository) {
-        repository.getMembers(mRepositoryResultHandler, mPrefs.shouldRefreshMembers());
+        repository.getMembers(mRepositoryResultHandler, getPreferences().shouldRefreshMembers());
     }
 
     @Override

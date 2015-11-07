@@ -18,7 +18,6 @@ import se.tmeit.app.storage.Preferences;
  */
 public abstract class ListFragmentBase extends ListFragment {
     private final Handler mHandler = new Handler();
-    private boolean mIsLoaded;
     private Parcelable mListState;
     private Preferences mPrefs;
 
@@ -39,13 +38,8 @@ public abstract class ListFragmentBase extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (!mIsLoaded) {
-            String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
-            getDataFromRepository(new Repository(username, serviceAuth));
-        } else {
-            initializeList();
-        }
+        String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
+        getDataFromRepository(new Repository(username, serviceAuth));
     }
 
     @Override
@@ -105,7 +99,6 @@ public abstract class ListFragmentBase extends ListFragment {
      * Call this method from the success handler of your repository result handler.
      */
     protected void onRepositorySuccess() {
-        mIsLoaded = true;
         mHandler.post(new Runnable() {
             @Override
             public void run() {

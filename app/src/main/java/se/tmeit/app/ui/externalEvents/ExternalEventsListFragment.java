@@ -1,7 +1,6 @@
 package se.tmeit.app.ui.externalEvents;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +13,6 @@ import se.tmeit.app.R;
 import se.tmeit.app.model.ExternalEvent;
 import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
-import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.ui.NavigationItem;
@@ -28,7 +26,6 @@ public final class ExternalEventsListFragment extends ListFragmentBase implement
     private final ExternalEventsResultHandler mRepositoryResultHandler = new ExternalEventsResultHandler();
     private List<ExternalEvent> mEvents;
     private ExternalEventsListAdapter mListAdapter;
-    private Preferences mPrefs;
 
     @Override
     public NavigationItem getItem() {
@@ -38,12 +35,6 @@ public final class ExternalEventsListFragment extends ListFragmentBase implement
     @Override
     public int getTitle() {
         return R.string.event_external_nav_title;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mPrefs = new Preferences(context);
     }
 
     @Override
@@ -64,8 +55,8 @@ public final class ExternalEventsListFragment extends ListFragmentBase implement
 
     @Override
     protected void getDataFromRepository(Repository repository) {
-        repository.getExternalEvents(mRepositoryResultHandler, mPrefs.shouldRefreshExternalEvents());
-        mPrefs.setShouldRefreshExternalEvents(false);
+        repository.getExternalEvents(mRepositoryResultHandler, getPreferences().shouldRefreshExternalEvents());
+        getPreferences().setShouldRefreshExternalEvents(false);
     }
 
     @Override
