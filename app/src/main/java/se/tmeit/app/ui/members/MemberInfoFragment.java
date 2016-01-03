@@ -245,7 +245,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         String prefixStr = getString(prefixResId);
         SpannableString teamStr = new SpannableString(prefixStr + " " + str);
         teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        int foregroundColor = ContextCompat.getColor(getContext(), R.color.color_insektionen);
+        int foregroundColor = ContextCompat.getColor(getContext(), R.color.insektionen);
         teamStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(teamStr);
     }

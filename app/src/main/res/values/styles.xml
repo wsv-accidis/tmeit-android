@@ -1,121 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_black">#000000</color>
-    <color name="color_darkred">#AA0000</color>
-    <color name="color_gray">#808080</color>
-    <color name="color_green">#00FF00</color>
-    <color name="color_insektionen">#44687D</color>
-    <color name="color_insektionen_light">#70AACC</color>
-    <color name="color_insektionen_verylight">#A0CCE5</color>
+	<color name="black">#000000</color>
+	<color name="darkred">#AA0000</color>
+	<color name="gray">#808080</color>
+	<color name="green">#00FF00</color>
+	<color name="insektionen">#44687D</color>
+	<color name="insektionen_light">#5B8AA5</color>
+	<color name="insektionen_verylight">#A0CCE5</color>
 
-    <style name="AboutText">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="AboutText">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="AgeCheckLargeText">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:textSize">36sp</item>
-    </style>
+	<style name="AgeCheckLargeText">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<item name="android:textSize">36sp</item>
+	</style>
 
-    <style name="AgeCheckSmallText">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="AgeCheckSmallText">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Global app theme -->
-    </style>
+	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="colorPrimary">@color/insektionen</item>
+		<item name="colorPrimaryDark">@color/black</item>
+		<item name="colorAccent">@color/insektionen_light</item>
+	</style>
 
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">?android:attr/listDivider</item>
-    </style>
+	<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="EventAttendeesListPrimary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="AppTheme.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
 
-    <style name="EventInfoHeader" parent="TextAppearance.AppCompat.Headline">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="EventInfoMedium" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="Divider">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">1dp</item>
+		<item name="android:background">?android:attr/listDivider</item>
+	</style>
 
-    <style name="EventsListDate" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:gravity">right</item>
-    </style>
+	<style name="EventAttendeesListPrimary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:ellipsize">end</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="EventsListPrimary" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:singleLine">true</item>
-    </style>
+	<style name="EventInfoHeader" parent="TextAppearance.AppCompat.Headline">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="EventsListSecondary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">true</item>
-    </style>
+	<style name="EventInfoMedium" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="EventsListTime" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:gravity">right</item>
-    </style>
+	<style name="EventsListDate" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<item name="android:gravity">right</item>
+	</style>
 
-    <style name="EventWorkersListPrimary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="EventsListPrimary" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:ellipsize">end</item>
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<item name="android:singleLine">true</item>
+	</style>
 
-    <style name="EventWorkersListSecondary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textSize">12sp</item>
-    </style>
+	<style name="EventsListSecondary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:ellipsize">end</item>
+		<item name="android:singleLine">true</item>
+	</style>
 
-    <style name="EventWorkersListRange" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="EventsListTime" parent="TextAppearance.AppCompat.Small">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<item name="android:gravity">right</item>
+	</style>
 
-    <style name="MemberBadgesListPrimary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="EventWorkersListPrimary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:ellipsize">end</item>
+		<item name="android:singleLine">true</item>
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="MemberInfoHeader" parent="TextAppearance.AppCompat.Headline">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="EventWorkersListSecondary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
 
-    <style name="MemberInfoSubHeader" parent="TextAppearance.AppCompat.Medium">
-    </style>
+	<style name="EventWorkersListRange" parent="TextAppearance.AppCompat.Small">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="MemberInfoMedium" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="MemberBadgesListPrimary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="MembersListPrimary" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:singleLine">true</item>
-    </style>
+	<style name="MemberInfoHeader" parent="TextAppearance.AppCompat.Headline">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="MembersListSecondary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:singleLine">true</item>
-    </style>
+	<style name="MemberInfoSubHeader" parent="TextAppearance.AppCompat.Medium">
+	</style>
 
-    <style name="MembersListTertiary" parent="TextAppearance.AppCompat.Small">
-        <item name="android:singleLine">true</item>
-    </style>
+	<style name="MemberInfoMedium" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 
-    <style name="OnboardingText" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="MembersListPrimary" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:ellipsize">end</item>
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<item name="android:singleLine">true</item>
+	</style>
 
-    <style name="SettingsText" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@android:color/primary_text_light</item>
-    </style>
+	<style name="MembersListSecondary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:ellipsize">end</item>
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<item name="android:singleLine">true</item>
+	</style>
+
+	<style name="MembersListTertiary" parent="TextAppearance.AppCompat.Small">
+		<item name="android:singleLine">true</item>
+	</style>
+
+	<style name="OnboardingText" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
+
+	<style name="SettingsText" parent="TextAppearance.AppCompat.Medium">
+		<item name="android:textColor">@android:color/primary_text_light</item>
+	</style>
 </resources>
