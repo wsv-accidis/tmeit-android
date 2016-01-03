@@ -28,304 +28,310 @@ import se.tmeit.app.ui.onboarding.OnboardingActivity;
 import se.tmeit.app.utils.AndroidUtils;
 
 public final class MainActivity extends AppCompatActivity {
-    private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
-    private static final String STATE_LAST_OPENED_FRAGMENT_POS = "openMainActivityFragmentPos";
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private final Handler mHandler = new Handler();
-    private boolean mHasShownNetworkAlert;
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-    private NavigationItem mOpenFragmentItem;
-    private HasMenu mOptionsMenu;
-    private Preferences mPrefs;
-    private CharSequence mTitle;
+	private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
+	private static final String STATE_LAST_OPENED_FRAGMENT_POS = "openMainActivityFragmentPos";
+	private static final String TAG = MainActivity.class.getSimpleName();
+	private final Handler mHandler = new Handler();
+	private boolean mHasShownNetworkAlert;
+	private NavigationDrawerFragment mNavigationDrawerFragment;
+	private NavigationItem mOpenFragmentItem;
+	private HasMenu mOptionsMenu;
+	private Preferences mPrefs;
+	private CharSequence mTitle;
 
-    public static void showNoNetworkAlert(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(R.string.network_error_not_available)
-                .setTitle(R.string.network_error_not_available_title)
-                .setPositiveButton(android.R.string.ok, null);
-        builder.create().show();
-    }
+	public static void showNoNetworkAlert(Context context) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setMessage(R.string.network_error_not_available)
+			.setTitle(R.string.network_error_not_available_title)
+			.setPositiveButton(android.R.string.ok, null);
+		builder.create().show();
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen if the drawer is not showing. Otherwise, let the drawer decide what to show in the action bar.
-            int menuId = (null == mOptionsMenu ? R.menu.main : mOptionsMenu.getMenu());
-            getMenuInflater().inflate(menuId, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (!mNavigationDrawerFragment.isDrawerOpen()) {
+			// Only show items in the action bar relevant to this screen if the drawer is not showing. Otherwise, let the drawer decide what to show in the action bar.
+			int menuId = (null == mOptionsMenu ? R.menu.main : mOptionsMenu.getMenu());
+			getMenuInflater().inflate(menuId, menu);
+			restoreActionBar();
+			return true;
+		}
+		return super.onCreateOptionsMenu(menu);
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return (null != mOptionsMenu && mOptionsMenu.onMenuItemSelected(item)) || super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return (null != mOptionsMenu && mOptionsMenu.onMenuItemSelected(item)) || super.onOptionsItemSelected(item);
+	}
 
-    public void openFragment(Fragment fragment) {
-        openFragment(fragment, true);
-    }
+	public void openFragment(Fragment fragment) {
+		openFragment(fragment, true);
+	}
 
-    public void openFragment(Fragment fragment, boolean addToBackStack) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+	public void openFragment(Fragment fragment, boolean addToBackStack) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		Fragment oldFragment = fragmentManager.findFragmentById(R.id.container);
 
-        if (addToBackStack) {
-            transaction.addToBackStack(null);
-        }
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		transaction.replace(R.id.container, fragment);
+		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
-        transaction.commit();
-        updateViewFromFragment(fragment);
-    }
+		if (addToBackStack && !isSameFragment(oldFragment, fragment)) {
+			transaction.addToBackStack(null);
+		}
 
-    public void popFragmentFromBackStack() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.popBackStack();
-    }
+		transaction.commit();
+		updateViewFromFragment(fragment);
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+	public void popFragmentFromBackStack() {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		fragmentManager.popBackStack();
+	}
 
-        mPrefs = new Preferences(this);
-        mTitle = getTitle();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
-        mNavigationDrawerFragment.setNavigationDrawerCallbacks(new NavigationDrawerCallbacks());
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+		mPrefs = new Preferences(this);
+		mTitle = getTitle();
 
-        if (null != savedInstanceState) {
-            mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT_POS));
-            if (null == mOpenFragmentItem) {
-                mOpenFragmentItem = NavigationItem.getDefault();
-                openNavigationItem(mOpenFragmentItem, false);
-            } else {
-                Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
-                openFragment(lastFragment, false);
-            }
-        } else if (null == mOpenFragmentItem) {
-            mOpenFragmentItem = NavigationItem.getDefault();
-            openNavigationItem(mOpenFragmentItem, false);
-        }
+		final FragmentManager fragmentManager = getSupportFragmentManager();
+		mNavigationDrawerFragment = (NavigationDrawerFragment) fragmentManager.findFragmentById(R.id.navigation_drawer);
+		mNavigationDrawerFragment.setNavigationDrawerCallbacks(new NavigationDrawerCallbacks());
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        fragmentManager.addOnBackStackChangedListener(new BackStackChangedListener());
-    }
+		if (null != savedInstanceState) {
+			mOpenFragmentItem = NavigationItem.fromPosition(savedInstanceState.getInt(STATE_LAST_OPENED_FRAGMENT_POS));
+			if (null == mOpenFragmentItem) {
+				mOpenFragmentItem = NavigationItem.getDefault();
+				openNavigationItem(mOpenFragmentItem, false);
+			} else {
+				Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
+				openFragment(lastFragment, false);
+			}
+		} else if (null == mOpenFragmentItem) {
+			mOpenFragmentItem = NavigationItem.getDefault();
+			openNavigationItem(mOpenFragmentItem, false);
+		}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+		fragmentManager.addOnBackStackChangedListener(new BackStackChangedListener());
+	}
 
-        if (!mPrefs.hasServiceAuthentication()) {
-            startOnboardingActivity();
-        } else {
-            if (!mHasShownNetworkAlert && !AndroidUtils.isNetworkConnected(this)) {
-                mHasShownNetworkAlert = true;
-                showNoNetworkAlert(this);
-            }
+	@Override
+	protected void onResume() {
+		super.onResume();
 
-            // TODO Perhaps we don't need to call this if we already did a few seconds ago (e.g. screen rotation)
-            validateAndRegisterServicesIfNeeded();
-        }
-    }
+		if (!mPrefs.hasServiceAuthentication()) {
+			startOnboardingActivity();
+		} else {
+			if (!mHasShownNetworkAlert && !AndroidUtils.isNetworkConnected(this)) {
+				mHasShownNetworkAlert = true;
+				showNoNetworkAlert(this);
+			}
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+			// TODO Perhaps we don't need to call this if we already did a few seconds ago (e.g. screen rotation)
+			validateAndRegisterServicesIfNeeded();
+		}
+	}
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if (null != fragment) {
-            fragmentManager.putFragment(outState, STATE_LAST_OPENED_FRAGMENT, fragment);
-        }
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
 
-        outState.putInt(STATE_LAST_OPENED_FRAGMENT_POS, mOpenFragmentItem.getPosition());
-    }
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+		if (null != fragment) {
+			fragmentManager.putFragment(outState, STATE_LAST_OPENED_FRAGMENT, fragment);
+		}
 
-    private void openNavigationItem(NavigationItem item, boolean addToBackStack) {
-        Fragment nextFragment = NavigationItem.createFragment(item);
-        if (null != nextFragment) {
-            mOpenFragmentItem = item;
-            openFragment(nextFragment, addToBackStack);
-        } else {
-            Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
-        }
-    }
+		outState.putInt(STATE_LAST_OPENED_FRAGMENT_POS, mOpenFragmentItem.getPosition());
+	}
 
-    private void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(mTitle);
-        }
-    }
+	private boolean isSameFragment(Fragment oldFragment, Fragment newFragment) {
+		return null != oldFragment && oldFragment.getClass().getName().equals(newFragment.getClass().getName());
+	}
 
-    private void setMainTitle(int resId) {
-        if (0 == resId) {
-            resId = R.string.app_name;
-        }
-        mTitle = getString(resId);
-    }
+	private void openNavigationItem(NavigationItem item, boolean addToBackStack) {
+		Fragment nextFragment = NavigationItem.createFragment(item);
+		if (null != nextFragment) {
+			mOpenFragmentItem = item;
+			openFragment(nextFragment, addToBackStack);
+		} else {
+			Log.e(TAG, "Trying to navigate to unrecognized fragment " + item + ".");
+		}
+	}
 
-    private void startOnboardingActivity() {
-        Intent intent = new Intent(this, OnboardingActivity.class);
-        startActivity(intent);
-        finish();
-    }
+	private void restoreActionBar() {
+		ActionBar actionBar = getSupportActionBar();
+		if (actionBar != null) {
+			actionBar.setDisplayShowTitleEnabled(true);
+			actionBar.setTitle(mTitle);
+		}
+	}
 
-    private void updateViewFromFragment(Fragment fragment) {
-        if (fragment instanceof HasNavigationItem) {
-            HasNavigationItem fragmentWithNavItem = (HasNavigationItem) fragment;
-            mNavigationDrawerFragment.setSelectedItem(fragmentWithNavItem.getItem());
-        }
+	private void setMainTitle(int resId) {
+		if (0 == resId) {
+			resId = R.string.app_name;
+		}
+		mTitle = getString(resId);
+	}
 
-        if (fragment instanceof HasTitle) {
-            HasTitle fragmentWithTitle = (HasTitle) fragment;
-            setMainTitle(fragmentWithTitle.getTitle());
-        } else {
-            setMainTitle(0);
-        }
+	private void startOnboardingActivity() {
+		Intent intent = new Intent(this, OnboardingActivity.class);
+		startActivity(intent);
+		finish();
+	}
 
-        if (fragment instanceof HasMenu) {
-            mOptionsMenu = (HasMenu) fragment;
-            fragment.setHasOptionsMenu(true);
-        } else {
-            mOptionsMenu = null;
-            fragment.setHasOptionsMenu(false);
-        }
+	private void updateViewFromFragment(Fragment fragment) {
+		if (fragment instanceof HasNavigationItem) {
+			HasNavigationItem fragmentWithNavItem = (HasNavigationItem) fragment;
+			mNavigationDrawerFragment.setSelectedItem(fragmentWithNavItem.getItem());
+		}
 
-        restoreActionBar();
-    }
+		if (fragment instanceof HasTitle) {
+			HasTitle fragmentWithTitle = (HasTitle) fragment;
+			setMainTitle(fragmentWithTitle.getTitle());
+		} else {
+			setMainTitle(0);
+		}
 
-    private void validateAndRegisterServicesIfNeeded() {
-        String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
-        ServiceAuthenticator authenticator = new ServiceAuthenticator();
-        authenticator.authenticateFromCredentials(username, serviceAuth, new MainAuthenticationResultHandler());
-    }
+		if (fragment instanceof HasMenu) {
+			mOptionsMenu = (HasMenu) fragment;
+			fragment.setHasOptionsMenu(true);
+		} else {
+			mOptionsMenu = null;
+			fragment.setHasOptionsMenu(false);
+		}
 
-    public interface HasMenu {
-        int getMenu();
+		restoreActionBar();
+	}
 
-        boolean onMenuItemSelected(MenuItem item);
-    }
+	private void validateAndRegisterServicesIfNeeded() {
+		String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
+		ServiceAuthenticator authenticator = new ServiceAuthenticator();
+		authenticator.authenticateFromCredentials(username, serviceAuth, new MainAuthenticationResultHandler());
+	}
 
-    public interface HasNavigationItem {
-        NavigationItem getItem();
-    }
+	public interface HasMenu {
+		int getMenu();
 
-    public interface HasTitle {
-        int getTitle();
-    }
+		boolean onMenuItemSelected(MenuItem item);
+	}
 
-    private final class BackStackChangedListener implements FragmentManager.OnBackStackChangedListener {
-        @Override
-        public void onBackStackChanged() {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-            if (null != fragment) {
-                updateViewFromFragment(fragment);
-            }
-        }
-    }
+	public interface HasNavigationItem {
+		NavigationItem getItem();
+	}
 
-    private final class MainAuthenticationResultHandler implements AuthenticationResultHandler {
-        @Override
-        public void onAuthenticationError(int errorMessage) {
-            showErrorMessage(errorMessage);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    startOnboardingActivity();
-                }
-            });
-        }
+	public interface HasTitle {
+		int getTitle();
+	}
 
-        @Override
-        public void onNetworkError(final int errorMessage) {
-            showErrorMessage(errorMessage);
-        }
+	private final class BackStackChangedListener implements FragmentManager.OnBackStackChangedListener {
+		@Override
+		public void onBackStackChanged() {
+			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+			if (null != fragment) {
+				updateViewFromFragment(fragment);
+			}
+		}
+	}
 
-        @Override
-        public void onProtocolError(int errorMessage) {
-            showErrorMessage(errorMessage);
-        }
+	private final class MainAuthenticationResultHandler implements AuthenticationResultHandler {
+		@Override
+		public void onAuthenticationError(int errorMessage) {
+			showErrorMessage(errorMessage);
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					startOnboardingActivity();
+				}
+			});
+		}
 
-        @Override
-        public void onSuccess(String serviceAuth, String userName, int userId) {
-            mPrefs.setServiceAuthentication(serviceAuth);
-            mPrefs.setAuthenticatedUser(userName, userId);
+		@Override
+		public void onNetworkError(final int errorMessage) {
+			showErrorMessage(errorMessage);
+		}
 
-            GcmRegistration.getInstance(MainActivity.this)
-                    .registerIfRegistrationExpired(new RegistrationResultHandler());
-        }
+		@Override
+		public void onProtocolError(int errorMessage) {
+			showErrorMessage(errorMessage);
+		}
 
-        private void showErrorMessage(final int errorMessage) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast toast = Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-        }
-    }
+		@Override
+		public void onSuccess(String serviceAuth, String userName, int userId) {
+			mPrefs.setServiceAuthentication(serviceAuth);
+			mPrefs.setAuthenticatedUser(userName, userId);
 
-    private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-        @Override
-        public void onNavigationDrawerItemSelected(NavigationItem item) {
-            openNavigationItem(item, true);
-        }
-    }
+			GcmRegistration.getInstance(MainActivity.this)
+				.registerIfRegistrationExpired(new RegistrationResultHandler());
+		}
 
-    private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
-        @Override
-        public void onError(final int errorMessage) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshNotificationsFragment();
-                    Toast toast = Toast.makeText(MainActivity.this, getString(errorMessage), Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-        }
+		private void showErrorMessage(final int errorMessage) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Toast toast = Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG);
+					toast.show();
+				}
+			});
+		}
+	}
 
-        @Override
-        public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshNotificationsFragment();
-                    if (canRecover) {
-                        GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
-                    } else {
-                        Toast toast = Toast.makeText(MainActivity.this, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
-                        toast.show();
-                    }
-                }
-            });
-        }
+	private final class NavigationDrawerCallbacks implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+		@Override
+		public void onNavigationDrawerItemSelected(NavigationItem item) {
+			openNavigationItem(item, true);
+		}
+	}
 
-        @Override
-        public void onSuccess() {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshNotificationsFragment();
-                }
-            });
-        }
+	private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
+		@Override
+		public void onError(final int errorMessage) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					refreshNotificationsFragment();
+					Toast toast = Toast.makeText(MainActivity.this, getString(errorMessage), Toast.LENGTH_LONG);
+					toast.show();
+				}
+			});
+		}
 
-        private void refreshNotificationsFragment() {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-            if (fragment instanceof NotificationsFragment) {
-                NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;
-                notificationsFragment.refreshNotificationsState();
-            }
-        }
-    }
+		@Override
+		public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					refreshNotificationsFragment();
+					if (canRecover) {
+						GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+					} else {
+						Toast toast = Toast.makeText(MainActivity.this, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
+						toast.show();
+					}
+				}
+			});
+		}
+
+		@Override
+		public void onSuccess() {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					refreshNotificationsFragment();
+				}
+			});
+		}
+
+		private void refreshNotificationsFragment() {
+			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+			if (fragment instanceof NotificationsFragment) {
+				NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;
+				notificationsFragment.refreshNotificationsState();
+			}
+		}
+	}
 }
