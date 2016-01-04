@@ -1,14 +1,17 @@
 package se.tmeit.app.ui;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -19,8 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.google.android.gms.common.GoogleApiAvailability;
 
 import se.tmeit.app.R;
 import se.tmeit.app.notifications.GcmRegistration;
@@ -45,6 +46,7 @@ public final class MainActivity extends AppCompatActivity {
 	private HasMenu mOptionsMenu;
 	private Preferences mPrefs;
 	private CharSequence mTitle;
+	private final BroadcastReceiver mGcmRegistrationBroadcastReceiver = new GcmRegistrationBroadcastReceiver();
 
 	public static void showNoNetworkAlert(Context context) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -148,6 +150,15 @@ public final class MainActivity extends AppCompatActivity {
 			// TODO Perhaps we don't need to call this if we already did a few seconds ago (e.g. screen rotation)
 			validateAndRegisterServicesIfNeeded();
 		}
+
+		LocalBroadcastManager.getInstance(this)
+			.registerReceiver(mGcmRegistrationBroadcastReceiver, new IntentFilter(GcmRegistration.REGISTRATION_COMPLETE_BROADCAST));
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
 	}
 
 	@Override
@@ -287,9 +298,6 @@ public final class MainActivity extends AppCompatActivity {
 		public void onSuccess(String serviceAuth, String userName, int userId) {
 			mPrefs.setServiceAuthentication(serviceAuth);
 			mPrefs.setAuthenticatedUser(userName, userId);
-
-			GcmRegistration.getInstance(MainActivity.this)
-				.registerIfRegistrationExpired(new RegistrationResultHandler());
 		}
 
 		private void showErrorMessage(final int errorMessage) {
@@ -319,46 +327,9 @@ public final class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
+	private final class GcmRegistrationBroadcastReceiver extends BroadcastReceiver {
 		@Override
-		public void onError(final int errorMessage) {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					refreshNotificationsFragment();
-					Toast toast = Toast.makeText(MainActivity.this, getString(errorMessage), Toast.LENGTH_LONG);
-					toast.show();
-				}
-			});
-		}
-
-		@Override
-		public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					refreshNotificationsFragment();
-					if (canRecover) {
-						GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
-					} else {
-						Toast toast = Toast.makeText(MainActivity.this, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
-						toast.show();
-					}
-				}
-			});
-		}
-
-		@Override
-		public void onSuccess() {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					refreshNotificationsFragment();
-				}
-			});
-		}
-
-		private void refreshNotificationsFragment() {
+		public void onReceive(Context context, Intent intent) {
 			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
 			if (fragment instanceof NotificationsFragment) {
 				NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;

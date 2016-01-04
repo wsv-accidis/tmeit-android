@@ -1,10 +1,8 @@
 package se.tmeit.app.ui.notifications;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import se.tmeit.app.R;
@@ -23,9 +22,6 @@ import se.tmeit.app.ui.MainActivity;
  * Fragment for configuring notification settings.
  */
 public class NotificationsFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
-	private static final String TAG = NotificationsFragment.class.getSimpleName();
-	private final Handler mHandler = new Handler();
-	private final RegistrationResultHandler mResultHandler = new RegistrationResultHandler();
 	private GcmRegistration mGcmRegistration;
 	private Switch mNotificationsSwitch;
 	private boolean mSuppressSwitchListener;
@@ -46,6 +42,7 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
 
 		mGcmRegistration = GcmRegistration.getInstance(getActivity());
 		mNotificationsSwitch = (Switch) view.findViewById(R.id.notifications_enable);
+
 		mNotificationsSwitch.setChecked(mGcmRegistration.isRegistered());
 		mNotificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
@@ -63,9 +60,11 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
 				}
 
 				if (isChecked) {
-					mGcmRegistration.register(mResultHandler);
-				} else {
-					mGcmRegistration.unregister(mResultHandler);
+					if (checkForGooglePlayServices()) {
+						mGcmRegistration.register();
+					}
+				} else if (mGcmRegistration.isRegistered()) {
+					mGcmRegistration.unregister();
 				}
 			}
 		});
@@ -73,7 +72,29 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
 		return view;
 	}
 
+	private boolean checkForGooglePlayServices() {
+		GoogleApiAvailability googleApi = GoogleApiAvailability.getInstance();
+
+		int resultCode = googleApi.isGooglePlayServicesAvailable(getContext());
+		if (ConnectionResult.SUCCESS != resultCode) {
+			if (googleApi.isUserResolvableError(resultCode)) {
+				googleApi.getErrorDialog(getActivity(), resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			} else {
+				Toast toast = Toast.makeText(getActivity(), R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
+				toast.show();
+			}
+			return false;
+		}
+
+		return true;
+	}
+
 	public void refreshNotificationsState() {
+		if (isVisible()) {
+			Toast toast = Toast.makeText(getActivity(), R.string.notifications_success, Toast.LENGTH_LONG);
+			toast.show();
+		}
+
 		setNotificationsSwitch(mGcmRegistration.isRegistered());
 	}
 
@@ -81,64 +102,5 @@ public class NotificationsFragment extends Fragment implements MainActivity.HasT
 		mSuppressSwitchListener = true;
 		mNotificationsSwitch.setChecked(checked);
 		mSuppressSwitchListener = false;
-	}
-
-	private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
-		@Override
-		public void onError(final int errorMessage) {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					Activity activity = getActivity();
-					if (null == activity || !isVisible()) {
-						return;
-					}
-
-					setNotificationsSwitch(false);
-
-					Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
-					toast.show();
-				}
-			});
-		}
-
-		@Override
-		public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					Activity activity = getActivity();
-					if (null == activity || !isVisible()) {
-						return;
-					}
-
-					setNotificationsSwitch(true);
-
-					if (canRecover) {
-						GoogleApiAvailability.getInstance().getErrorDialog(activity, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
-					} else {
-						Toast toast = Toast.makeText(activity, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
-						toast.show();
-					}
-
-				}
-			});
-		}
-
-		@Override
-		public void onSuccess() {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					Activity activity = getActivity();
-					if (null == activity || !isVisible()) {
-						return;
-					}
-
-					Toast toast = Toast.makeText(activity, R.string.notifications_success, Toast.LENGTH_LONG);
-					toast.show();
-				}
-			});
-		}
 	}
 }

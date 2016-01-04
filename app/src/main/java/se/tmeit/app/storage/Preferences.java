@@ -43,14 +43,6 @@ public final class Preferences {
         mPrefs.edit().putString(Keys.GCM_REGISTRATION_ID, registrationId).apply();
     }
 
-    public int getGcmRegistrationVersion() {
-        return mPrefs.getInt(Keys.GCM_REGISTRATION_VERSION, 0);
-    }
-
-    public void setGcmRegistrationVersion(int registrationVersion) {
-        mPrefs.edit().putInt(Keys.GCM_REGISTRATION_VERSION, registrationVersion).apply();
-    }
-
     public Calendar getLatestNotification() {
         String str = mPrefs.getString(Keys.LATEST_NOTIFICATION, "");
         return DateTimeUtils.parseIso8601(str);
@@ -157,7 +149,6 @@ public final class Preferences {
         public static final String AUTHENTICATED_USER_ID = "authenticatedUserId";
         public static final String AUTHENTICATED_USER_NAME = "authenticatedUser";
         public static final String GCM_REGISTRATION_ID = "gcmRegistrationId";
-        public static final String GCM_REGISTRATION_VERSION = "gcmRegistrationVersion";
         public static final String LATEST_NOTIFICATION = "latestNotification";
         public static final String MEMBERS_LIST_GROUPS_FILTER = "membersListGroupsFilter";
         public static final String MEMBERS_LIST_TEAMS_FILTER = "membersListTeamsFilter";
