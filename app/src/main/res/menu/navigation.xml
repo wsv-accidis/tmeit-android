@@ -3,24 +3,31 @@
 	<group android:checkableBehavior="single">
 		<item
 			android:id="@+id/nav_members"
+			android:icon="@drawable/ic_group"
 			android:title="@string/members_nav_title"/>
 		<item
 			android:id="@+id/nav_event_internal"
+			android:icon="@drawable/ic_event"
 			android:title="@string/event_internal_nav_title"/>
 		<item
 			android:id="@+id/nav_event_external"
+			android:icon="@drawable/ic_invitation"
 			android:title="@string/event_external_nav_title"/>
 		<item
 			android:id="@+id/nav_upload_photo"
+			android:icon="@drawable/ic_camera"
 			android:title="@string/upload_photo_nav_title"/>
 		<item
 			android:id="@+id/nav_age_check"
+			android:icon="@drawable/ic_security"
 			android:title="@string/age_check_nav_title"/>
 		<item
 			android:id="@+id/nav_notifications"
+			android:icon="@drawable/ic_notifications"
 			android:title="@string/notifications_nav_title"/>
 		<item
 			android:id="@+id/nav_about"
+			android:icon="@drawable/ic_info"
 			android:title="@string/about_nav_title"/>
 	</group>
 </menu>
