@@ -243,11 +243,11 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
     private void setTextWithPrefix(TextView textView, int prefixResId, String str) {
         String prefixStr = getString(prefixResId);
-        SpannableString teamStr = new SpannableString(prefixStr + " " + str);
-        teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString spanStr = new SpannableString(prefixStr + " " + str);
+        spanStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         int foregroundColor = ContextCompat.getColor(getContext(), R.color.insektionen);
-        teamStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(teamStr);
+        spanStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(spanStr);
     }
 
     private void setTextWithPrefixIfNotEmpty(View view, int textViewId, int prefixResId, String str) {

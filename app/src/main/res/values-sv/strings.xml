@@ -114,7 +114,7 @@
     <string name="onboarding_welcome_this_seems_to_be_the_first_time">Välkommen! Det verkar som om du använder appen för första gången. Du måste logga in med ditt konto.</string>
 
     <string name="repository_error_unspecified_network">Det gick inte att kontakta servern. Kontrollera att du har nätåtkomst och försök sedan igen.</string>
-    <string name="repository_error_unspecified_protocol">Ett oväntat fel uppstod vid inloggningen. Kontrollera att du har senaste versionen av appen.</string>
+    <string name="repository_error_unspecified_protocol">Ett oväntat fel uppstod när data skulle hämtas. Kontrollera att du har senaste versionen av appen.</string>
 
     <string name="upload_photo_chooser_title">Välj bild</string>
     <string name="upload_photo_error_permissions">Kameran eller galleriet gick inte att öppna. Vänligen kontrollera att appen har fått de nödvändiga behörigheterna.</string>
