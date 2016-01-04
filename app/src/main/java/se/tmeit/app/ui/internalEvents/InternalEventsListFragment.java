@@ -15,7 +15,6 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for the list of internal events.
@@ -28,9 +27,9 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
     private InternalEventsListAdapter mListAdapter;
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.INTERNAL_EVENTS_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_event_internal;
+	}
 
     @Override
     public int getTitle() {

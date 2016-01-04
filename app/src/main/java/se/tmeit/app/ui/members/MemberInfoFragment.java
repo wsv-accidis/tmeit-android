@@ -34,7 +34,6 @@ import se.tmeit.app.model.MemberBadge;
 import se.tmeit.app.services.TmeitHttpClient;
 import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for an individual member.
@@ -85,9 +84,9 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
     }
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.MEMBERS_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_members;
+	}
 
     @Override
     public int getMenu() {
@@ -198,6 +197,25 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
         return view;
     }
 
+	@Override
+	public boolean onMenuItemSelected(MenuItem item) {
+		if (R.id.member_action_add_contact == item.getItemId()) {
+			Bundle args = getArguments();
+			String realName = args.getString(Member.Keys.REAL_NAME);
+			String email = args.getString(Member.Keys.EMAIL);
+			String phoneNo = args.getString(Member.Keys.PHONE);
+			boolean succeeded = MemberActions.addAsContact(realName, phoneNo, email, getActivity().getContentResolver());
+
+			Toast toast = Toast.makeText(getActivity(),
+				(succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
+				(succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
+			toast.show();
+			return true;
+		}
+
+		return false;
+	}
+
     private void initializeListOfBadges(LinearLayout layout, List<MemberBadge> badges) {
         layout.removeAllViews();
 
@@ -220,25 +238,6 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
             layout.addView(view);
         }
-    }
-
-    @Override
-    public boolean onMenuItemSelected(MenuItem item) {
-        if (R.id.member_action_add_contact == item.getItemId()) {
-            Bundle args = getArguments();
-            String realName = args.getString(Member.Keys.REAL_NAME);
-            String email = args.getString(Member.Keys.EMAIL);
-            String phoneNo = args.getString(Member.Keys.PHONE);
-            boolean succeeded = MemberActions.addAsContact(realName, phoneNo, email, getActivity().getContentResolver());
-
-            Toast toast = Toast.makeText(getActivity(),
-                    (succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
-                    (succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
-            toast.show();
-            return true;
-        }
-
-        return false;
     }
 
     private void setTextWithPrefix(TextView textView, int prefixResId, String str) {

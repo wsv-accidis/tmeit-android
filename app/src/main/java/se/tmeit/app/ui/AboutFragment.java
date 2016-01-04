@@ -17,9 +17,9 @@ import se.tmeit.app.utils.AndroidUtils;
  */
 public final class AboutFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.ABOUT_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_about;
+	}
 
     @Override
     public int getTitle() {
@@ -33,7 +33,8 @@ public final class AboutFragment extends Fragment implements MainActivity.HasTit
         TextView aboutText = (TextView) view.findViewById(R.id.about_text);
         aboutText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        TextView versionText = (TextView) view.findViewById(R.id.version_text);
+		// TODO Use format string
+		TextView versionText = (TextView) view.findViewById(R.id.version_text);
         versionText.setText("v" + AndroidUtils.getAppVersionName(getActivity()));
 
         return view;

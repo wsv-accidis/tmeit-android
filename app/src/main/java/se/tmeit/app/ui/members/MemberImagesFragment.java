@@ -1,11 +1,9 @@
 package se.tmeit.app.ui.members;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -16,7 +14,6 @@ import java.util.List;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment displaying all available images for a member as a full-screen grid.
@@ -35,9 +32,9 @@ public final class MemberImagesFragment extends Fragment implements MainActivity
     }
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.MEMBERS_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_members;
+	}
 
     @Override
     public int getTitle() {

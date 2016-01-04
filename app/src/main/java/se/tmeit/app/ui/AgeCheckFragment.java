@@ -25,9 +25,9 @@ public final class AgeCheckFragment extends Fragment implements MainActivity.Has
     private TextView mBirthDateText;
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.AGE_CHECK_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_age_check;
+	}
 
     @Override
     public int getTitle() {

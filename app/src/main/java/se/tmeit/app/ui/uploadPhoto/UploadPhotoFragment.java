@@ -19,7 +19,6 @@ import java.io.IOException;
 
 import se.tmeit.app.R;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.cropPhoto.CropImageActivity;
 import se.tmeit.app.utils.ImageUtils;
 
@@ -41,9 +40,9 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
     private Uri mPendingCropUri;
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.UPLOAD_PHOTO_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_upload_photo;
+	}
 
     @Override
     public int getTitle() {

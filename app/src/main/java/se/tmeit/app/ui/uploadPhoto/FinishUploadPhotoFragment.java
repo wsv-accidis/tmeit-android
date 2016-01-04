@@ -17,7 +17,6 @@ import android.widget.Toast;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.members.MembersSimpleListFragment;
 
 /**
@@ -45,9 +44,9 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
     }
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.UPLOAD_PHOTO_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_upload_photo;
+	}
 
     @Override
     public int getTitle() {

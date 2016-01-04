@@ -26,7 +26,6 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 
 /**
  * Fragment for the list of members.
@@ -45,9 +44,9 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
     private Member.RepositoryData mMembers;
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.MEMBERS_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_members;
+	}
 
     @Override
     public int getMenu() {

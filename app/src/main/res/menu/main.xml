@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
-    <!--
-        This menu is displayed over the main activity. Not currently used.
-
-    <item android:id="@+id/action_example" android:title="@string/action_example"
-        app:showAsAction="withText|ifRoom" />
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-    -->
+	  tools:context=".MainActivity">
 </menu>

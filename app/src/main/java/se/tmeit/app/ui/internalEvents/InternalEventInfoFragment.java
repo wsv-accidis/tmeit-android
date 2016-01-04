@@ -26,7 +26,6 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.MainActivity;
-import se.tmeit.app.ui.NavigationItem;
 import se.tmeit.app.ui.externalEvents.ExternalEventAttendDialogFragment;
 
 /**
@@ -67,9 +66,9 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
     }
 
     @Override
-    public NavigationItem getItem() {
-        return NavigationItem.INTERNAL_EVENTS_ITEM;
-    }
+	public int getItemId() {
+		return R.id.nav_event_internal;
+	}
 
     @Override
     public int getTitle() {
