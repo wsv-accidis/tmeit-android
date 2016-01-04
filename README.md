@@ -10,7 +10,8 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 1.9 has been published to Google Play. This version added experience points and badges.
+Version 1.999 has been published to Google Play. This version updated a number of Google APIs and
+UI components for improved visuals.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended
