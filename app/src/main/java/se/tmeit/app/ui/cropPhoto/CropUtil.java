@@ -32,117 +32,117 @@ import java.io.IOException;
  * Modified from original in AOSP.
  */
 public final class CropUtil {
-    private static final String SCHEME_CONTENT = "content";
-    private static final String SCHEME_FILE = "file";
+	private static final String SCHEME_CONTENT = "content";
+	private static final String SCHEME_FILE = "file";
 
-    public static int getExifRotation(File imageFile) throws IOException {
-        if (imageFile == null) {
-            return 0;
-        }
+	public static int getExifRotation(File imageFile) throws IOException {
+		if (imageFile == null) {
+			return 0;
+		}
 
-        ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
-        // We only recognize a subset of orientation tag values
-        switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return 90;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return 180;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return 270;
-            default:
-                return ExifInterface.ORIENTATION_UNDEFINED;
-        }
-    }
+		ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+		// We only recognize a subset of orientation tag values
+		switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)) {
+			case ExifInterface.ORIENTATION_ROTATE_90:
+				return 90;
+			case ExifInterface.ORIENTATION_ROTATE_180:
+				return 180;
+			case ExifInterface.ORIENTATION_ROTATE_270:
+				return 270;
+			default:
+				return ExifInterface.ORIENTATION_UNDEFINED;
+		}
+	}
 
-    public static File getFromMediaUri(ContentResolver resolver, Uri uri) {
-        if (uri == null) {
-            return null;
-        }
+	public static File getFromMediaUri(ContentResolver resolver, Uri uri) {
+		if (uri == null) {
+			return null;
+		}
 
-        if (SCHEME_FILE.equals(uri.getScheme())) {
-            return new File(uri.getPath());
-        } else if (SCHEME_CONTENT.equals(uri.getScheme())) {
-            final String[] filePathColumn = {MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME};
-            Cursor cursor = null;
-            try {
-                cursor = resolver.query(uri, filePathColumn, null, null, null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    final int columnIndex = (uri.toString().startsWith("content://com.google.android.gallery3d")) ?
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME) :
-                            cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
-                    // Picasa image on newer devices with Honeycomb and up
-                    if (columnIndex != -1) {
-                        String filePath = cursor.getString(columnIndex);
-                        if (!TextUtils.isEmpty(filePath)) {
-                            return new File(filePath);
-                        }
-                    }
-                }
-            } catch (SecurityException ignored) {
-                // Nothing we can do
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-        }
+		if (SCHEME_FILE.equals(uri.getScheme())) {
+			return new File(uri.getPath());
+		} else if (SCHEME_CONTENT.equals(uri.getScheme())) {
+			final String[] filePathColumn = {MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME};
+			Cursor cursor = null;
+			try {
+				cursor = resolver.query(uri, filePathColumn, null, null, null);
+				if (cursor != null && cursor.moveToFirst()) {
+					final int columnIndex = (uri.toString().startsWith("content://com.google.android.gallery3d")) ?
+						cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME) :
+						cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+					// Picasa image on newer devices with Honeycomb and up
+					if (columnIndex != -1) {
+						String filePath = cursor.getString(columnIndex);
+						if (!TextUtils.isEmpty(filePath)) {
+							return new File(filePath);
+						}
+					}
+				}
+			} catch (SecurityException ignored) {
+				// Nothing we can do
+			} finally {
+				if (cursor != null) {
+					cursor.close();
+				}
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    public static void startBackgroundJob(MonitoredActivity activity, String title, String message, Runnable job, Handler handler) {
-        // Make the progress dialog uncancelable, so that we can gurantee
-        // the thread will be done before the activity getting destroyed
-        ProgressDialog dialog = ProgressDialog.show(
-                activity, title, message, true, false);
-        new Thread(new BackgroundJob(activity, job, dialog, handler)).start();
-    }
+	public static void startBackgroundJob(MonitoredActivity activity, String title, String message, Runnable job, Handler handler) {
+		// Make the progress dialog uncancelable, so that we can gurantee
+		// the thread will be done before the activity getting destroyed
+		ProgressDialog dialog = ProgressDialog.show(
+			activity, title, message, true, false);
+		new Thread(new BackgroundJob(activity, job, dialog, handler)).start();
+	}
 
-    private static class BackgroundJob extends MonitoredActivity.LifeCycleAdapter implements Runnable {
-        private final MonitoredActivity mActivity;
-        private final ProgressDialog mDialog;
-        private final Runnable mCleanupRunner = new Runnable() {
-            public void run() {
-                mActivity.removeLifeCycleListener(BackgroundJob.this);
-                if (mDialog.getWindow() != null) mDialog.dismiss();
-            }
-        };
-        private final Handler mHandler;
-        private final Runnable mJob;
+	private static class BackgroundJob extends MonitoredActivity.LifeCycleAdapter implements Runnable {
+		private final MonitoredActivity mActivity;
+		private final ProgressDialog mDialog;
+		private final Runnable mCleanupRunner = new Runnable() {
+			public void run() {
+				mActivity.removeLifeCycleListener(BackgroundJob.this);
+				if (mDialog.getWindow() != null) mDialog.dismiss();
+			}
+		};
+		private final Handler mHandler;
+		private final Runnable mJob;
 
-        public BackgroundJob(MonitoredActivity activity, Runnable job, ProgressDialog dialog, Handler handler) {
-            mActivity = activity;
-            mDialog = dialog;
-            mJob = job;
-            mActivity.addLifeCycleListener(this);
-            mHandler = handler;
-        }
+		public BackgroundJob(MonitoredActivity activity, Runnable job, ProgressDialog dialog, Handler handler) {
+			mActivity = activity;
+			mDialog = dialog;
+			mJob = job;
+			mActivity.addLifeCycleListener(this);
+			mHandler = handler;
+		}
 
-        @Override
-        public void onActivityDestroyed(MonitoredActivity activity) {
-            // We get here only when the onDestroyed being called before
-            // the mCleanupRunner. So, run it now and remove it from the queue
-            mCleanupRunner.run();
-            mHandler.removeCallbacks(mCleanupRunner);
-        }
+		@Override
+		public void onActivityDestroyed(MonitoredActivity activity) {
+			// We get here only when the onDestroyed being called before
+			// the mCleanupRunner. So, run it now and remove it from the queue
+			mCleanupRunner.run();
+			mHandler.removeCallbacks(mCleanupRunner);
+		}
 
-        @Override
-        public void onActivityStarted(MonitoredActivity activity) {
-            mDialog.show();
-        }
+		@Override
+		public void onActivityStarted(MonitoredActivity activity) {
+			mDialog.show();
+		}
 
-        @Override
-        public void onActivityStopped(MonitoredActivity activity) {
-            mDialog.hide();
-        }
+		@Override
+		public void onActivityStopped(MonitoredActivity activity) {
+			mDialog.hide();
+		}
 
-        public void run() {
-            try {
-                mJob.run();
-            } finally {
-                mHandler.post(mCleanupRunner);
-            }
-        }
-    }
+		public void run() {
+			try {
+				mJob.run();
+			} finally {
+				mHandler.post(mCleanupRunner);
+			}
+		}
+	}
 
 }

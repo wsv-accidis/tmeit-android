@@ -20,66 +20,66 @@ import se.tmeit.app.ui.MainActivity;
  * Fragment for the list of internal events.
  */
 public final class InternalEventsListFragment extends ListFragmentBase implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
-    private static final String STATE_LIST_VIEW = "intEventsListState";
-    private static final String TAG = InternalEventsListFragment.class.getSimpleName();
-    private final InternalEventsResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
-    private List<InternalEvent> mEvents;
-    private InternalEventsListAdapter mListAdapter;
+	private static final String STATE_LIST_VIEW = "intEventsListState";
+	private static final String TAG = InternalEventsListFragment.class.getSimpleName();
+	private final InternalEventsResultHandler mRepositoryResultHandler = new InternalEventsResultHandler();
+	private List<InternalEvent> mEvents;
+	private InternalEventsListAdapter mListAdapter;
 
-    @Override
+	@Override
 	public int getItemId() {
 		return R.id.nav_event_internal;
 	}
 
-    @Override
-    public int getTitle() {
-        return R.string.event_internal_nav_title;
-    }
+	@Override
+	public int getTitle() {
+		return R.string.event_internal_nav_title;
+	}
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position >= 0 && position < mListAdapter.getCount()) {
-            InternalEvent event = (InternalEvent) mListAdapter.getItem(position);
-            Fragment eventInfoFragment = InternalEventInfoFragment.createInstance(event);
-            Activity activity = getActivity();
-            if (activity instanceof MainActivity) {
-                saveInstanceState();
-                MainActivity mainActivity = (MainActivity) activity;
-                mainActivity.openFragment(eventInfoFragment);
-            } else {
-                Log.e(TAG, "Activity holding fragment is not MainActivity!");
-            }
-        }
-    }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		if (position >= 0 && position < mListAdapter.getCount()) {
+			InternalEvent event = (InternalEvent) mListAdapter.getItem(position);
+			Fragment eventInfoFragment = InternalEventInfoFragment.createInstance(event);
+			Activity activity = getActivity();
+			if (activity instanceof MainActivity) {
+				saveInstanceState();
+				MainActivity mainActivity = (MainActivity) activity;
+				mainActivity.openFragment(eventInfoFragment);
+			} else {
+				Log.e(TAG, "Activity holding fragment is not MainActivity!");
+			}
+		}
+	}
 
-    @Override
-    protected void getDataFromRepository(Repository repository) {
-        repository.getInternalEvents(mRepositoryResultHandler, getPreferences().shouldRefreshInternalEvents());
-        getPreferences().setShouldRefreshInternalEvents(false);
-    }
+	@Override
+	protected void getDataFromRepository(Repository repository) {
+		repository.getInternalEvents(mRepositoryResultHandler, getPreferences().shouldRefreshInternalEvents());
+		getPreferences().setShouldRefreshInternalEvents(false);
+	}
 
-    @Override
-    protected String getStateKey() {
-        return STATE_LIST_VIEW;
-    }
+	@Override
+	protected String getStateKey() {
+		return STATE_LIST_VIEW;
+	}
 
-    @Override
-    protected void initializeList() {
-        mListAdapter = new InternalEventsListAdapter(getActivity(), mEvents);
-        finishInitializeList(mListAdapter);
-    }
+	@Override
+	protected void initializeList() {
+		mListAdapter = new InternalEventsListAdapter(getActivity(), mEvents);
+		finishInitializeList(mListAdapter);
+	}
 
-    private final class InternalEventsResultHandler implements RepositoryResultHandler<List<InternalEvent>> {
-        @Override
-        public void onError(int errorMessage) {
-            mEvents = Collections.emptyList();
-            onRepositoryError(errorMessage);
-        }
+	private final class InternalEventsResultHandler implements RepositoryResultHandler<List<InternalEvent>> {
+		@Override
+		public void onError(int errorMessage) {
+			mEvents = Collections.emptyList();
+			onRepositoryError(errorMessage);
+		}
 
-        @Override
-        public void onSuccess(List<InternalEvent> result) {
-            mEvents = result;
-            onRepositorySuccess();
-        }
-    }
+		@Override
+		public void onSuccess(List<InternalEvent> result) {
+			mEvents = result;
+			onRepositorySuccess();
+		}
+	}
 }

@@ -22,100 +22,100 @@ import se.tmeit.app.ui.ListFragmentBase;
  * Simple list fragment for cases where we just need a selectable list of members.
  */
 public final class MembersSimpleListFragment extends ListFragmentBase {
-    private static final String STATE_LIST_VIEW = "membersSimpleListState";
-    private static final String TAG = MembersSimpleListFragment.class.getSimpleName();
-    private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
-    private OnMemberSelectedListener mListener;
-    private Member.RepositoryData mMembers;
+	private static final String STATE_LIST_VIEW = "membersSimpleListState";
+	private static final String TAG = MembersSimpleListFragment.class.getSimpleName();
+	private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
+	private OnMemberSelectedListener mListener;
+	private Member.RepositoryData mMembers;
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (v.getTag() instanceof Member) {
-            getListView().setItemChecked(position, true);
-            Member member = (Member) v.getTag();
-            if (null != mListener) {
-                mListener.onMemberSelected(member);
-            }
-        } else {
-            Log.w(TAG, "Got a click on a list item without an associated member.");
-        }
-    }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		if (v.getTag() instanceof Member) {
+			getListView().setItemChecked(position, true);
+			Member member = (Member) v.getTag();
+			if (null != mListener) {
+				mListener.onMemberSelected(member);
+			}
+		} else {
+			Log.w(TAG, "Got a click on a list item without an associated member.");
+		}
+	}
 
-    public void setOnMemberSelectedListener(OnMemberSelectedListener listener) {
-        mListener = listener;
-    }
+	public void setOnMemberSelectedListener(OnMemberSelectedListener listener) {
+		mListener = listener;
+	}
 
-    @Override
-    protected void getDataFromRepository(Repository repository) {
-        repository.getMembers(mRepositoryResultHandler, false);
-    }
+	@Override
+	protected void getDataFromRepository(Repository repository) {
+		repository.getMembers(mRepositoryResultHandler, false);
+	}
 
-    @Override
-    protected String getStateKey() {
-        return STATE_LIST_VIEW;
-    }
+	@Override
+	protected String getStateKey() {
+		return STATE_LIST_VIEW;
+	}
 
-    @Override
-    protected void initializeList() {
-        finishInitializeList(new MembersSimpleListAdapter(getActivity(), mMembers));
-        getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-    }
+	@Override
+	protected void initializeList() {
+		finishInitializeList(new MembersSimpleListAdapter(getActivity(), mMembers));
+		getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+	}
 
-    public interface OnMemberSelectedListener {
-        void onMemberSelected(Member member);
-    }
+	public interface OnMemberSelectedListener {
+		void onMemberSelected(Member member);
+	}
 
-    private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
-        @Override
-        public void onError(int errorMessage) {
-            mMembers = Member.RepositoryData.empty();
-            onRepositoryError(errorMessage);
-        }
+	private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
+		@Override
+		public void onError(int errorMessage) {
+			mMembers = Member.RepositoryData.empty();
+			onRepositoryError(errorMessage);
+		}
 
-        @Override
-        public void onSuccess(Member.RepositoryData result) {
-            mMembers = result;
-            onRepositorySuccess();
-        }
-    }
+		@Override
+		public void onSuccess(Member.RepositoryData result) {
+			mMembers = result;
+			onRepositorySuccess();
+		}
+	}
 
-    private final class MembersSimpleListAdapter extends BaseAdapter {
-        private final LayoutInflater mInflater;
-        private final List<Member> mMembers;
+	private final class MembersSimpleListAdapter extends BaseAdapter {
+		private final LayoutInflater mInflater;
+		private final List<Member> mMembers;
 
-        public MembersSimpleListAdapter(Context context, Member.RepositoryData members) {
-            mMembers = members.getMembers();
-            mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
+		public MembersSimpleListAdapter(Context context, Member.RepositoryData members) {
+			mMembers = members.getMembers();
+			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
 
-        @Override
-        public int getCount() {
-            return mMembers.size();
-        }
+		@Override
+		public int getCount() {
+			return mMembers.size();
+		}
 
-        @Override
-        public Object getItem(int position) {
-            return mMembers.get(position);
-        }
+		@Override
+		public Object getItem(int position) {
+			return mMembers.get(position);
+		}
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            if (null == view) {
-                view = mInflater.inflate(R.layout.list_item_simple_member, parent, false);
-            }
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View view = convertView;
+			if (null == view) {
+				view = mInflater.inflate(R.layout.list_item_simple_member, parent, false);
+			}
 
-            Member item = mMembers.get(position);
-            TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-            text1.setText(item.getRealName());
+			Member item = mMembers.get(position);
+			TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+			text1.setText(item.getRealName());
 
-            view.setTag(item);
-            return view;
-        }
-    }
+			view.setTag(item);
+			return view;
+		}
+	}
 }

@@ -23,122 +23,122 @@ import se.tmeit.app.ui.MainActivity;
  * Fragment for configuring notification settings.
  */
 public class NotificationsFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
-    private static final String TAG = NotificationsFragment.class.getSimpleName();
-    private final Handler mHandler = new Handler();
-    private final RegistrationResultHandler mResultHandler = new RegistrationResultHandler();
-    private GcmRegistration mGcmRegistration;
-    private Switch mNotificationsSwitch;
-    private boolean mSuppressSwitchListener;
+	private static final String TAG = NotificationsFragment.class.getSimpleName();
+	private final Handler mHandler = new Handler();
+	private final RegistrationResultHandler mResultHandler = new RegistrationResultHandler();
+	private GcmRegistration mGcmRegistration;
+	private Switch mNotificationsSwitch;
+	private boolean mSuppressSwitchListener;
 
-    @Override
+	@Override
 	public int getItemId() {
 		return R.id.nav_notifications;
 	}
 
-    @Override
-    public int getTitle() {
-        return R.string.notifications_nav_title;
-    }
+	@Override
+	public int getTitle() {
+		return R.string.notifications_nav_title;
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notifications, container, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_notifications, container, false);
 
-        mGcmRegistration = GcmRegistration.getInstance(getActivity());
-        mNotificationsSwitch = (Switch) view.findViewById(R.id.notifications_enable);
-        mNotificationsSwitch.setChecked(mGcmRegistration.isRegistered());
-        mNotificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mSuppressSwitchListener) {
-                    return;
-                }
+		mGcmRegistration = GcmRegistration.getInstance(getActivity());
+		mNotificationsSwitch = (Switch) view.findViewById(R.id.notifications_enable);
+		mNotificationsSwitch.setChecked(mGcmRegistration.isRegistered());
+		mNotificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (mSuppressSwitchListener) {
+					return;
+				}
 
-                Context context = getActivity();
-                if (mGcmRegistration.isBusy()) {
-                    Toast toast = Toast.makeText(context, R.string.notifications_server_is_still_processing, Toast.LENGTH_SHORT);
-                    toast.show();
-                    mNotificationsSwitch.setChecked(!isChecked);
-                    return;
-                }
+				Context context = getActivity();
+				if (mGcmRegistration.isBusy()) {
+					Toast toast = Toast.makeText(context, R.string.notifications_server_is_still_processing, Toast.LENGTH_SHORT);
+					toast.show();
+					mNotificationsSwitch.setChecked(!isChecked);
+					return;
+				}
 
-                if (isChecked) {
-                    mGcmRegistration.register(mResultHandler);
-                } else {
-                    mGcmRegistration.unregister(mResultHandler);
-                }
-            }
-        });
+				if (isChecked) {
+					mGcmRegistration.register(mResultHandler);
+				} else {
+					mGcmRegistration.unregister(mResultHandler);
+				}
+			}
+		});
 
-        return view;
-    }
+		return view;
+	}
 
-    public void refreshNotificationsState() {
-        setNotificationsSwitch(mGcmRegistration.isRegistered());
-    }
+	public void refreshNotificationsState() {
+		setNotificationsSwitch(mGcmRegistration.isRegistered());
+	}
 
-    private void setNotificationsSwitch(boolean checked) {
-        mSuppressSwitchListener = true;
-        mNotificationsSwitch.setChecked(checked);
-        mSuppressSwitchListener = false;
-    }
+	private void setNotificationsSwitch(boolean checked) {
+		mSuppressSwitchListener = true;
+		mNotificationsSwitch.setChecked(checked);
+		mSuppressSwitchListener = false;
+	}
 
-    private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
-        @Override
-        public void onError(final int errorMessage) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Activity activity = getActivity();
-                    if (null == activity || !isVisible()) {
-                        return;
-                    }
+	private final class RegistrationResultHandler implements GcmRegistration.RegistrationResultHandler {
+		@Override
+		public void onError(final int errorMessage) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Activity activity = getActivity();
+					if (null == activity || !isVisible()) {
+						return;
+					}
 
-                    setNotificationsSwitch(false);
+					setNotificationsSwitch(false);
 
-                    Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-        }
+					Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
+					toast.show();
+				}
+			});
+		}
 
-        @Override
-        public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Activity activity = getActivity();
-                    if (null == activity || !isVisible()) {
-                        return;
-                    }
+		@Override
+		public void onGoogleServicesError(final int resultCode, final boolean canRecover) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Activity activity = getActivity();
+					if (null == activity || !isVisible()) {
+						return;
+					}
 
-                    setNotificationsSwitch(true);
+					setNotificationsSwitch(true);
 
-                    if (canRecover) {
-                        GoogleApiAvailability.getInstance().getErrorDialog(activity, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
-                    } else {
-                        Toast toast = Toast.makeText(activity, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
-                        toast.show();
-                    }
+					if (canRecover) {
+						GoogleApiAvailability.getInstance().getErrorDialog(activity, resultCode, GcmRegistration.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+					} else {
+						Toast toast = Toast.makeText(activity, R.string.notifications_your_device_does_not_support, Toast.LENGTH_LONG);
+						toast.show();
+					}
 
-                }
-            });
-        }
+				}
+			});
+		}
 
-        @Override
-        public void onSuccess() {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Activity activity = getActivity();
-                    if (null == activity || !isVisible()) {
-                        return;
-                    }
+		@Override
+		public void onSuccess() {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Activity activity = getActivity();
+					if (null == activity || !isVisible()) {
+						return;
+					}
 
-                    Toast toast = Toast.makeText(activity, R.string.notifications_success, Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-        }
-    }
+					Toast toast = Toast.makeText(activity, R.string.notifications_success, Toast.LENGTH_LONG);
+					toast.show();
+				}
+			});
+		}
+	}
 }

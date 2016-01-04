@@ -18,55 +18,55 @@ import se.tmeit.app.R;
  * Fragment which helps determine the minimum legal age to be served alcohol.
  */
 public final class AgeCheckFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
-    private static final int UPDATE_DELAY = 30000;
-    private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private final Handler mHandler = new Handler();
-    private final Runnable mUpdateRunner = new UpdateRunner();
-    private TextView mBirthDateText;
+	private static final int UPDATE_DELAY = 30000;
+	private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+	private final Handler mHandler = new Handler();
+	private final Runnable mUpdateRunner = new UpdateRunner();
+	private TextView mBirthDateText;
 
-    @Override
+	@Override
 	public int getItemId() {
 		return R.id.nav_age_check;
 	}
 
-    @Override
-    public int getTitle() {
-        return R.string.age_check_nav_title;
-    }
+	@Override
+	public int getTitle() {
+		return R.string.age_check_nav_title;
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_age_check, container, false);
-        mBirthDateText = (TextView) view.findViewById(R.id.age_check_birthdate);
-        return view;
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_age_check, container, false);
+		mBirthDateText = (TextView) view.findViewById(R.id.age_check_birthdate);
+		return view;
+	}
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mHandler.removeCallbacks(mUpdateRunner);
-    }
+	@Override
+	public void onPause() {
+		super.onPause();
+		mHandler.removeCallbacks(mUpdateRunner);
+	}
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateBirthDate();
-        mHandler.postDelayed(mUpdateRunner, UPDATE_DELAY);
-    }
+	@Override
+	public void onResume() {
+		super.onResume();
+		updateBirthDate();
+		mHandler.postDelayed(mUpdateRunner, UPDATE_DELAY);
+	}
 
-    private void updateBirthDate() {
-        if (null != mBirthDateText) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR, -18);
-            mBirthDateText.setText(mDateFormat.format(calendar.getTime()));
-        }
-    }
+	private void updateBirthDate() {
+		if (null != mBirthDateText) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.YEAR, -18);
+			mBirthDateText.setText(mDateFormat.format(calendar.getTime()));
+		}
+	}
 
-    private final class UpdateRunner implements Runnable {
-        @Override
-        public void run() {
-            updateBirthDate();
-            mHandler.postDelayed(mUpdateRunner, UPDATE_DELAY);
-        }
-    }
+	private final class UpdateRunner implements Runnable {
+		@Override
+		public void run() {
+			updateBirthDate();
+			mHandler.postDelayed(mUpdateRunner, UPDATE_DELAY);
+		}
+	}
 }
