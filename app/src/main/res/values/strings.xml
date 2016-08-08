@@ -92,6 +92,7 @@
     <string name="members_no_results">No members found.</string>
     <string name="members_no_title_placeholder">(none)</string>
     <string name="members_no_team_placeholder">(none)</string>
+	<string name="members_search_hint">Search for a member</string>
     <string name="members_show_all">Show all</string>
     <string name="members_teams">Teams</string>
 

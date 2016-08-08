@@ -1,6 +1,7 @@
 package se.tmeit.app.ui.members;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,29 +107,34 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		return view;
 	}
 
-	public void invalidateFilter() {
-		mFilter.filter(null);
-	}
-
 	private final class MembersListFilter extends Filter {
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
-			List<Member> newValues;
+			List<Member> filteredList;
 
-			if (mFilteredGroups.isEmpty() && mFilteredTeams.isEmpty()) {
-				newValues = new ArrayList<>(mMembers.getMembers());
-			} else {
-				newValues = new ArrayList<>();
+			boolean noFilters = mFilteredGroups.isEmpty() && mFilteredTeams.isEmpty();
+
+			if (noFilters && TextUtils.isEmpty(constraint)) {
+				filteredList = mMembers.getMembers();
+			} else if (noFilters) {
+				filteredList = new ArrayList<>();
 				for (Member member : mMembers.getMembers()) {
-					if (!mFilteredGroups.contains(member.getGroupId()) && !mFilteredTeams.contains(member.getTeamId())) {
-						newValues.add(member);
+					if (member.matches(constraint)) {
+						filteredList.add(member);
+					}
+				}
+			} else {
+				filteredList = new ArrayList<>();
+				for (Member member : mMembers.getMembers()) {
+					if (member.matches(constraint) && !mFilteredGroups.contains(member.getGroupId()) && !mFilteredTeams.contains(member.getTeamId())) {
+						filteredList.add(member);
 					}
 				}
 			}
 
-			results.values = newValues;
-			results.count = newValues.size();
+			results.values = filteredList;
+			results.count = filteredList.size();
 			return results;
 		}
 

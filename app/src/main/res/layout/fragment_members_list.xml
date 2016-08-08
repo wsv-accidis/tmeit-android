@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+	<ImageButton
+		android:id="@+id/members_search_clear"
+		android:layout_width="40dp"
+		android:layout_height="45dp"
+		android:layout_alignParentRight="true"
+		android:layout_marginRight="5dp"
+		android:background="@android:color/transparent"
+		android:src="@drawable/ic_cancel_circle"/>
+
+	<EditText
+		android:id="@+id/members_search"
+		android:layout_width="match_parent"
+		android:layout_height="45dp"
+		android:layout_marginLeft="5dp"
+		android:layout_toLeftOf="@id/members_search_clear"
+		android:hint="@string/members_search_hint"
+		android:inputType="textNoSuggestions"
+		android:textColorHint="@color/gray"/>
+
+	<FrameLayout
+		android:id="@+id/members_list_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@id/members_search"/>
+</RelativeLayout>

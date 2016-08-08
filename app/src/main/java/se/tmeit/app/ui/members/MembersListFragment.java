@@ -4,15 +4,22 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,22 +33,28 @@ import se.tmeit.app.services.Repository;
 import se.tmeit.app.services.RepositoryResultHandler;
 import se.tmeit.app.ui.ListFragmentBase;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.utils.AndroidUtils;
 
 /**
  * Fragment for the list of members.
  */
 public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu, MainActivity.HasTitle, MainActivity.HasNavigationItem {
+	private static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003; // from android.support.v4.app.ListFragment
 	private static final int MENU_CLEAR_FILTER_ID = 1;
 	private static final int MENU_GROUPS_ID = 10000;
 	private static final int MENU_TEAMS_ID = 20000;
 	private static final String STATE_LIST_VIEW = "membersListState";
+	private static final String STATE_SEARCH_QUERY = "membersSearchQueryState";
 	private static final String TAG = MembersListFragment.class.getSimpleName();
 	private final Set<Integer> mFilteredGroups = new HashSet<>();
 	private final Set<Integer> mFilteredTeams = new HashSet<>();
 	private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
+	private ImageButton mClearSearchButton;
 	private Menu mFilterMenu;
 	private MembersListAdapter mListAdapter;
 	private Member.RepositoryData mMembers;
+	private String mSearchQuery;
+	private EditText mSearchText;
 
 	@Override
 	public int getItemId() {
@@ -128,12 +141,43 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	}
 
 	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		ViewGroup root = (ViewGroup) super.onCreateView(inflater, container, savedInstanceState);
+		assert (root != null);
+
+		// Extract the internal list container from the root view
+		@SuppressWarnings("ResourceType")
+		View listContainer = root.findViewById(INTERNAL_LIST_CONTAINER_ID);
+		root.removeView(listContainer);
+
+		// Put the internal list container inside our custom container
+		View outerContainer = inflater.inflate(R.layout.fragment_members_list, root, false);
+		FrameLayout innerContainer = (FrameLayout) outerContainer.findViewById(R.id.members_list_container);
+		innerContainer.addView(listContainer);
+
+		// Put the custom container inside the root
+		root.addView(outerContainer, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+		mSearchText = (EditText) outerContainer.findViewById(R.id.members_search);
+		mSearchText.addTextChangedListener(new SearchChangedListener());
+		mClearSearchButton = (ImageButton) outerContainer.findViewById(R.id.members_search_clear);
+		mClearSearchButton.setOnClickListener(new ClearSearchClickedListener());
+
+		if (null != savedInstanceState) {
+			mSearchQuery = savedInstanceState.getString(STATE_SEARCH_QUERY);
+		}
+
+		return root;
+	}
+
+	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		if (position >= 0 && position < mListAdapter.getCount()) {
 			Member member = (Member) mListAdapter.getItem(position);
 			Fragment memberInfoFragment = MemberInfoFragment.createInstance(getActivity(), member, mMembers);
 			Activity activity = getActivity();
 			if (activity instanceof MainActivity) {
+				AndroidUtils.hideSoftKeyboard(getContext(), getView());
 				saveInstanceState();
 				MainActivity mainActivity = (MainActivity) activity;
 				mainActivity.openFragment(memberInfoFragment);
@@ -160,7 +204,18 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	}
 
 	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (null != mSearchQuery) {
+			outState.putString(STATE_SEARCH_QUERY, mSearchQuery);
+		}
+	}
+
+	@Override
 	protected void getDataFromRepository(Repository repository) {
+		mSearchText.setEnabled(false);
+		mClearSearchButton.setEnabled(false);
+
 		repository.getMembers(mRepositoryResultHandler, getPreferences().shouldRefreshMembers());
 	}
 
@@ -175,6 +230,9 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 		mFilteredGroups.addAll(getPreferences().getMembersListGroupsFilter());
 		mFilteredTeams.clear();
 		mFilteredTeams.addAll(getPreferences().getMembersListTeamsFilter());
+
+		mSearchText.setEnabled(true);
+		mClearSearchButton.setEnabled(true);
 
 		mListAdapter = new MembersListAdapter(getActivity(), mMembers, mFilteredGroups, mFilteredTeams);
 		finishInitializeList(mListAdapter);
@@ -271,7 +329,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	private void refreshFilter() {
 		getPreferences().setMembersListFilters(mFilteredGroups, mFilteredTeams);
 		if (null != mListAdapter) {
-			mListAdapter.invalidateFilter();
+			mListAdapter.getFilter().filter(mSearchQuery);
 		}
 	}
 
@@ -305,6 +363,13 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 		}
 	}
 
+	private final class ClearSearchClickedListener implements View.OnClickListener {
+		@Override
+		public void onClick(View v) {
+			mSearchText.setText("");
+		}
+	}
+
 	private final class MembersListResultHandler implements RepositoryResultHandler<Member.RepositoryData> {
 		@Override
 		public void onError(int errorMessage) {
@@ -316,6 +381,24 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 		public void onSuccess(Member.RepositoryData result) {
 			mMembers = result;
 			onRepositorySuccess();
+		}
+	}
+
+	private final class SearchChangedListener implements TextWatcher {
+		@Override
+		public void afterTextChanged(Editable s) {
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			mSearchQuery = s.toString().toLowerCase();
+			if (null != mListAdapter) {
+				mListAdapter.getFilter().filter(mSearchQuery);
+			}
 		}
 	}
 }

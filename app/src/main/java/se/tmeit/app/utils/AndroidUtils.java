@@ -6,16 +6,14 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Generic utility methods for Android.
  */
 public final class AndroidUtils {
     private AndroidUtils() {
-    }
-
-    public static int getAppVersionCode(Context context) {
-        return getPackageInfo(context).versionCode;
     }
 
     public static String getAppVersionName(Context context) {
@@ -26,10 +24,12 @@ public final class AndroidUtils {
         return (Build.VERSION.SDK_INT >= apiLevel);
     }
 
-    public static boolean isInEmulator() {
-        // This is extremely unlikely to detect all emulators. For development use only.
-        return Build.PRODUCT.equals("sdk_google_phone_x86");
-    }
+	public static void hideSoftKeyboard(Context context, View view) {
+		if (null != context && null != view) {
+			InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
+	}
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -83,6 +83,7 @@
     <string name="members_no_results">Inga medlemmar funna.</string>
     <string name="members_no_title_placeholder">(ingen)</string>
     <string name="members_no_team_placeholder">(inget)</string>
+	<string name="members_search_hint">Sök en medlem</string>
     <string name="members_show_all">Visa alla</string>
     <string name="members_teams">Arbetslag</string>
 
