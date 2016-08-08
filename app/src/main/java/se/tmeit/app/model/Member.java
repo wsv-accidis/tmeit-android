@@ -211,7 +211,7 @@ public final class Member {
 	}
 
 	public boolean matches(CharSequence search) {
-		return mSearchText.contains(search);
+		return (null == search || mSearchText.contains(search));
 	}
 
 	@Override

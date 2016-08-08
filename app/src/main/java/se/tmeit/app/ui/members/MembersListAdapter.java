@@ -29,13 +29,13 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 	private final Set<Integer> mFilteredTeams;
 	private final LayoutInflater mInflater;
 	private final Member.RepositoryData mMembers;
-	private List<Member> mFilteredResult;
+	private List<Member> mFilteredList;
 
 	public MembersListAdapter(Context context, Member.RepositoryData members, Set<Integer> filteredGroups, Set<Integer> filteredTeams) {
 		mContext = context;
 		mMembers = members;
 		mFilteredGroups = filteredGroups;
-		mFilteredResult = members.getMembers();
+		mFilteredList = members.getMembers();
 		mFilteredTeams = filteredTeams;
 
 		mFaceHelper = MemberFaceHelper.getInstance(context);
@@ -44,7 +44,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 
 	@Override
 	public int getCount() {
-		return mFilteredResult.size();
+		return mFilteredList.size();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 
 	@Override
 	public Object getItem(int position) {
-		return mFilteredResult.get(position);
+		return mFilteredList.get(position);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 			view = convertView;
 		}
 
-		Member member = mFilteredResult.get(position);
+		Member member = mFilteredList.get(position);
 
 		ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
 		List<String> faces = member.getFaces();
@@ -141,7 +141,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		@Override
 		protected void publishResults(CharSequence constraint, FilterResults results) {
 			//noinspection unchecked
-			mFilteredResult = (List<Member>) results.values;
+			mFilteredList = (List<Member>) results.values;
 			if (results.count > 0) {
 				notifyDataSetChanged();
 			} else {
