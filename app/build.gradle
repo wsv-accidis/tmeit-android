@@ -1,21 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 23
-	buildToolsVersion '23.0.2'
+	compileSdkVersion 24
+	buildToolsVersion '24.0.1'
 
 	defaultConfig {
 		applicationId 'se.tmeit.app'
 		minSdkVersion 16
-		targetSdkVersion 23
-		versionCode 13
-		versionName '1.999'
+		targetSdkVersion 24
+		versionCode 14
+		versionName '2.0'
 	}
 	buildTypes {
 		release {
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-			lintOptions { disable 'MissingTranslation' /* Temporary workaround for bug in GMS plugin */ }
 		}
 	}
 	compileOptions {
@@ -26,11 +25,12 @@ android {
 
 dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
-	compile 'com.android.support:appcompat-v7:23.1.1'
-	compile 'com.android.support:design:23.1.1'
-	compile 'com.google.android.gms:play-services-gcm:8.3.0'
-	compile 'com.squareup.okhttp:okhttp:2.7.0'
+	compile 'com.android.support:appcompat-v7:24.1.1'
+	compile 'com.android.support:design:24.1.1'
+	compile 'com.google.android.gms:play-services-gcm:9.4.0'
+	compile 'com.squareup.okhttp3:okhttp:3.4.1'
 	compile 'com.squareup.picasso:picasso:2.5.2'
+	compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.2'
 	compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.2.0'
 }
 

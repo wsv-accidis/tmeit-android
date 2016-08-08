@@ -3,7 +3,7 @@ package se.tmeit.app.ui.members;
 import android.content.Context;
 import android.net.Uri;
 
-import com.squareup.picasso.OkHttpDownloader;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -24,7 +24,7 @@ public final class MemberFaceHelper {
 
 	public MemberFaceHelper(Context context) {
 		mPicasso = new Picasso.Builder(context)
-			.downloader(new OkHttpDownloader(TmeitHttpClient.getInstance()))
+			.downloader(new OkHttp3Downloader(TmeitHttpClient.getInstance()))
 			.build();
 	}
 

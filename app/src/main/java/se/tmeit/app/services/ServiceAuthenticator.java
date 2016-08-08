@@ -3,10 +3,11 @@ package se.tmeit.app.services;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +57,7 @@ public final class ServiceAuthenticator {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
 
-            TmeitHttpClient.getInstance().enqueueRequest(request, new AuthenticationCallback(resultHandler, serviceAuth, username));
+            enqueueRequest(request, new AuthenticationCallback(resultHandler, serviceAuth, username));
 
         } catch (JSONException ex) {
             // If we end up here, there's probably a bug - most normal error conditions would end up in the async failure handler instead
@@ -64,6 +65,12 @@ public final class ServiceAuthenticator {
             resultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);
         }
     }
+
+	private Call enqueueRequest(Request request, Callback callback) {
+		Call call = TmeitHttpClient.getInstance().newCall(request);
+		call.enqueue(callback);
+		return call;
+	}
 
     private static boolean checkSanity(String authCode) {
         // Expected format is {username 3-16 chars)%{service auth 48-96 chars}
@@ -111,13 +118,13 @@ public final class ServiceAuthenticator {
         }
 
         @Override
-        public void onFailure(Request request, IOException e) {
+        public void onFailure(Call call, IOException e) {
             Log.e(TAG, "Authentication failed due to an IO error.", e);
             mResultHandler.onNetworkError(R.string.auth_error_unspecified_network);
         }
 
         @Override
-        public void onResponse(Response response) throws IOException {
+        public void onResponse(Call call, Response response) throws IOException {
             Log.i(TAG, "Authentication response received with HTTP status = " + response.code() + ".");
 
             JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);

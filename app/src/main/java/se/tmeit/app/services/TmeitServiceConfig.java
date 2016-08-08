@@ -2,8 +2,8 @@ package se.tmeit.app.services;
 
 import android.util.Log;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Response;
+import okhttp3.MediaType;
+import okhttp3.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;

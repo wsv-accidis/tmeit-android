@@ -14,9 +14,9 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +91,7 @@ public final class NotificationManager {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, json))
                     .build();
 
-            response = TmeitHttpClient.getInstance().executeRequest(request);
+            response = TmeitHttpClient.getInstance().newCall(request).execute();
         } catch (Exception ex) {
             Log.e(TAG, "Unexpected exception while getting notifications.", ex);
             return;

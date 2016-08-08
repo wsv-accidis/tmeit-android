@@ -2,11 +2,12 @@ package se.tmeit.app.services;
 
 import android.util.Log;
 
-import com.squareup.okhttp.CacheControl;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.CacheControl;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +48,7 @@ public final class Repository {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForAttendExternalEvent(id, attendee)))
                     .build();
 
-            TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
+            enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
         } catch (JSONException ex) {
             Log.e(TAG, "Unexpected JSON exception while creating request.", ex);
             resultHandler.onError(R.string.network_error_unspecified_protocol);
@@ -59,7 +60,7 @@ public final class Repository {
         if (noCache) {
             requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
         }
-        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventDetailsCallback(resultHandler));
+        enqueueRequest(requestBuilder.build(), new GetExternalEventDetailsCallback(resultHandler));
     }
 
     public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler, boolean noCache) {
@@ -67,7 +68,7 @@ public final class Repository {
         if (noCache) {
             requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
         }
-        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetExternalEventsCallback(resultHandler));
+        enqueueRequest(requestBuilder.build(), new GetExternalEventsCallback(resultHandler));
     }
 
     public void getInternalEventDetails(int id, boolean noCache, RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
@@ -75,7 +76,7 @@ public final class Repository {
         if (noCache) {
             requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
         }
-        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetInternalEventDetailsCallback(resultHandler));
+        enqueueRequest(requestBuilder.build(), new GetInternalEventDetailsCallback(resultHandler));
     }
 
     public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler, boolean noCache) {
@@ -83,7 +84,7 @@ public final class Repository {
         if (noCache) {
             requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
         }
-        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetInternalEventsCallback(resultHandler));
+        enqueueRequest(requestBuilder.build(), new GetInternalEventsCallback(resultHandler));
     }
 
     public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler, boolean noCache) {
@@ -91,7 +92,7 @@ public final class Repository {
         if (noCache) {
             requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
         }
-        TmeitHttpClient.getInstance().enqueueRequest(requestBuilder.build(), new GetMembersCallback(resultHandler));
+        enqueueRequest(requestBuilder.build(), new GetMembersCallback(resultHandler));
     }
 
     public void workInternalEvent(int id, InternalEventWorker worker, RepositoryResultHandler<Void> resultHandler) {
@@ -101,7 +102,7 @@ public final class Repository {
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForWorkInternalEvent(id, worker)))
                     .build();
 
-            TmeitHttpClient.getInstance().enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
+            enqueueRequest(request, new AttendExternalEventCallback(resultHandler));
         } catch (JSONException ex) {
             Log.e(TAG, "Unexpected JSON exception while creating request.", ex);
             resultHandler.onError(R.string.network_error_unspecified_protocol);
@@ -150,6 +151,12 @@ public final class Repository {
 
         return json.toString();
     }
+
+	private Call enqueueRequest(Request request, Callback callback) {
+		Call call = TmeitHttpClient.getInstance().newCall(request);
+		call.enqueue(callback);
+		return call;
+	}
 
     private Request.Builder getRequestBuilder(String relativeUrl) {
         return new Request.Builder()
@@ -272,13 +279,13 @@ public final class Repository {
         }
 
         @Override
-        public void onFailure(Request request, IOException e) {
+        public void onFailure(Call call, IOException e) {
             Log.e(TAG, "Downloading data failed due to an IO error.", e);
             mResultHandler.onError(R.string.repository_error_unspecified_network);
         }
 
         @Override
-        public void onResponse(Response response) throws IOException {
+        public void onResponse(Call call, Response response) throws IOException {
             Log.i(TAG, "Download response received with HTTP status = " + response.code() + ", cached = " + (null == response.networkResponse()) + ".");
 
             if (!response.isSuccessful()) {

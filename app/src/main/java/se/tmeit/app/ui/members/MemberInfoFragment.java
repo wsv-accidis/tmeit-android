@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.OkHttpDownloader;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -220,7 +220,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		layout.removeAllViews();
 
 		Picasso picasso = new Picasso.Builder(getContext())
-			.downloader(new OkHttpDownloader(TmeitHttpClient.getInstance()))
+			.downloader(new OkHttp3Downloader(TmeitHttpClient.getInstance()))
 			.build();
 
 		LayoutInflater layoutInflater = getActivity().getLayoutInflater();

@@ -7,9 +7,9 @@ import android.util.Base64;
 import android.util.Base64OutputStream;
 import android.util.Log;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,7 +117,7 @@ public final class UploadPhotoTask extends AsyncTask<Void, Void, Boolean> {
 				.post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForUploadPhoto(mUsername, imageBase64, serviceAuth, authenticatedUser)))
 				.build();
 
-			Response response = TmeitHttpClient.getInstance().executeRequest(request);
+			Response response = TmeitHttpClient.getInstance().newCall(request).execute();
 			JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
 
 			if (null == responseBody) {
