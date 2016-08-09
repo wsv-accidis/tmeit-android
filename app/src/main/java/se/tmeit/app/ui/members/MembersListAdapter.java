@@ -132,7 +132,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 			} else {
 				filteredList = new ArrayList<>();
 				for (Member member : mMembers.getMembers()) {
-					if (member.matches(constraint) && !mFilteredGroups.contains(member.getGroupId()) && !mFilteredTeams.contains(member.getTeamId())) {
+					if (member.matches(constraint) && isIncludedGroup(member.getGroupId()) && isIncludedTeam(member.getTeamId())) {
 						filteredList.add(member);
 					}
 				}
@@ -152,6 +152,14 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 			} else {
 				notifyDataSetInvalidated();
 			}
+		}
+
+		private boolean isIncludedGroup(int groupId) {
+			return (0 == groupId && mFilteredGroups.isEmpty()) || (0 != groupId && !mFilteredGroups.contains(groupId));
+		}
+
+		private boolean isIncludedTeam(int teamId) {
+			return (0 == teamId && mFilteredTeams.isEmpty()) || (0 != teamId && !mFilteredTeams.contains(teamId));
 		}
 	}
 }
