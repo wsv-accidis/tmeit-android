@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/member_filter_list"
-        android:icon="@drawable/ic_filter_list"
-        android:title="@string/member_filter_list"
-        app:showAsAction="always">
-        <menu/>
-    </item>
+	  xmlns:app="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/member_filter_dialog"
+		android:icon="@drawable/ic_filter_list"
+		android:title="@string/member_filter_list"
+		app:showAsAction="always"/>
 </menu>

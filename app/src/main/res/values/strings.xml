@@ -87,7 +87,6 @@
     <string name="member_vraq" translatable="false">Vraq</string>
 
     <string name="members_groups">Groups</string>
-    <string name="members_hide_all">Hide all</string>
     <string name="members_nav_title">Members</string>
     <string name="members_no_results">No members found.</string>
     <string name="members_no_title_placeholder">(none)</string>

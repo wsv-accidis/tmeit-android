@@ -144,8 +144,8 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		protected void publishResults(CharSequence constraint, FilterResults results) {
-			//noinspection unchecked
 			mFilteredList = (List<Member>) results.values;
 			if (results.count > 0) {
 				notifyDataSetChanged();

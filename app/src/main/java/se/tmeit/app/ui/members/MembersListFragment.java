@@ -10,10 +10,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,8 +21,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import se.tmeit.app.R;
@@ -40,9 +38,6 @@ import se.tmeit.app.utils.AndroidUtils;
  */
 public final class MembersListFragment extends ListFragmentBase implements MainActivity.HasMenu, MainActivity.HasTitle, MainActivity.HasNavigationItem {
 	private static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003; // from android.support.v4.app.ListFragment
-	private static final int MENU_CLEAR_FILTER_ID = 1;
-	private static final int MENU_GROUPS_ID = 10000;
-	private static final int MENU_TEAMS_ID = 20000;
 	private static final String STATE_LIST_VIEW = "membersListState";
 	private static final String STATE_SEARCH_QUERY = "membersSearchQueryState";
 	private static final String TAG = MembersListFragment.class.getSimpleName();
@@ -50,7 +45,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	private final Set<Integer> mFilteredTeams = new HashSet<>();
 	private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
 	private ImageButton mClearSearchButton;
-	private Menu mFilterMenu;
 	private MembersListAdapter mListAdapter;
 	private Member.RepositoryData mMembers;
 	private String mSearchQuery;
@@ -111,36 +105,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-
-		MenuItem filterItem = menu.findItem(R.id.member_filter_list);
-		if (null != filterItem) {
-			SubMenu subMenu = filterItem.getSubMenu();
-			subMenu.clear();
-
-			if (null != mMembers) {
-				subMenu.add(Menu.NONE, MENU_CLEAR_FILTER_ID, Menu.NONE, (isShowingEverything() ? R.string.members_hide_all : R.string.members_show_all));
-
-				subMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.members_groups).setEnabled(false);
-				for (Map.Entry<Integer, String> group : mMembers.getGroups().entrySet()) {
-					MenuItem item = subMenu.add(MENU_GROUPS_ID, MENU_GROUPS_ID + group.getKey(), Menu.NONE, group.getValue());
-					item.setCheckable(true).setChecked(!mFilteredGroups.contains(group.getKey()));
-				}
-
-				subMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.members_teams).setEnabled(false);
-				for (Map.Entry<Integer, String> team : mMembers.getTeams().entrySet()) {
-					MenuItem item = subMenu.add(MENU_TEAMS_ID, MENU_TEAMS_ID + team.getKey(), Menu.NONE, team.getValue());
-					item.setCheckable(true).setChecked(!mFilteredTeams.contains(team.getKey()));
-				}
-
-				mFilterMenu = subMenu;
-				setMenuItemStates();
-			}
-		}
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ViewGroup root = (ViewGroup) super.onCreateView(inflater, container, savedInstanceState);
 		assert (root != null);
@@ -189,17 +153,20 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
 	@Override
 	public boolean onMenuItemSelected(MenuItem item) {
-		if (MENU_CLEAR_FILTER_ID == item.getItemId()) {
-			onClearFilterSelected();
-			return true;
-		} else if (MENU_GROUPS_ID == item.getGroupId()) {
-			onFilterGroupSelected(item);
-			return true;
-		} else if (MENU_TEAMS_ID == item.getGroupId()) {
-			onFilterTeamSelected(item);
+		if (R.id.member_filter_dialog == item.getItemId()) {
+			if (null != mMembers) {
+				Bundle args = new Bundle();
+				args.putSerializable(MembersFilterDialogFragment.ARG_GROUPS, (Serializable) mMembers.getGroups());
+				args.putSerializable(MembersFilterDialogFragment.ARG_TEAMS, (Serializable) mMembers.getTeams());
+
+				MembersFilterDialogFragment dialog = new MembersFilterDialogFragment();
+				dialog.setArguments(args);
+				//dialog.setDialogListener(new AddressDialogListener(position)); TODO
+				dialog.show(getFragmentManager(), MembersFilterDialogFragment.class.getSimpleName());
+			}
+
 			return true;
 		}
-
 		return false;
 	}
 
@@ -245,53 +212,15 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 		refreshFilter();
 	}
 
-	private boolean isShowingEverything() {
-		return mFilteredGroups.isEmpty() && mFilteredTeams.isEmpty();
-	}
-
+	// TODO Move to dialog listener for MembersFilterDialogFragment
 	private void onClearFilterSelected() {
 		if (null == mMembers) {
 			return;
 		}
 
-		if (isShowingEverything()) {
-			mFilteredTeams.addAll(mMembers.getTeams().keySet());
-			mFilteredGroups.addAll(mMembers.getGroups().keySet());
-		} else {
-			mFilteredGroups.clear();
-			mFilteredTeams.clear();
-		}
+		mFilteredGroups.clear();
+		mFilteredTeams.clear();
 
-		setClearFilterItemState();
-		setMenuItemStates();
-		refreshFilter();
-	}
-
-	private void onFilterGroupSelected(MenuItem item) {
-		int groupId = item.getItemId() - MENU_GROUPS_ID;
-		if (mFilteredGroups.contains(groupId)) {
-			mFilteredGroups.remove(groupId);
-			item.setChecked(true);
-		} else {
-			mFilteredGroups.add(groupId);
-			item.setChecked(false);
-		}
-
-		setClearFilterItemState();
-		refreshFilter();
-	}
-
-	private void onFilterTeamSelected(MenuItem item) {
-		int teamId = item.getItemId() - MENU_TEAMS_ID;
-		if (mFilteredTeams.contains(teamId)) {
-			mFilteredTeams.remove(teamId);
-			item.setChecked(true);
-		} else {
-			mFilteredTeams.add(teamId);
-			item.setChecked(false);
-		}
-
-		setClearFilterItemState();
 		refreshFilter();
 	}
 
@@ -334,36 +263,6 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 		getPreferences().setMembersListFilters(mFilteredGroups, mFilteredTeams);
 		if (null != mListAdapter) {
 			mListAdapter.getFilter().filter(mSearchQuery);
-		}
-	}
-
-	private void setClearFilterItemState() {
-		if (null == mFilterMenu) {
-			return;
-		}
-
-		MenuItem clearItem = mFilterMenu.findItem(MENU_CLEAR_FILTER_ID);
-		if (null != clearItem) {
-			clearItem.setTitle(isShowingEverything() ? R.string.members_hide_all : R.string.members_show_all);
-		}
-	}
-
-	private void setMenuItemStates() {
-		if (null == mMembers || null == mFilterMenu) {
-			return;
-		}
-
-		for (Integer groupId : mMembers.getGroups().keySet()) {
-			MenuItem groupItem = mFilterMenu.findItem(MENU_GROUPS_ID + groupId);
-			if (null != groupItem) {
-				groupItem.setChecked(!mFilteredGroups.contains(groupId));
-			}
-		}
-		for (Integer teamId : mMembers.getTeams().keySet()) {
-			MenuItem teamItem = mFilterMenu.findItem(MENU_TEAMS_ID + teamId);
-			if (null != teamItem) {
-				teamItem.setChecked(!mFilteredTeams.contains(teamId));
-			}
 		}
 	}
 
