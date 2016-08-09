@@ -10,7 +10,7 @@
 		android:layout_alignParentRight="true"
 		android:layout_marginRight="5dp"
 		android:background="@android:color/transparent"
-		android:src="@drawable/ic_cancel_circle"/>
+		android:src="@drawable/ic_clear"/>
 
 	<EditText
 		android:id="@+id/members_search"
