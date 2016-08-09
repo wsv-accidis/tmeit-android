@@ -234,7 +234,11 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 		mSearchText.setEnabled(true);
 		mClearSearchButton.setEnabled(true);
 
-		mListAdapter = new MembersListAdapter(getActivity(), mMembers, mFilteredGroups, mFilteredTeams);
+		if (null == mListAdapter) {
+			mListAdapter = new MembersListAdapter(getActivity(), mMembers, mFilteredGroups, mFilteredTeams);
+		} else {
+			mListAdapter.setContent(mMembers);
+		}
 		finishInitializeList(mListAdapter);
 
 		getActivity().invalidateOptionsMenu();
@@ -366,7 +370,9 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	private final class ClearSearchClickedListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			mSearchText.setText("");
+			if (!TextUtils.isEmpty(mSearchQuery)) {
+				mSearchText.setText("");
+			}
 		}
 	}
 

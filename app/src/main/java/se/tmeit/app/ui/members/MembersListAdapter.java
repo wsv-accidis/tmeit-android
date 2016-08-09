@@ -28,8 +28,8 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 	private final Set<Integer> mFilteredGroups;
 	private final Set<Integer> mFilteredTeams;
 	private final LayoutInflater mInflater;
-	private final Member.RepositoryData mMembers;
 	private List<Member> mFilteredList;
+	private Member.RepositoryData mMembers;
 
 	public MembersListAdapter(Context context, Member.RepositoryData members, Set<Integer> filteredGroups, Set<Integer> filteredTeams) {
 		mContext = context;
@@ -105,6 +105,11 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		}
 
 		return view;
+	}
+
+	public void setContent(Member.RepositoryData members) {
+		mMembers = members;
+		notifyDataSetChanged();
 	}
 
 	private final class MembersListFilter extends Filter {

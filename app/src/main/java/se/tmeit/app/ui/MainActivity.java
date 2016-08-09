@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import se.tmeit.app.R;
@@ -39,6 +40,7 @@ import se.tmeit.app.utils.AndroidUtils;
 public final class MainActivity extends AppCompatActivity {
 	private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
 	private static final String TAG = MainActivity.class.getSimpleName();
+	private final BroadcastReceiver mGcmRegistrationBroadcastReceiver = new GcmRegistrationBroadcastReceiver();
 	private final Handler mHandler = new Handler();
 	private boolean mHasShownNetworkAlert;
 	private DrawerLayout mNavigationDrawer;
@@ -46,7 +48,6 @@ public final class MainActivity extends AppCompatActivity {
 	private HasMenu mOptionsMenu;
 	private Preferences mPrefs;
 	private CharSequence mTitle;
-	private final BroadcastReceiver mGcmRegistrationBroadcastReceiver = new GcmRegistrationBroadcastReceiver();
 
 	public static void showNoNetworkAlert(Context context) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -119,6 +120,7 @@ public final class MainActivity extends AppCompatActivity {
 		mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mNavigationDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		mNavigationDrawer.addDrawerListener(toggle);
+		mNavigationDrawer.addDrawerListener(new NavigationDrawerListener());
 		toggle.syncState();
 
 		mNavigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -133,6 +135,12 @@ public final class MainActivity extends AppCompatActivity {
 		} else {
 			openFragment(getFragmentByNavigationItem(R.id.nav_members), false);
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
 	}
 
 	@Override
@@ -153,12 +161,6 @@ public final class MainActivity extends AppCompatActivity {
 
 		LocalBroadcastManager.getInstance(this)
 			.registerReceiver(mGcmRegistrationBroadcastReceiver, new IntentFilter(GcmRegistration.REGISTRATION_COMPLETE_BROADCAST));
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
 	}
 
 	@Override
@@ -272,6 +274,17 @@ public final class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	private final class GcmRegistrationBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+			if (fragment instanceof NotificationsFragment) {
+				NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;
+				notificationsFragment.refreshNotificationsState();
+			}
+		}
+	}
+
 	private final class MainAuthenticationResultHandler implements AuthenticationResultHandler {
 		@Override
 		public void onAuthenticationError(int errorMessage) {
@@ -311,6 +324,25 @@ public final class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	private final class NavigationDrawerListener implements DrawerLayout.DrawerListener {
+		@Override
+		public void onDrawerClosed(View drawerView) {
+		}
+
+		@Override
+		public void onDrawerOpened(View drawerView) {
+			AndroidUtils.hideSoftKeyboard(MainActivity.this, getCurrentFocus());
+		}
+
+		@Override
+		public void onDrawerSlide(View drawerView, float slideOffset) {
+		}
+
+		@Override
+		public void onDrawerStateChanged(int newState) {
+		}
+	}
+
 	private final class NavigationListener implements NavigationView.OnNavigationItemSelectedListener {
 		@Override
 		public boolean onNavigationItemSelected(MenuItem item) {
@@ -324,17 +356,6 @@ public final class MainActivity extends AppCompatActivity {
 			DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 			drawer.closeDrawer(GravityCompat.START);
 			return true;
-		}
-	}
-
-	private final class GcmRegistrationBroadcastReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-			if (fragment instanceof NotificationsFragment) {
-				NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;
-				notificationsFragment.refreshNotificationsState();
-			}
 		}
 	}
 }

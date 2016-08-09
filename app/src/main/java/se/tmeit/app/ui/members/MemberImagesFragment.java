@@ -19,7 +19,6 @@ import se.tmeit.app.ui.MainActivity;
  * Fragment displaying all available images for a member as a full-screen grid.
  */
 public final class MemberImagesFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
-	private final static String TAG = MemberImagesFragment.class.getSimpleName();
 	private MemberFaceHelper mFaceHelper;
 
 	public static MemberImagesFragment createInstance(List<String> faces) {
