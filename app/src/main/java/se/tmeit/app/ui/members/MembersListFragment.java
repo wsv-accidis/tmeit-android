@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import se.tmeit.app.R;
@@ -41,10 +41,10 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	private static final String STATE_LIST_VIEW = "membersListState";
 	private static final String STATE_SEARCH_QUERY = "membersSearchQueryState";
 	private static final String TAG = MembersListFragment.class.getSimpleName();
-	private final Set<Integer> mFilteredGroups = new HashSet<>();
-	private final Set<Integer> mFilteredTeams = new HashSet<>();
 	private final MembersListResultHandler mRepositoryResultHandler = new MembersListResultHandler();
 	private ImageButton mClearSearchButton;
+	private Set<Integer> mFilteredGroups = Collections.emptySet();
+	private Set<Integer> mFilteredTeams = Collections.emptySet();
 	private MembersListAdapter mListAdapter;
 	private Member.RepositoryData mMembers;
 	private String mSearchQuery;
@@ -157,11 +157,13 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 			if (null != mMembers) {
 				Bundle args = new Bundle();
 				args.putSerializable(MembersFilterDialogFragment.ARG_GROUPS, (Serializable) mMembers.getGroups());
+				args.putSerializable(MembersFilterDialogFragment.ARG_GROUPS_FILTERED, (Serializable) mFilteredGroups);
 				args.putSerializable(MembersFilterDialogFragment.ARG_TEAMS, (Serializable) mMembers.getTeams());
+				args.putSerializable(MembersFilterDialogFragment.ARG_TEAMS_FILTERED, (Serializable) mFilteredTeams);
 
 				MembersFilterDialogFragment dialog = new MembersFilterDialogFragment();
 				dialog.setArguments(args);
-				//dialog.setDialogListener(new AddressDialogListener(position)); TODO
+				dialog.setDialogListener(new MembersFilterDialogListener());
 				dialog.show(getFragmentManager(), MembersFilterDialogFragment.class.getSimpleName());
 			}
 
@@ -193,34 +195,18 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
 	@Override
 	protected void initializeList() {
-		mFilteredGroups.clear();
-		mFilteredGroups.addAll(getPreferences().getMembersListGroupsFilter());
-		mFilteredTeams.clear();
-		mFilteredTeams.addAll(getPreferences().getMembersListTeamsFilter());
-
 		mSearchText.setEnabled(true);
 		mClearSearchButton.setEnabled(true);
 
 		if (null == mListAdapter) {
-			mListAdapter = new MembersListAdapter(getActivity(), mMembers, mFilteredGroups, mFilteredTeams);
-		} else {
-			mListAdapter.setContent(mMembers);
+			mListAdapter = new MembersListAdapter(getActivity());
 		}
+		mListAdapter.setContent(mMembers);
+		mFilteredGroups = getPreferences().getMembersListGroupsFilter();
+		mFilteredTeams = getPreferences().getMembersListTeamsFilter();
+		mListAdapter.setGroupTeamFilters(mFilteredGroups, mFilteredTeams);
+
 		finishInitializeList(mListAdapter);
-
-		getActivity().invalidateOptionsMenu();
-		refreshFilter();
-	}
-
-	// TODO Move to dialog listener for MembersFilterDialogFragment
-	private void onClearFilterSelected() {
-		if (null == mMembers) {
-			return;
-		}
-
-		mFilteredGroups.clear();
-		mFilteredTeams.clear();
-
 		refreshFilter();
 	}
 
@@ -262,6 +248,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	private void refreshFilter() {
 		getPreferences().setMembersListFilters(mFilteredGroups, mFilteredTeams);
 		if (null != mListAdapter) {
+			mListAdapter.setGroupTeamFilters(mFilteredGroups, mFilteredTeams);
 			mListAdapter.getFilter().filter(mSearchQuery);
 		}
 	}
@@ -272,6 +259,15 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 			if (!TextUtils.isEmpty(mSearchQuery)) {
 				mSearchText.setText("");
 			}
+		}
+	}
+
+	private final class MembersFilterDialogListener implements MembersFilterDialogFragment.MembersFilterDialogListener {
+		@Override
+		public void onDismiss(Set<Integer> groups, Set<Integer> teams) {
+			mFilteredGroups = groups;
+			mFilteredTeams = teams;
+			refreshFilter();
 		}
 	}
 

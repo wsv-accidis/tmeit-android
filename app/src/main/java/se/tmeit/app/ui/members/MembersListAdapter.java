@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -25,19 +26,14 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 	private final Context mContext;
 	private final MemberFaceHelper mFaceHelper;
 	private final Filter mFilter = new MembersListFilter();
-	private final Set<Integer> mFilteredGroups;
-	private final Set<Integer> mFilteredTeams;
 	private final LayoutInflater mInflater;
-	private List<Member> mFilteredList;
+	private Set<Integer> mFilteredGroups = Collections.emptySet();
+	private List<Member> mFilteredList = Collections.emptyList();
+	private Set<Integer> mFilteredTeams = Collections.emptySet();
 	private Member.RepositoryData mMembers;
 
-	public MembersListAdapter(Context context, Member.RepositoryData members, Set<Integer> filteredGroups, Set<Integer> filteredTeams) {
+	public MembersListAdapter(Context context) {
 		mContext = context;
-		mMembers = members;
-		mFilteredGroups = filteredGroups;
-		mFilteredList = members.getMembers();
-		mFilteredTeams = filteredTeams;
-
 		mFaceHelper = MemberFaceHelper.getInstance(context);
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -112,12 +108,17 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		notifyDataSetChanged();
 	}
 
+	public void setGroupTeamFilters(Set<Integer> filteredGroups, Set<Integer> filteredTeams) {
+		mFilteredGroups = filteredGroups;
+		mFilteredTeams = filteredTeams;
+		notifyDataSetChanged();
+	}
+
 	private final class MembersListFilter extends Filter {
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint) {
 			FilterResults results = new FilterResults();
 			List<Member> filteredList;
-
 			boolean noFilters = mFilteredGroups.isEmpty() && mFilteredTeams.isEmpty();
 
 			if (noFilters && TextUtils.isEmpty(constraint)) {
