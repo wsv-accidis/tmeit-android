@@ -61,10 +61,10 @@
 
     <string name="member_add_contact">Add as contact</string>
     <string name="member_call">Call</string>
-    <string name="member_contact_could_not_saved">Could not save contact, something went wrong.</string>
+    <string name="member_contact_could_not_saved">Could not save contact, something went wrong. Please make a bug report.</string>
     <string name="member_contact_saved">Contact saved.</string>
     <string name="member_drivers_license">Driver\'s license</string>
-    <string name="member_email">Mail</string>
+	<string name="member_email">Mail</string>
     <string name="member_exp" translatable="false">Exp</string>
     <string name="member_fest" translatable="false">FEST</string>
     <string name="member_filter_list">Filter list</string>
@@ -126,7 +126,7 @@
     <string name="repository_error_unspecified_protocol">An unexpected error occurred while downloading. Make sure you have the latest version of this app.</string>
 
     <string name="upload_photo_chooser_title">Select image</string>
-    <string name="upload_photo_error_permissions">The camera or gallery couldn\'t be opened. Please ensure the app has been granted the relevant permissions.</string>
+    <string name="upload_photo_error_permissions">Couldn\'t open camera or gallery, something went wrong. Please make a bug report.</string>
     <string name="upload_photo_failed">Upload failed for some reason. Try again.</string>
     <string name="upload_photo_finish_nav_title">Select member</string>
     <string name="upload_photo_nav_title">Upload photo</string>
