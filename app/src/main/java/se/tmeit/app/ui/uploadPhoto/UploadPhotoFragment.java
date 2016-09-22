@@ -114,7 +114,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 	}
 
 	private Uri createTemporaryImageFile() throws IOException {
-		return ImageUtils.createTemporaryImageFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM));
+		return ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
 	}
 
 	private void handleCropPhotoActivityResult() {

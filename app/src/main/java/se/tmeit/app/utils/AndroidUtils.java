@@ -13,16 +13,16 @@ import android.view.inputmethod.InputMethodManager;
  * Generic utility methods for Android.
  */
 public final class AndroidUtils {
-    private AndroidUtils() {
-    }
+	private AndroidUtils() {
+	}
 
-    public static String getAppVersionName(Context context) {
-        return getPackageInfo(context).versionName;
-    }
+	public static String getAppVersionName(Context context) {
+		return getPackageInfo(context).versionName;
+	}
 
-    public static boolean hasApiLevel(int apiLevel) {
-        return (Build.VERSION.SDK_INT >= apiLevel);
-    }
+	public static boolean hasApiLevel(int apiLevel) {
+		return (Build.VERSION.SDK_INT >= apiLevel);
+	}
 
 	public static void hideSoftKeyboard(Context context, View view) {
 		if (null != context && null != view) {
@@ -31,17 +31,17 @@ public final class AndroidUtils {
 		}
 	}
 
-    public static boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return (netInfo != null && netInfo.isConnectedOrConnecting());
-    }
+	public static boolean isNetworkConnected(Context context) {
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		return (netInfo != null && netInfo.isConnectedOrConnecting());
+	}
 
-    private static PackageInfo getPackageInfo(Context context) {
-        try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
+	private static PackageInfo getPackageInfo(Context context) {
+		try {
+			return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+		} catch (PackageManager.NameNotFoundException e) {
+			throw new RuntimeException("Could not get package name: " + e);
+		}
+	}
 }

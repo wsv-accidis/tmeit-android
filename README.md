@@ -33,7 +33,6 @@ are used for, here is a brief summary.
 * WAKE_LOCK - For (very briefly) keeping the phone awake when a push notification is received.
 * WRITE_CONTACTS - For creating a contact in the phone when the user tries to add a contact
   from someone in the list of members, or the member info page.
-* WRITE_EXTERNAL_STORAGE - For storing images in external storage when taking a photo.
 
 ## Licensing
 TMEIT for Android is distributed according to the terms of the **Apache License version 2.0**.
