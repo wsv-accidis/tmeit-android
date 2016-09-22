@@ -23,6 +23,7 @@ import java.net.HttpURLConnection;
 import se.tmeit.app.services.TmeitHttpClient;
 import se.tmeit.app.services.TmeitServiceConfig;
 import se.tmeit.app.storage.Preferences;
+import se.tmeit.app.utils.ImageUtils;
 
 /**
  * Asynchronous task for uploading a photo.
@@ -48,7 +49,12 @@ public final class UploadPhotoTask extends AsyncTask<Void, Void, Boolean> {
 		try {
 			mStartTime = System.currentTimeMillis();
 			String imageBase64 = encodeImageAsBase64();
-			return uploadPhoto(imageBase64);
+			if (uploadPhoto(imageBase64)) {
+				ImageUtils.safelyDeleteTemporaryFile(mSourceUri);
+				return true;
+			}
+			return false;
+
 		} catch (Exception ignored) {
 			return false;
 		}
