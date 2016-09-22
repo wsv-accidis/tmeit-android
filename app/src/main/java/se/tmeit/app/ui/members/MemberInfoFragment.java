@@ -1,9 +1,12 @@
 package se.tmeit.app.ui.members;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -41,6 +44,7 @@ import se.tmeit.app.ui.MainActivity;
 public final class MemberInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasMenu, MainActivity.HasNavigationItem {
 	private final static int EXPERIENCE_MIN = 100;
 	private final static String TAG = MemberInfoFragment.class.getSimpleName();
+	private final static int WRITE_CONTACTS_PERMISSION_REQUEST_ID = 1;
 	private final OnImageClickedListener mOnImageClickedListener = new OnImageClickedListener();
 	private MemberFaceHelper mFaceHelper;
 
@@ -200,6 +204,24 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 	@Override
 	public boolean onMenuItemSelected(MenuItem item) {
 		if (R.id.member_action_add_contact == item.getItemId()) {
+			addMemberAsContact();
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (WRITE_CONTACTS_PERMISSION_REQUEST_ID == requestCode && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			addMemberAsContact();
+		}
+	}
+
+	private void addMemberAsContact() {
+		if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)) {
+			requestPermissions(new String[]{Manifest.permission.WRITE_CONTACTS}, WRITE_CONTACTS_PERMISSION_REQUEST_ID);
+		} else {
 			Bundle args = getArguments();
 			String realName = args.getString(Member.Keys.REAL_NAME);
 			String email = args.getString(Member.Keys.EMAIL);
@@ -210,10 +232,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 				(succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
 				(succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
 			toast.show();
-			return true;
 		}
-
-		return false;
 	}
 
 	private void initializeListOfBadges(LinearLayout layout, List<MemberBadge> badges) {
