@@ -51,16 +51,20 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (Activity.RESULT_OK != resultCode) {
-			return;
-		}
-
-		if (ACTIVITY_RESULT_TAKE_PHOTO == requestCode || ACTIVITY_RESULT_SELECT_EXISTING == requestCode) {
-			handleUploadPhotoActivityResult(requestCode, data);
-		} else if (ACTIVITY_RESULT_CROPPED_PHOTO == requestCode) {
-			handleCropPhotoActivityResult();
-		} else {
-			Log.w(TAG, "Activity result with unknown requestCode = " + requestCode + ".");
+		if (Activity.RESULT_OK == resultCode) {
+			if (ACTIVITY_RESULT_TAKE_PHOTO == requestCode || ACTIVITY_RESULT_SELECT_EXISTING == requestCode) {
+				handleUploadPhotoActivityResult(requestCode, data);
+			} else if (ACTIVITY_RESULT_CROPPED_PHOTO == requestCode) {
+				handleCropPhotoActivityResult();
+			}
+		} else if (Activity.RESULT_CANCELED == resultCode) {
+			if (ACTIVITY_RESULT_TAKE_PHOTO == requestCode) {
+				ImageUtils.safelyDeleteTemporaryFile(mPendingCaptureUri);
+				mPendingCaptureUri = null;
+			} else if (ACTIVITY_RESULT_CROPPED_PHOTO == requestCode) {
+				ImageUtils.safelyDeleteTemporaryFile(mPendingCropUri);
+				mPendingCropUri = null;
+			}
 		}
 	}
 
@@ -162,6 +166,9 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 			cropIntent.putExtra(CropImageActivity.EXTRA_MAX_Y, OUTPUT_SCALE_FACTOR * BASE_OUTPUT_HEIGHT);
 			startActivityForResult(cropIntent, ACTIVITY_RESULT_CROPPED_PHOTO);
 		} catch (Exception ex) {
+			ImageUtils.safelyDeleteTemporaryFile(mPendingCropUri);
+			mPendingCropUri = null;
+
 			Log.e(TAG, "Caught an exception while attempting to crop photo.", ex);
 		}
 	}
@@ -194,6 +201,9 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 					startActivityForResult(takePictureIntent, ACTIVITY_RESULT_TAKE_PHOTO);
 				}
 			} catch (Exception ex) {
+				ImageUtils.safelyDeleteTemporaryFile(mPendingCaptureUri);
+				mPendingCaptureUri = null;
+
 				Log.e(TAG, "Caught an exception while attempting to start capture.", ex);
 				Toast toast = Toast.makeText(getContext(), R.string.upload_photo_error_permissions, Toast.LENGTH_LONG);
 				toast.show();
