@@ -46,6 +46,8 @@ SDKs provided by Google:
 * [OkHttp3 Downloader for Picasso](https://github.com/JakeWharton/picasso2-okhttp3-downloader)
 * [Android Range Seek Bar](https://github.com/anothem/android-range-seek-bar)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
+* [AutoValue by Google](https://github.com/google/auto)
+* [AutoValue Parcel Extension by Ryan Harter](https://github.com/google/auto)
 
 TMEIT for Android integrates code from the
 [Image cropping library by SoundCloud](https://github.com/jdamcd/android-crop) (which is based on
