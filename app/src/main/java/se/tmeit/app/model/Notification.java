@@ -1,6 +1,6 @@
 package se.tmeit.app.model;
 
-import android.text.TextUtils;
+import com.google.auto.value.AutoValue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,82 +13,49 @@ import se.tmeit.app.utils.DateTimeUtils;
 /**
  * Model object for notifications.
  */
-public final class Notification {
-    private static final String BODY = "body";
-    private static final String CREATED = "created";
-    private static final String ID = "id";
-    private static final String URL = "url";
-    private String mBody;
-    private Calendar mCreated;
-    private int mId;
-    private String mUrl;
+@AutoValue
+public abstract class Notification {
+	private static Notification create(int id, String body, String url, Calendar created) {
+		return new AutoValue_Notification(id, body, url, created);
+	}
 
-    public static Notification fromJson(JSONObject obj) {
-        Notification notif = new Notification();
-        notif.setId(obj.optInt(ID));
-        notif.setBody(obj.optString(BODY));
-        notif.setUrl(obj.optString(URL));
-        notif.setCreated(DateTimeUtils.parseIso8601(obj.optString(CREATED)));
-        return notif;
-    }
+	public static Notification fromJson(JSONObject obj) {
+		return create(
+			obj.optInt(Keys.ID),
+			obj.optString(Keys.BODY),
+			obj.optString(Keys.URL),
+			DateTimeUtils.parseIso8601(obj.optString(Keys.CREATED)));
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (null == o || !(o instanceof Notification)) {
-            return false;
-        }
+	public abstract int id();
 
-        Notification other = (Notification) o;
-        return other.mId == this.mId && TextUtils.equals(other.mBody, this.mBody) && TextUtils.equals(other.mUrl, this.mUrl)
-                && ((null == mCreated && null == other.mCreated) || (mCreated != null && mCreated.equals(other.mCreated)));
-    }
+	public abstract String body();
 
-    public String getBody() {
-        return mBody;
-    }
+	public abstract String url();
 
-	private void setBody(String body) {
-        this.mBody = body;
-    }
+	public abstract Calendar created();
 
-    public Calendar getCreated() {
-        return mCreated;
-    }
+	public JSONObject toJson() throws JSONException {
+		JSONObject json = new JSONObject();
+		json.put(Keys.ID, id());
+		json.put(Keys.BODY, body());
+		json.put(Keys.URL, url());
+		json.put(Keys.CREATED, DateTimeUtils.formatIso8601(created()));
+		return json;
+	}
 
-	private void setCreated(Calendar created) {
-        this.mCreated = created;
-    }
+	@Override
+	public String toString() {
+		return String.format(Locale.getDefault(), "[%d] %s (%s)", id(), body(), DateTimeUtils.formatIso8601(created()));
+	}
 
-    public int getId() {
-        return mId;
-    }
+	private static class Keys {
+		private static final String BODY = "body";
+		private static final String CREATED = "created";
+		private static final String ID = "id";
+		private static final String URL = "url";
 
-    public void setId(int id) {
-        this.mId = id;
-    }
-
-    public String getUrl() {
-        return mUrl;
-    }
-
-	private void setUrl(String url) {
-        this.mUrl = url;
-    }
-
-    public JSONObject toJson() throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put(ID, mId);
-        json.put(BODY, mBody);
-        json.put(URL, mUrl);
-        json.put(CREATED, DateTimeUtils.formatIso8601(mCreated));
-        return json;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(Locale.getDefault(), "[%d] %s (%s)", mId, mBody, DateTimeUtils.formatIso8601(mCreated));
-    }
+		private Keys() {
+		}
+	}
 }

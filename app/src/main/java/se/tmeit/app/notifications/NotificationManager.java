@@ -122,8 +122,8 @@ public final class NotificationManager {
     @SuppressLint("InlinedApi")
 	private void createSingleNotification(Notification notif, boolean inGroup) {
         Intent deleteIntent = new Intent(mContext, NotificationDeletedReceiver.class);
-        deleteIntent.setAction(NOTIFICATION_DELETED_ACTION + notif.getId());
-        deleteIntent.putExtra(NotificationDeletedReceiver.NOTIFICATION_ID_EXTRA, new int[]{notif.getId()});
+        deleteIntent.setAction(NOTIFICATION_DELETED_ACTION + notif.id());
+        deleteIntent.putExtra(NotificationDeletedReceiver.NOTIFICATION_ID_EXTRA, new int[]{notif.id()});
         PendingIntent deletePendingIntent = PendingIntent.getBroadcast(mContext, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             /*
@@ -154,7 +154,7 @@ public final class NotificationManager {
             builder.setLargeIcon(largeIcon);
         }
 
-        NotificationManagerCompat.from(mContext).notify(NOTIFICATION_ID_OFFSET + notif.getId(), builder.build());
+        NotificationManagerCompat.from(mContext).notify(NOTIFICATION_ID_OFFSET + notif.id(), builder.build());
     }
 
 	@SuppressLint("InlinedApi")
@@ -162,7 +162,7 @@ public final class NotificationManager {
         int[] notificationIds = new int[notifications.size()];
         int idx = 0;
         for (Notification notif : notifications) {
-            notificationIds[idx++] = notif.getId();
+            notificationIds[idx++] = notif.id();
         }
 
         Intent deleteIntent = new Intent(mContext, NotificationDeletedReceiver.class);
@@ -193,7 +193,7 @@ public final class NotificationManager {
     private static CharSequence getContentTextFromNotification(Notification notif) {
         // body typically has this format: "Something happened: <span>Title</span>"
         // since the notifications aren't HTML we replace the spans with something native
-        String body = notif.getBody();
+        String body = notif.body();
         int indexOfStartSpan = body.indexOf("<span>");
         body = body.replace("<span>", "");
         int indexOfEndSpan = body.indexOf("</span>");
@@ -239,8 +239,8 @@ public final class NotificationManager {
                 mStorage.add(notification);
                 Log.d(TAG, "Added notification: " + notification.toString());
 
-                if (null != notification.getCreated() && -1 == lastNotif.compareTo(notification.getCreated())) {
-                    lastNotif = notification.getCreated();
+                if (null != notification.created() && -1 == lastNotif.compareTo(notification.created())) {
+                    lastNotif = notification.created();
                 }
             }
         } catch (JSONException ex) {

@@ -42,7 +42,7 @@ public final class NotificationStorage {
     }
 
     public void add(Notification notification) {
-        int existingIdx = indexOf(notification.getId());
+        int existingIdx = indexOf(notification.id());
         if (-1 != existingIdx) {
             Notification existing = mNotifications.get(existingIdx);
             if (!existing.equals(notification)) {
@@ -93,7 +93,7 @@ public final class NotificationStorage {
     private int indexOf(int id) {
         int idx = 0;
         for (Notification notif : mNotifications) {
-            if (notif.getId() == id) {
+            if (notif.id() == id) {
                 return idx;
             } else {
                 idx++;

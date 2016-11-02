@@ -1,7 +1,8 @@
 package se.tmeit.app.model;
 
-import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.auto.value.AutoValue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,61 +10,27 @@ import org.json.JSONObject;
 /**
  * Model object for a member's badge.
  */
-public final class MemberBadge implements Parcelable {
-    public static Parcelable.Creator CREATOR = new Parcelable.Creator<MemberBadge>() {
-        @Override
-        public MemberBadge createFromParcel(Parcel source) {
-            return new MemberBadge(source);
-        }
+@AutoValue
+public abstract class MemberBadge implements Parcelable {
+	private static MemberBadge create(String title, String src) {
+		return new AutoValue_MemberBadge(title, src);
+	}
 
-        @Override
-        public MemberBadge[] newArray(int size) {
-            return new MemberBadge[size];
-        }
-    };
-    private final String mSrc;
-    private final String mTitle;
+	public static MemberBadge fromJson(JSONObject obj) throws JSONException {
+		final String title = obj.getString(Keys.TITLE);
+		final String src = obj.getString(Keys.SRC);
+		return create(title, src);
+	}
 
-	private MemberBadge(String title, String src) {
-        mTitle = title;
-        mSrc = src;
-    }
+	public abstract String title();
 
-    private MemberBadge(Parcel parcel) {
-        mTitle = parcel.readString();
-        mSrc = parcel.readString();
-    }
+	public abstract String src();
 
-    public static MemberBadge fromJson(JSONObject obj) throws JSONException {
-        String title = obj.getString(Keys.TITLE);
-        String src = obj.getString(Keys.SRC);
-        return new MemberBadge(title, src);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public String getSrc() {
-        return mSrc;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mTitle);
-        dest.writeString(mSrc);
-    }
-
-    public static class Keys {
+	private static class Keys {
 		private static final String SRC = "src";
 		private static final String TITLE = "title";
 
-        private Keys() {
-        }
-    }
+		private Keys() {
+		}
+	}
 }
