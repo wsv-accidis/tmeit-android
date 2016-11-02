@@ -67,7 +67,7 @@ public final class OnboardingActivity extends FragmentActivity {
 			mWaitingFragment = waitingFragment;
 		}
 
-		public void abandon() {
+		private void abandon() {
 			Log.d(TAG, "Abandoned the authentication result handler!");
 			mAbandoned = true;
 		}

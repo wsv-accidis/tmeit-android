@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import se.tmeit.app.utils.DateTimeUtils;
 
@@ -49,7 +50,7 @@ public final class Notification {
         return mBody;
     }
 
-    public void setBody(String body) {
+	private void setBody(String body) {
         this.mBody = body;
     }
 
@@ -57,7 +58,7 @@ public final class Notification {
         return mCreated;
     }
 
-    public void setCreated(Calendar created) {
+	private void setCreated(Calendar created) {
         this.mCreated = created;
     }
 
@@ -73,7 +74,7 @@ public final class Notification {
         return mUrl;
     }
 
-    public void setUrl(String url) {
+	private void setUrl(String url) {
         this.mUrl = url;
     }
 
@@ -88,6 +89,6 @@ public final class Notification {
 
     @Override
     public String toString() {
-        return String.format("[%d] %s (%s)", mId, mBody, DateTimeUtils.formatIso8601(mCreated));
+        return String.format(Locale.getDefault(), "[%d] %s (%s)", mId, mBody, DateTimeUtils.formatIso8601(mCreated));
     }
 }

@@ -25,7 +25,6 @@ import se.tmeit.app.ui.members.MembersSimpleListFragment;
 public final class FinishUploadPhotoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
 	private static final String CAPTURED_PHOTO_URI = "capturedPhotoUri";
 	private static final String SELECTED_USER = "selectedUser";
-	private static final String TAG = FinishUploadPhotoFragment.class.getSimpleName();
 	private final UploadPhotoResultListener mUploadResultListener = new UploadPhotoResultListener();
 	private Uri mCaptureUri;
 	private Button mFinishButton;

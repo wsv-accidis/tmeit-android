@@ -83,7 +83,7 @@ public final class MembersSimpleListFragment extends ListFragmentBase {
 		private final LayoutInflater mInflater;
 		private final List<Member> mMembers;
 
-		public MembersSimpleListAdapter(Context context, Member.RepositoryData members) {
+		private MembersSimpleListAdapter(Context context, Member.RepositoryData members) {
 			mMembers = members.getMembers();
 			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}

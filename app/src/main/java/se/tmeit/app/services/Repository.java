@@ -109,7 +109,7 @@ public final class Repository {
         }
     }
 
-    Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {
+    private Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {
         Map<Integer, String> result = new LinkedHashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
@@ -166,7 +166,7 @@ public final class Repository {
     }
 
     private final class AttendExternalEventCallback extends GetResultCallback<Void> {
-        public AttendExternalEventCallback(RepositoryResultHandler<Void> resultHandler) {
+        private AttendExternalEventCallback(RepositoryResultHandler<Void> resultHandler) {
             super(resultHandler);
         }
 
@@ -177,7 +177,7 @@ public final class Repository {
     }
 
     private final class GetExternalEventDetailsCallback extends GetResultCallback<ExternalEvent.RepositoryData> {
-        public GetExternalEventDetailsCallback(RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
+		private GetExternalEventDetailsCallback(RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
@@ -195,7 +195,7 @@ public final class Repository {
     private final class GetExternalEventsCallback extends GetResultCallback<List<ExternalEvent>> {
         private static final String EVENTS = "events";
 
-        public GetExternalEventsCallback(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
+		private GetExternalEventsCallback(RepositoryResultHandler<List<ExternalEvent>> resultHandler) {
             super(resultHandler);
         }
 
@@ -214,7 +214,7 @@ public final class Repository {
     }
 
     private final class GetInternalEventDetailsCallback extends GetResultCallback<InternalEvent.RepositoryData> {
-        public GetInternalEventDetailsCallback(RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
+		private GetInternalEventDetailsCallback(RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
@@ -230,7 +230,7 @@ public final class Repository {
     private final class GetInternalEventsCallback extends GetResultCallback<List<InternalEvent>> {
         private static final String EVENTS = "events";
 
-        public GetInternalEventsCallback(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
+		private GetInternalEventsCallback(RepositoryResultHandler<List<InternalEvent>> resultHandler) {
             super(resultHandler);
         }
 
@@ -249,7 +249,7 @@ public final class Repository {
     }
 
     private final class GetMembersCallback extends GetResultCallback<Member.RepositoryData> {
-        public GetMembersCallback(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
+		private GetMembersCallback(RepositoryResultHandler<Member.RepositoryData> resultHandler) {
             super(resultHandler);
         }
 
@@ -272,7 +272,7 @@ public final class Repository {
     }
 
     private abstract class GetResultCallback<TResult> implements Callback {
-        protected final RepositoryResultHandler<TResult> mResultHandler;
+		private final RepositoryResultHandler<TResult> mResultHandler;
 
         protected GetResultCallback(RepositoryResultHandler<TResult> resultHandler) {
             mResultHandler = resultHandler;
@@ -314,24 +314,24 @@ public final class Repository {
     private static class Keys {
         public static final String ATTENDEE = "attendee";
         public static final String ATTENDEES = "attendees";
-        public static final String ATTENDING = "attending";
-        public static final String COMMENT = "comment";
-        public static final String DOB = "dob";
-        public static final String DRINK_PREFS = "drink_prefs";
+		private static final String ATTENDING = "attending";
+		private static final String COMMENT = "comment";
+		private static final String DOB = "dob";
+		private static final String DRINK_PREFS = "drink_prefs";
         public static final String EVENT = "event";
-        public static final String EVENT_ID = "event_id";
-        public static final String FOOD_PREFS = "food_prefs";
+		private static final String EVENT_ID = "event_id";
+		private static final String FOOD_PREFS = "food_prefs";
         public static final String GROUPS = "groups";
         public static final String ID = "id";
-        public static final String NOTES = "notes";
-        public static final String RANGE_END = "range_end";
-        public static final String RANGE_START = "range_start";
+		private static final String NOTES = "notes";
+		private static final String RANGE_END = "range_end";
+		private static final String RANGE_START = "range_start";
         public static final String TEAMS = "teams";
-        public static final String TITLE = "title";
+		private static final String TITLE = "title";
         public static final String TITLES = "titles";
         public static final String USERS = "users";
         public static final String WORKERS = "workers";
-        public static final String WORKING = "working";
+		private static final String WORKING = "working";
 
         private Keys() {
         }

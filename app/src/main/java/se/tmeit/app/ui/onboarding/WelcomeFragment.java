@@ -46,9 +46,9 @@ public final class WelcomeFragment extends Fragment {
 		mWelcomeFragmentCallbacks = welcomeFragmentCallbacks;
 	}
 
-	public static interface WelcomeFragmentCallbacks {
-		public void onLogInWithKthClicked();
+	public interface WelcomeFragmentCallbacks {
+		void onLogInWithKthClicked();
 
-		public void onLogInWithoutKthClicked();
+		void onLogInWithoutKthClicked();
 	}
 }

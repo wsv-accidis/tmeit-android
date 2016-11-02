@@ -84,6 +84,9 @@ public final class UploadPhotoTask extends AsyncTask<Void, Void, Boolean> {
 		InputStream inputStream = null;
 		try {
 			inputStream = mContext.getContentResolver().openInputStream(mSourceUri);
+			if (null == inputStream) {
+				throw new FileNotFoundException();
+			}
 			ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 			Base64OutputStream base64OutputStream = new Base64OutputStream(byteOutputStream, Base64.NO_WRAP);
 

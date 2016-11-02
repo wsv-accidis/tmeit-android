@@ -1,5 +1,6 @@
 package se.tmeit.app.ui.onboarding;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,7 @@ public final class WebOnboardingFragment extends Fragment {
 		return fragment;
 	}
 
+	@SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_web, container, false);
@@ -51,8 +53,8 @@ public final class WebOnboardingFragment extends Fragment {
 		mResultHandler = resultHandler;
 	}
 
-	public static interface OnboardingResultHandler {
-		public void handleResult(String authCode);
+	public interface OnboardingResultHandler {
+		void handleResult(String authCode);
 	}
 
 	private final class CaptureJsInterface {

@@ -83,7 +83,7 @@ public final class RotateBitmap {
 		}
 	}
 
-	public boolean isOrientationChanged() {
+	private boolean isOrientationChanged() {
 		return (mRotation / 90) % 2 != 0;
 	}
 

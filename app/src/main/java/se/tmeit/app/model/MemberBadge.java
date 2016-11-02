@@ -24,7 +24,7 @@ public final class MemberBadge implements Parcelable {
     private final String mSrc;
     private final String mTitle;
 
-    public MemberBadge(String title, String src) {
+	private MemberBadge(String title, String src) {
         mTitle = title;
         mSrc = src;
     }
@@ -60,8 +60,8 @@ public final class MemberBadge implements Parcelable {
     }
 
     public static class Keys {
-        public static final String SRC = "src";
-        public static final String TITLE = "title";
+		private static final String SRC = "src";
+		private static final String TITLE = "title";
 
         private Keys() {
         }

@@ -1,5 +1,6 @@
 package se.tmeit.app.notifications;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -118,7 +119,8 @@ public final class NotificationManager {
         return json.toString();
     }
 
-    private void createSingleNotification(Notification notif, boolean inGroup) {
+    @SuppressLint("InlinedApi")
+	private void createSingleNotification(Notification notif, boolean inGroup) {
         Intent deleteIntent = new Intent(mContext, NotificationDeletedReceiver.class);
         deleteIntent.setAction(NOTIFICATION_DELETED_ACTION + notif.getId());
         deleteIntent.putExtra(NotificationDeletedReceiver.NOTIFICATION_ID_EXTRA, new int[]{notif.getId()});
@@ -155,6 +157,7 @@ public final class NotificationManager {
         NotificationManagerCompat.from(mContext).notify(NOTIFICATION_ID_OFFSET + notif.getId(), builder.build());
     }
 
+	@SuppressLint("InlinedApi")
     private void createSummaryNotification(List<Notification> notifications) {
         int[] notificationIds = new int[notifications.size()];
         int idx = 0;

@@ -97,7 +97,7 @@ public final class InternalEvent {
         return mWorkersCount;
     }
 
-    public void setWorkersCount(int value) {
+	private void setWorkersCount(int value) {
         mWorkersCount = value;
     }
 
@@ -105,7 +105,7 @@ public final class InternalEvent {
         return mWorkersMax;
     }
 
-    public void setWorkersMax(int value) {
+	private void setWorkersMax(int value) {
         mWorkersMax = value;
     }
 
@@ -127,12 +127,12 @@ public final class InternalEvent {
 
     public static class Keys {
         public static final String ID = "id";
-        public static final String IS_PAST = "is_past";
-        public static final String IS_REPORTED = "is_reported";
-        public static final String LOCATION = "location";
+		private static final String IS_PAST = "is_past";
+		private static final String IS_REPORTED = "is_reported";
+		private static final String LOCATION = "location";
         public static final String START_DATE = "start_date";
         public static final String START_TIME = "start_time";
-        public static final String TEAM_ID = "team_id";
+		private static final String TEAM_ID = "team_id";
         public static final String TEAM_TITLE = "team_title";
         public static final String TITLE = "title";
         public static final String WORKERS_COUNT = "workers_count";

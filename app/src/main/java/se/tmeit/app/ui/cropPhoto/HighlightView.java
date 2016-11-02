@@ -40,11 +40,11 @@ import se.tmeit.app.R;
  * space to screen space.
  */
 public final class HighlightView {
-	public static final int GROW_BOTTOM_EDGE = (1 << 4);
-	public static final int GROW_LEFT_EDGE = (1 << 1);
+	private static final int GROW_BOTTOM_EDGE = (1 << 4);
+	private static final int GROW_LEFT_EDGE = (1 << 1);
 	public static final int GROW_NONE = (1);
-	public static final int GROW_RIGHT_EDGE = (1 << 2);
-	public static final int GROW_TOP_EDGE = (1 << 3);
+	private static final int GROW_RIGHT_EDGE = (1 << 2);
+	private static final int GROW_TOP_EDGE = (1 << 3);
 	public static final int MOVE = (1 << 5);
 
 	private static final int DEFAULT_HIGHLIGHT_COLOR = 0xFF33B5E5;

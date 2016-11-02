@@ -111,7 +111,7 @@ public final class ServiceAuthenticator {
         private final String mServiceAuth;
         private final String mUsername;
 
-        public AuthenticationCallback(AuthenticationResultHandler resultHandler, String serviceAuth, String username) {
+		private AuthenticationCallback(AuthenticationResultHandler resultHandler, String serviceAuth, String username) {
             mResultHandler = resultHandler;
             mServiceAuth = serviceAuth;
             mUsername = username;

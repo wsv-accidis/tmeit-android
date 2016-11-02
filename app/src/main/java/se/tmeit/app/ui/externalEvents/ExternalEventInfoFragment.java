@@ -30,7 +30,6 @@ import se.tmeit.app.ui.MainActivity;
  */
 public final class ExternalEventInfoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
 	private static final char FORMAT_SPACE = ' ';
-	private final static String TAG = ExternalEventInfoFragment.class.getSimpleName();
 	private final AttendingButtonClickListener mAttendingClickedListener = new AttendingButtonClickListener();
 	private final AttendingDialogListener mAttendingDialogListener = new AttendingDialogListener();
 	private final AttendingResultHandler mAttendingResultHandler = new AttendingResultHandler();
@@ -151,7 +150,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
 		LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 		for (ExternalEventAttendee attendee : attendees) {
-			TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, null);
+			TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, layout, false);
 
 			StringBuilder builder = new StringBuilder();
 			builder.append(attendee.getName());

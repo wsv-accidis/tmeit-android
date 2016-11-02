@@ -180,7 +180,7 @@ public final class Member {
 		}
 	}
 
-	public int getTitleId() {
+	private int getTitleId() {
 		return mTitleId;
 	}
 
@@ -220,15 +220,7 @@ public final class Member {
 	}
 
 	private void initSearchText() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(mRealName.toLowerCase());
-		builder.append(' ');
-		builder.append(mUsername.toLowerCase());
-		builder.append(' ');
-		builder.append(stripPhoneNumberChars(mPhone));
-		builder.append(' ');
-		builder.append(mEmail.toLowerCase());
-		mSearchText = builder.toString();
+		mSearchText = mRealName.toLowerCase() + ' ' + mUsername.toLowerCase() + ' ' + stripPhoneNumberChars(mPhone) + ' ' + mEmail.toLowerCase();
 	}
 
 	private void setFlags(boolean hasStad, boolean hasFest, boolean onPermit, boolean driversLicense) {
@@ -279,17 +271,17 @@ public final class Member {
 		public static final String EXPERIENCE_POINTS = "experience_points";
 		public static final String FACES = "faces";
 		public static final String FLAGS = "flags"; // bundle only
-		public static final String GROUP_ID = "group_id";
-		public static final String HAS_FEST = "has_fest";
-		public static final String HAS_LICENSE = "has_license";
-		public static final String HAS_PERMIT = "has_permit";
-		public static final String HAS_STAD = "has_stad";
+		private static final String GROUP_ID = "group_id";
+		private static final String HAS_FEST = "has_fest";
+		private static final String HAS_LICENSE = "has_license";
+		private static final String HAS_PERMIT = "has_permit";
+		private static final String HAS_STAD = "has_stad";
 		public static final String ID = "id";
 		public static final String PHONE = "phone";
 		public static final String REAL_NAME = "realname";
-		public static final String TEAM_ID = "team_id";
+		private static final String TEAM_ID = "team_id";
 		public static final String TEAM_TEXT = "team_text"; // bundle only
-		public static final String TITLE_ID = "title_id";
+		private static final String TITLE_ID = "title_id";
 		public static final String TITLE_TEXT = "title_text"; // bundle only
 		public static final String USERNAME = "username";
 
@@ -326,7 +318,7 @@ public final class Member {
 			return mTeams;
 		}
 
-		public Map<Integer, String> getTitles() {
+		private Map<Integer, String> getTitles() {
 			return mTitles;
 		}
 	}

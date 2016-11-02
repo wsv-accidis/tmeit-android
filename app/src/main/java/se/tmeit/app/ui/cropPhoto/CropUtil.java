@@ -110,7 +110,7 @@ public final class CropUtil {
 		private final Handler mHandler;
 		private final Runnable mJob;
 
-		public BackgroundJob(MonitoredActivity activity, Runnable job, ProgressDialog dialog, Handler handler) {
+		private BackgroundJob(MonitoredActivity activity, Runnable job, ProgressDialog dialog, Handler handler) {
 			mActivity = activity;
 			mDialog = dialog;
 			mJob = job;

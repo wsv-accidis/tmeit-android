@@ -158,14 +158,14 @@ public final class InternalEventWorker {
 
     public static class Keys {
         public static final String COMMENT = "comment";
-        public static final String GROUP_TITLE = "group_title";
-        public static final String HAS_RANGE = "has_range";
+		private static final String GROUP_TITLE = "group_title";
+		private static final String HAS_RANGE = "has_range";
         public static final String ID = "id";
         public static final String IS_SAVED = "is_saved"; // bundle only
-        public static final String NAME = "realname";
+		private static final String NAME = "realname";
         public static final String RANGE_END = "range_end";
         public static final String RANGE_START = "range_start";
-        public static final String TEAM_TITLE = "team_title";
+		private static final String TEAM_TITLE = "team_title";
         public static final String WORKING = "working";
 
         private Keys() {

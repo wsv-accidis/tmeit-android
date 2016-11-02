@@ -126,14 +126,14 @@ public final class ExternalEvent {
     }
 
     public static class Keys {
-        public static final String ATTENDEES = "attendees";
-        public static final String BODY = "body";
-        public static final String EXTERNAL_URL = "external_url";
+		private static final String ATTENDEES = "attendees";
+		private static final String BODY = "body";
+		private static final String EXTERNAL_URL = "external_url";
         public static final String ID = "id";
         public static final String IS_ATTENDING = "is_attending";
-        public static final String IS_NEAR_SIGNUP = "is_near_signup";
-        public static final String IS_PAST = "is_past";
-        public static final String IS_PAST_SIGNUP = "is_past_signup";
+		private static final String IS_NEAR_SIGNUP = "is_near_signup";
+		private static final String IS_PAST = "is_past";
+		private static final String IS_PAST_SIGNUP = "is_past_signup";
         public static final String LAST_SIGNUP = "last_signup";
         public static final String START_DATE = "start_date";
         public static final String TITLE = "title";

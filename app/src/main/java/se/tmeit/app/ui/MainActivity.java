@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -345,7 +346,7 @@ public final class MainActivity extends AppCompatActivity {
 
 	private final class NavigationListener implements NavigationView.OnNavigationItemSelectedListener {
 		@Override
-		public boolean onNavigationItemSelected(MenuItem item) {
+		public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 			Fragment fragment = getFragmentByNavigationItem(item.getItemId());
 			if (null != fragment) {
 				openFragment(fragment);

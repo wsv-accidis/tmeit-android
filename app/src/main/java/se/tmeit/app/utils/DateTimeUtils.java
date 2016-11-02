@@ -4,34 +4,35 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Utilities for working with date/time values.
  */
 public final class DateTimeUtils {
-    private static final String ISO_8601_DATETIME = "yyyy-MM-dd'T'HH:mm:ssZ";
+	private static final String ISO_8601_DATETIME = "yyyy-MM-dd'T'HH:mm:ssZ";
 
-    private DateTimeUtils() {
-    }
+	private DateTimeUtils() {
+	}
 
-    public static String formatIso8601(Calendar calendar) {
-        if (null == calendar) {
-            return "";
-        }
-        return new SimpleDateFormat(ISO_8601_DATETIME).format(calendar.getTime());
-    }
+	public static String formatIso8601(Calendar calendar) {
+		if (null == calendar) {
+			return "";
+		}
+		return new SimpleDateFormat(ISO_8601_DATETIME, Locale.getDefault()).format(calendar.getTime());
+	}
 
-    public static Calendar parseIso8601(String str) {
-        if (!str.isEmpty()) {
-            try {
-                Calendar calendar = GregorianCalendar.getInstance();
-                calendar.setTime(new SimpleDateFormat(ISO_8601_DATETIME).parse(str));
-                return calendar;
-            } catch (ParseException ignored) {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
+	public static Calendar parseIso8601(String str) {
+		if (!str.isEmpty()) {
+			try {
+				Calendar calendar = GregorianCalendar.getInstance();
+				calendar.setTime(new SimpleDateFormat(ISO_8601_DATETIME, Locale.getDefault()).parse(str));
+				return calendar;
+			} catch (ParseException ignored) {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
 }

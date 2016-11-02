@@ -1,7 +1,6 @@
 package se.tmeit.app.ui.internalEvents;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
+import java.util.Locale;
 
 import se.tmeit.app.R;
 import se.tmeit.app.model.InternalEvent;
@@ -74,6 +72,6 @@ public class InternalEventsListAdapter extends BaseAdapter {
 	}
 
 	private String getEventDescription(InternalEvent event) {
-		return String.format(FORMAT_DESCRIPTION, event.getTeamTitle(), event.getWorkersCount(), event.getWorkersMax(), mContext.getString(R.string.event_workers));
+		return String.format(Locale.getDefault(), FORMAT_DESCRIPTION, event.getTeamTitle(), event.getWorkersCount(), event.getWorkersMax(), mContext.getString(R.string.event_workers));
 	}
 }

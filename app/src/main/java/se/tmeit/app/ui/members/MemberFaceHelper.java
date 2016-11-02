@@ -22,7 +22,7 @@ public final class MemberFaceHelper {
 	private final Random mRandom = new Random();
 	private static MemberFaceHelper mInstance;
 
-	public MemberFaceHelper(Context context) {
+	private MemberFaceHelper(Context context) {
 		mPicasso = new Picasso.Builder(context)
 			.downloader(new OkHttp3Downloader(TmeitHttpClient.getInstance()))
 			.build();
