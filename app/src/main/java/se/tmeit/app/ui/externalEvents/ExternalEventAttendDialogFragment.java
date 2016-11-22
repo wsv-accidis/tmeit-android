@@ -1,5 +1,6 @@
 package se.tmeit.app.ui.externalEvents;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -37,6 +38,7 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 		String notes = args.getString(ExternalEventAttendee.Keys.NOTES);
 
 		LayoutInflater inflater = getActivity().getLayoutInflater();
+		@SuppressLint("InflateParams")
 		View view = inflater.inflate(R.layout.dialog_external_event_attend, null);
 
 		EditText nameText = (EditText) view.findViewById(R.id.event_attending_name);
@@ -86,11 +88,13 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 				return;
 			}
 
-			ExternalEventAttendee attendee = new ExternalEventAttendee();
-			attendee.setDateOfBirth(mDobText.getText().toString());
-			attendee.setDrinkPreferences(mDrinkPrefsText.getText().toString());
-			attendee.setFoodPreferences(mFoodPrefsText.getText().toString());
-			attendee.setNotes(mNotesText.getText().toString());
+			ExternalEventAttendee attendee = ExternalEventAttendee.builder()
+				.setDateOfBirth(mDobText.getText().toString())
+				.setDrinkPreferences(mDrinkPrefsText.getText().toString())
+				.setFoodPreferences(mFoodPrefsText.getText().toString())
+				.setNotes(mNotesText.getText().toString())
+				.build();
+
 			mListener.saveClicked(attendee);
 		}
 	}

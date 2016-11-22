@@ -126,10 +126,10 @@ public final class Repository {
 
         if (null != attendee) {
             JSONObject attending = new JSONObject();
-            attending.put(Keys.DOB, attendee.getDateOfBirth());
-            attending.put(Keys.DRINK_PREFS, attendee.getDrinkPreferences());
-            attending.put(Keys.FOOD_PREFS, attendee.getFoodPreferences());
-            attending.put(Keys.NOTES, attendee.getNotes());
+            attending.put(Keys.DOB, attendee.dateOfBirth());
+            attending.put(Keys.DRINK_PREFS, attendee.drinkPreferences());
+            attending.put(Keys.FOOD_PREFS, attendee.foodPreferences());
+            attending.put(Keys.NOTES, attendee.notes());
             json.put(Keys.ATTENDING, attending);
         }
 

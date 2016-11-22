@@ -1,7 +1,5 @@
 package se.tmeit.app.model;
 
-import android.text.TextUtils;
-
 import com.google.auto.value.AutoValue;
 
 import org.json.JSONException;
@@ -123,7 +121,7 @@ public abstract class ExternalEvent {
 
 		public boolean isUserAttending(int userId) {
 			for (ExternalEventAttendee attendee : mAttendees) {
-				if (userId == attendee.getId()) {
+				if (userId == attendee.id()) {
 					return true;
 				}
 			}

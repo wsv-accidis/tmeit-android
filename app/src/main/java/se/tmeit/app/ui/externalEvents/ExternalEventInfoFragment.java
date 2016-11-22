@@ -132,6 +132,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		View noAttendeesText = view.findViewById(R.id.event_no_attendees);
 		if (null != attendees && !attendees.isEmpty()) {
 			noAttendeesText.setVisibility(View.GONE);
+			attendeesLayout.setVisibility(View.VISIBLE);
 			initializeListOfAttendees(attendeesLayout, attendees);
 		} else {
 			attendeesLayout.setVisibility(View.GONE);
@@ -154,21 +155,21 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 			TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, layout, false);
 
 			StringBuilder builder = new StringBuilder();
-			builder.append(attendee.getName());
+			builder.append(attendee.name());
 
-			boolean hasDrinkPrefs = !TextUtils.isEmpty(attendee.getDrinkPreferences()),
-				hasFoodPrefs = !TextUtils.isEmpty(attendee.getFoodPreferences());
+			boolean hasDrinkPrefs = !TextUtils.isEmpty(attendee.drinkPreferences()),
+				hasFoodPrefs = !TextUtils.isEmpty(attendee.foodPreferences());
 
 			if (hasDrinkPrefs || hasFoodPrefs) {
 				builder.append(" (");
 				if (hasDrinkPrefs) {
-					builder.append(attendee.getDrinkPreferences());
+					builder.append(attendee.drinkPreferences());
 					if (hasFoodPrefs) {
 						builder.append(", ");
 					}
 				}
 				if (hasFoodPrefs) {
-					builder.append(attendee.getFoodPreferences());
+					builder.append(attendee.foodPreferences());
 				}
 				builder.append(")");
 			}
@@ -193,11 +194,11 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		public void onClick(View v) {
 			Bundle args = new Bundle();
 			args.putBoolean(ExternalEvent.Keys.IS_ATTENDING, mIsAttending);
-			args.putString(ExternalEventAttendee.Keys.NAME, mCurrentAttendee.getName());
-			args.putString(ExternalEventAttendee.Keys.DOB, mCurrentAttendee.getDateOfBirth());
-			args.putString(ExternalEventAttendee.Keys.DRINK_PREFS, mCurrentAttendee.getDrinkPreferences());
-			args.putString(ExternalEventAttendee.Keys.FOOD_PREFS, mCurrentAttendee.getFoodPreferences());
-			args.putString(ExternalEventAttendee.Keys.NOTES, mCurrentAttendee.getNotes());
+			args.putString(ExternalEventAttendee.Keys.NAME, mCurrentAttendee.name());
+			args.putString(ExternalEventAttendee.Keys.DOB, mCurrentAttendee.dateOfBirth());
+			args.putString(ExternalEventAttendee.Keys.DRINK_PREFS, mCurrentAttendee.drinkPreferences());
+			args.putString(ExternalEventAttendee.Keys.FOOD_PREFS, mCurrentAttendee.foodPreferences());
+			args.putString(ExternalEventAttendee.Keys.NOTES, mCurrentAttendee.notes());
 
 			ExternalEventAttendDialogFragment dialog = new ExternalEventAttendDialogFragment();
 			dialog.setArguments(args);

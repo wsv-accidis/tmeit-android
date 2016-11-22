@@ -1,5 +1,7 @@
 package se.tmeit.app.model;
 
+import com.google.auto.value.AutoValue;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,91 +12,72 @@ import java.util.List;
 /**
  * Model object for attendees of an external event.
  */
-public final class ExternalEventAttendee {
-    private String mDob;
-    private String mDrinkPrefs;
-    private String mFoodPrefs;
-    private String mName;
-    private String mNotes;
-    private int mId;
+@AutoValue
+public abstract class ExternalEventAttendee {
+	public static ExternalEventAttendee fromJson(JSONObject json) throws JSONException {
+		return builder()
+			.setDateOfBirth(json.optString(Keys.DOB, ""))
+			.setDrinkPreferences(json.optString(Keys.DRINK_PREFS, ""))
+			.setFoodPreferences(json.optString(Keys.FOOD_PREFS, ""))
+			.setName(json.optString(Keys.NAME, ""))
+			.setNotes(json.optString(Keys.NOTES, ""))
+			.setId(json.optInt(Keys.ID))
+			.build();
+	}
 
-    public static ExternalEventAttendee fromJson(JSONObject json) {
-        ExternalEventAttendee attendee = new ExternalEventAttendee();
-        attendee.setDateOfBirth(json.optString(Keys.DOB));
-        attendee.setDrinkPreferences(json.optString(Keys.DRINK_PREFS));
-        attendee.setFoodPreferences(json.optString(Keys.FOOD_PREFS));
-        attendee.setName(json.optString(Keys.NAME));
-        attendee.setNotes(json.optString(Keys.NOTES));
-        attendee.setId(json.optInt(Keys.ID));
-        return attendee;
-    }
+	public static List<ExternalEventAttendee> fromJsonArray(JSONArray json) throws JSONException {
+		ArrayList<ExternalEventAttendee> result = new ArrayList<>(json.length());
+		for (int i = 0; i < json.length(); i++) {
+			result.add(fromJson(json.getJSONObject(i)));
+		}
 
-    public static List<ExternalEventAttendee> fromJsonArray(JSONArray json) throws JSONException {
-        ArrayList<ExternalEventAttendee> result = new ArrayList<>(json.length());
-        for (int i = 0; i < json.length(); i++) {
-            result.add(fromJson(json.getJSONObject(i)));
-        }
+		return result;
+	}
 
-        return result;
-    }
+	public static Builder builder() {
+		return new AutoValue_ExternalEventAttendee.Builder()
+			.setId(0)
+			.setName("");
+	}
 
-    public String getDateOfBirth() {
-        return mDob;
-    }
+	public abstract String dateOfBirth();
 
-    public void setDateOfBirth(String dob) {
-        mDob = dob;
-    }
+	public abstract String drinkPreferences();
 
-    public String getDrinkPreferences() {
-        return mDrinkPrefs;
-    }
+	public abstract String foodPreferences();
 
-    public void setDrinkPreferences(String drink) {
-        mDrinkPrefs = drink;
-    }
+	public abstract String name();
 
-    public String getFoodPreferences() {
-        return mFoodPrefs;
-    }
+	public abstract String notes();
 
-    public void setFoodPreferences(String food) {
-        mFoodPrefs = food;
-    }
+	public abstract int id();
 
-    public String getName() {
-        return mName;
-    }
+	@AutoValue.Builder
+	public abstract static class Builder {
+		public abstract Builder setDateOfBirth(String value);
 
-    private void setName(String name) {
-        mName = name;
-    }
+		public abstract Builder setDrinkPreferences(String value);
 
-    public String getNotes() {
-        return mNotes;
-    }
+		public abstract Builder setFoodPreferences(String value);
 
-    public void setNotes(String notes) {
-        mNotes = notes;
-    }
+		abstract Builder setName(String value);
 
-    public int getId() {
-        return mId;
-    }
+		public abstract Builder setNotes(String value);
 
-    private void setId(int id) {
-        mId = id;
-    }
+		abstract Builder setId(int id);
 
-    public static class Keys {
-        public static final String DOB = "dob";
-        public static final String DRINK_PREFS = "drink_prefs";
-        public static final String FOOD_PREFS = "food_prefs";
-        public static final String ID = "id";
-        public static final String NAME = "user_name";
-        public static final String NOTES = "notes";
+		public abstract ExternalEventAttendee build();
+	}
 
-        private Keys() {
-        }
-    }
+	public static class Keys {
+		public static final String DOB = "dob";
+		public static final String DRINK_PREFS = "drink_prefs";
+		public static final String FOOD_PREFS = "food_prefs";
+		public static final String ID = "id";
+		public static final String NAME = "user_name";
+		public static final String NOTES = "notes";
+
+		private Keys() {
+		}
+	}
 }
