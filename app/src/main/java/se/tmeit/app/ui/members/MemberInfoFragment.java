@@ -50,19 +50,19 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 
 	public static MemberInfoFragment createInstance(Context context, Member member, Member.RepositoryData memberRepository) {
 		Bundle bundle = new Bundle();
-		bundle.putString(Member.Keys.USERNAME, member.getUsername());
-		bundle.putString(Member.Keys.REAL_NAME, member.getRealName());
-		bundle.putString(Member.Keys.TITLE_TEXT, member.getTitleText(context, memberRepository));
-		bundle.putString(Member.Keys.TEAM_TEXT, member.getTeamText(context, memberRepository));
-		bundle.putString(Member.Keys.PHONE, member.getPhone());
-		bundle.putString(Member.Keys.EMAIL, member.getEmail());
-		bundle.putStringArrayList(Member.Keys.FACES, new ArrayList<>(member.getFaces()));
+		bundle.putString(Member.Keys.USERNAME, member.username());
+		bundle.putString(Member.Keys.REAL_NAME, member.realName());
+		bundle.putString(Member.Keys.TITLE_TEXT, member.titleText(context, memberRepository));
+		bundle.putString(Member.Keys.TEAM_TEXT, member.teamText(context, memberRepository));
+		bundle.putString(Member.Keys.PHONE, member.phone());
+		bundle.putString(Member.Keys.EMAIL, member.email());
+		bundle.putStringArrayList(Member.Keys.FACES, new ArrayList<>(member.faces()));
 		bundle.putString(Member.Keys.FLAGS, getDescriptionOfFlags(context, member));
-		bundle.putString(Member.Keys.DATE_PRAO, member.getDatePrao());
-		bundle.putString(Member.Keys.DATE_MARSKALK, member.getDateMarskalk());
-		bundle.putString(Member.Keys.DATE_VRAQ, member.getDateVraq());
-		bundle.putInt(Member.Keys.EXPERIENCE_POINTS, member.getExperiencePoints());
-		bundle.putParcelableArrayList(Member.Keys.EXPERIENCE_BADGES, new ArrayList<>(member.getExperienceBadges()));
+		bundle.putString(Member.Keys.DATE_PRAO, member.datePrao());
+		bundle.putString(Member.Keys.DATE_MARSKALK, member.dateMarskalk());
+		bundle.putString(Member.Keys.DATE_VRAQ, member.dateVraq());
+		bundle.putInt(Member.Keys.EXPERIENCE_POINTS, member.experiencePoints());
+		bundle.putParcelableArrayList(Member.Keys.EXPERIENCE_BADGES, new ArrayList<>(member.experienceBadges()));
 
 		MemberInfoFragment instance = new MemberInfoFragment();
 		instance.setArguments(bundle);

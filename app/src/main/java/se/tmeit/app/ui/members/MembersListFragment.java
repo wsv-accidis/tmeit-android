@@ -211,7 +211,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	}
 
 	private void onMemberAddContactSelected(Member member) {
-		boolean succeeded = MemberActions.addAsContact(member.getRealName(), member.getPhone(), member.getEmail(), getActivity().getContentResolver());
+		boolean succeeded = MemberActions.addAsContact(member.realName(), member.phone(), member.email(), getActivity().getContentResolver());
 		Toast toast = Toast.makeText(getActivity(),
 			(succeeded ? R.string.member_contact_saved : R.string.member_contact_could_not_saved),
 			(succeeded ? Toast.LENGTH_LONG : Toast.LENGTH_LONG));
@@ -219,29 +219,29 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	}
 
 	private void onMemberCallSelected(Member member) {
-		if (TextUtils.isEmpty(member.getPhone())) {
+		if (TextUtils.isEmpty(member.phone())) {
 			Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
-			MemberActions.makeCallTo(member.getPhone(), this);
+			MemberActions.makeCallTo(member.phone(), this);
 		}
 	}
 
 	private void onMemberEmailSelected(Member member) {
-		if (TextUtils.isEmpty(member.getEmail())) {
+		if (TextUtils.isEmpty(member.email())) {
 			Toast toast = Toast.makeText(getActivity(), R.string.member_no_email, Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
-			MemberActions.sendEmailTo(member.getEmail(), this);
+			MemberActions.sendEmailTo(member.email(), this);
 		}
 	}
 
 	private void onMemberMessageSelected(Member member) {
-		if (TextUtils.isEmpty(member.getPhone())) {
+		if (TextUtils.isEmpty(member.phone())) {
 			Toast toast = Toast.makeText(getActivity(), R.string.member_no_phone, Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
-			MemberActions.sendSmsTo(member.getPhone(), this);
+			MemberActions.sendSmsTo(member.phone(), this);
 		}
 	}
 

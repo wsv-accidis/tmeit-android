@@ -70,7 +70,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		Member member = mFilteredList.get(position);
 
 		ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
-		List<String> faces = member.getFaces();
+		List<String> faces = member.faces();
 		if (!faces.isEmpty()) {
 			mFaceHelper.picasso(faces)
 				.resizeDimen(R.dimen.tmeit_members_list_face_size, R.dimen.tmeit_members_list_face_size)
@@ -82,22 +82,22 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 		}
 
 		TextView nameView = (TextView) view.findViewById(R.id.member_real_name);
-		nameView.setText(member.getRealName());
+		nameView.setText(member.realName());
 
 		TextView titleTextView = (TextView) view.findViewById(R.id.member_title);
-		titleTextView.setText(member.getTitleText(mContext, mMembers));
+		titleTextView.setText(member.titleText(mContext, mMembers));
 
 		TextView teamTextView = (TextView) view.findViewById(R.id.member_team);
-		teamTextView.setText(member.getTeamText(mContext, mMembers));
+		teamTextView.setText(member.teamText(mContext, mMembers));
 
 		TextView phoneTextView = (TextView) view.findViewById(R.id.member_phone);
 		if (null != phoneTextView) {
-			phoneTextView.setText(member.getPhone());
+			phoneTextView.setText(member.phone());
 		}
 
 		TextView emailTextView = (TextView) view.findViewById(R.id.member_email);
 		if (null != emailTextView) {
-			emailTextView.setText(member.getEmail());
+			emailTextView.setText(member.email());
 		}
 
 		return view;
@@ -133,7 +133,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 			} else {
 				filteredList = new ArrayList<>();
 				for (Member member : mMembers.getMembers()) {
-					if (member.matches(constraint) && isIncludedGroup(member.getGroupId()) && isIncludedTeam(member.getTeamId())) {
+					if (member.matches(constraint) && isIncludedGroup(member.groupId()) && isIncludedTeam(member.teamId())) {
 						filteredList.add(member);
 					}
 				}

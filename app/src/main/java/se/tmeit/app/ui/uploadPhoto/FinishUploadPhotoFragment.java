@@ -109,7 +109,7 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 		@Override
 		public void onMemberSelected(Member member) {
 			mFinishButton.setEnabled(true);
-			mSelectedUser = member.getUsername();
+			mSelectedUser = member.username();
 		}
 	}
 

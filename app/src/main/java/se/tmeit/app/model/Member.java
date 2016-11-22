@@ -2,6 +2,8 @@ package se.tmeit.app.model;
 
 import android.content.Context;
 
+import com.google.auto.value.AutoValue;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,39 +18,31 @@ import se.tmeit.app.R;
 /**
  * Model object for members.
  */
-public final class Member {
-	private String mDateMarskalk;
-	private String mDatePrao;
-	private String mDateVraq;
-	private String mEmail;
-	private List<MemberBadge> mExperienceBadges;
-	private int mExperiencePoints;
-	private List<String> mFaces;
-	private long mFlags;
-	private int mGroupId;
-	private int mId;
-	private String mPhone;
-	private String mRealName;
-	private String mSearchText;
-	private int mTeamId;
-	private int mTitleId;
-	private String mUsername;
+@AutoValue
+public abstract class Member {
+	public static Builder builder() {
+		return new AutoValue_Member.Builder();
+	}
 
 	public static Member fromJson(JSONObject obj) throws JSONException {
-		Member member = new Member();
-		member.setDateMarskalk(obj.optString(Keys.DATE_MARSKALK));
-		member.setDatePrao(obj.optString(Keys.DATE_PRAO));
-		member.setDateVraq(obj.optString(Keys.DATE_VRAQ));
-		member.setEmail(obj.getString(Keys.EMAIL));
-		member.setExperiencePoints(obj.optInt(Keys.EXPERIENCE_POINTS));
-		member.setFlags(obj.optBoolean(Keys.HAS_STAD), obj.optBoolean(Keys.HAS_FEST), obj.optBoolean(Keys.HAS_PERMIT), obj.optBoolean(Keys.HAS_LICENSE));
-		member.setGroupId(obj.optInt(Keys.GROUP_ID));
-		member.setId(obj.getInt(Keys.ID));
-		member.setPhone(obj.getString(Keys.PHONE));
-		member.setRealName(obj.getString(Keys.REAL_NAME));
-		member.setTeamId(obj.optInt(Keys.TEAM_ID));
-		member.setTitleId(obj.optInt(Keys.TITLE_ID));
-		member.setUsername(obj.getString(Keys.USERNAME));
+		Member.Builder builder = builder()
+			.setDateMarskalk(obj.optString(Keys.DATE_MARSKALK, ""))
+			.setDatePrao(obj.optString(Keys.DATE_PRAO, ""))
+			.setDateVraq(obj.optString(Keys.DATE_VRAQ, ""))
+			.setEmail(obj.getString(Keys.EMAIL))
+			.setExperiencePoints(obj.optInt(Keys.EXPERIENCE_POINTS))
+			.setFlags(
+				obj.optBoolean(Keys.HAS_STAD),
+				obj.optBoolean(Keys.HAS_FEST),
+				obj.optBoolean(Keys.HAS_PERMIT),
+				obj.optBoolean(Keys.HAS_LICENSE))
+			.setGroupId(obj.optInt(Keys.GROUP_ID))
+			.setId(obj.getInt(Keys.ID))
+			.setPhone(obj.optString(Keys.PHONE, ""))
+			.setRealName(obj.getString(Keys.REAL_NAME))
+			.setTeamId(obj.optInt(Keys.TEAM_ID))
+			.setTitleId(obj.optInt(Keys.TITLE_ID))
+			.setUsername(obj.getString(Keys.USERNAME));
 
 		ArrayList<String> faces = new ArrayList<>();
 		JSONArray jsonFaces = obj.optJSONArray(Keys.FACES);
@@ -57,7 +51,7 @@ public final class Member {
 				faces.add(jsonFaces.getString(i));
 			}
 		}
-		member.setFaces(faces);
+		builder.setFaces(faces);
 
 		ArrayList<MemberBadge> badges = new ArrayList<>();
 		JSONArray jsonBadges = obj.optJSONArray(Keys.EXPERIENCE_BADGES);
@@ -66,183 +60,143 @@ public final class Member {
 				badges.add(MemberBadge.fromJson(jsonBadges.getJSONObject(i)));
 			}
 		}
-		member.setExperienceBadges(badges);
+		builder.setExperienceBadges(badges);
 
-		member.initSearchText();
-		return member;
+		return builder.build();
 	}
 
-	public String getDateMarskalk() {
-		return mDateMarskalk;
-	}
+	public abstract String dateMarskalk();
 
-	private void setDateMarskalk(String date) {
-		mDateMarskalk = date;
-	}
+	public abstract String datePrao();
 
-	public String getDatePrao() {
-		return mDatePrao;
-	}
+	public abstract String dateVraq();
 
-	private void setDatePrao(String date) {
-		mDatePrao = date;
-	}
+	public abstract String email();
 
-	public String getDateVraq() {
-		return mDateVraq;
-	}
+	public abstract List<MemberBadge> experienceBadges();
 
-	private void setDateVraq(String date) {
-		mDateVraq = date;
-	}
+	public abstract int experiencePoints();
 
-	public String getEmail() {
-		return mEmail;
-	}
+	public abstract List<String> faces();
 
-	private void setEmail(String email) {
-		mEmail = email;
-	}
+	public abstract long flags();
 
-	public List<MemberBadge> getExperienceBadges() {
-		return mExperienceBadges;
-	}
+	public abstract int groupId();
 
-	private void setExperienceBadges(List<MemberBadge> badges) {
-		mExperienceBadges = badges;
-	}
+	public abstract int id();
 
-	public int getExperiencePoints() {
-		return mExperiencePoints;
-	}
+	public abstract String phone();
 
-	private void setExperiencePoints(int value) {
-		mExperiencePoints = value;
-	}
+	public abstract String realName();
 
-	public List<String> getFaces() {
-		return mFaces;
-	}
+	abstract String searchText();
 
-	private void setFaces(List<String> faces) {
-		mFaces = faces;
-	}
+	public abstract int teamId();
 
-	public long getFlags() {
-		return mFlags;
-	}
-
-	public int getGroupId() {
-		return mGroupId;
-	}
-
-	private void setGroupId(int groupId) {
-		mGroupId = groupId;
-	}
-
-	public int getId() {
-		return mId;
-	}
-
-	private void setId(int id) {
-		mId = id;
-	}
-
-	public String getPhone() {
-		return mPhone;
-	}
-
-	private void setPhone(String phone) {
-		mPhone = phone;
-	}
-
-	public String getRealName() {
-		return mRealName;
-	}
-
-	private void setRealName(String realName) {
-		mRealName = realName;
-	}
-
-	public int getTeamId() {
-		return mTeamId;
-	}
-
-	private void setTeamId(int teamId) {
-		mTeamId = teamId;
-	}
-
-	public String getTeamText(Context context, RepositoryData repositoryData) {
-		if (getTeamId() > 0) {
-			return repositoryData.getTeams().get(getTeamId());
+	public String teamText(Context context, RepositoryData repositoryData) {
+		if (teamId() > 0) {
+			return repositoryData.getTeams().get(teamId());
 		} else {
 			return context.getString(R.string.members_no_team_placeholder);
 		}
 	}
 
-	private int getTitleId() {
-		return mTitleId;
-	}
+	public abstract int titleId();
 
-	private void setTitleId(int titleId) {
-		mTitleId = titleId;
-	}
-
-	public String getTitleText(Context context, RepositoryData repositoryData) {
-		if (getTitleId() > 0) {
-			return repositoryData.getTitles().get(getTitleId());
-		} else if (getGroupId() > 0) {
-			return repositoryData.getGroups().get(getGroupId());
+	public String titleText(Context context, RepositoryData repositoryData) {
+		if (titleId() > 0) {
+			return repositoryData.getTitles().get(titleId());
+		} else if (groupId() > 0) {
+			return repositoryData.getGroups().get(groupId());
 		} else {
 			return context.getString(R.string.members_no_title_placeholder);
 		}
 	}
 
-	public String getUsername() {
-		return mUsername;
-	}
-
-	private void setUsername(String username) {
-		mUsername = username;
-	}
+	public abstract String username();
 
 	public boolean hasFlag(Flags flag) {
-		return (0 != (mFlags & flag.getValue()));
+		return (0 != (flags() & flag.getValue()));
 	}
 
 	public boolean matches(CharSequence search) {
-		return (null == search || mSearchText.contains(search));
+		return (null == search || searchText().contains(search));
 	}
 
-	@Override
-	public String toString() {
-		return getRealName();
-	}
+	@AutoValue.Builder
+	abstract static class Builder {
+		abstract Member autoBuild();
 
-	private void initSearchText() {
-		mSearchText = mRealName.toLowerCase() + ' ' + mUsername.toLowerCase() + ' ' + stripPhoneNumberChars(mPhone) + ' ' + mEmail.toLowerCase();
-	}
-
-	private void setFlags(boolean hasStad, boolean hasFest, boolean onPermit, boolean driversLicense) {
-		long flags = 0;
-		if (hasStad) {
-			flags |= Flags.HAS_STAD.getValue();
-		}
-		if (hasFest) {
-			flags |= Flags.HAS_FEST.getValue();
-		}
-		if (onPermit) {
-			flags |= Flags.ON_PERMIT.getValue();
-		}
-		if (driversLicense) {
-			flags |= Flags.DRIVERS_LICENSE.getValue();
+		private Member build() {
+			setSearchText(createSearchText());
+			return autoBuild();
 		}
 
-		mFlags = flags;
-	}
+		abstract String email();
 
-	private static CharSequence stripPhoneNumberChars(String phoneNo) {
-		return phoneNo.replace("-", "").replace(" ", "");
+		abstract String phone();
+
+		abstract String realName();
+
+		abstract Builder setDateMarskalk(String value);
+
+		abstract Builder setDatePrao(String value);
+
+		abstract Builder setDateVraq(String value);
+
+		abstract Builder setEmail(String value);
+
+		abstract Builder setExperienceBadges(List<MemberBadge> value);
+
+		abstract Builder setExperiencePoints(int value);
+
+		abstract Builder setFaces(List<String> value);
+
+		private Builder setFlags(boolean hasStad, boolean hasFest, boolean onPermit, boolean driversLicense) {
+			long flags = 0;
+			if (hasStad) {
+				flags |= Flags.HAS_STAD.getValue();
+			}
+			if (hasFest) {
+				flags |= Flags.HAS_FEST.getValue();
+			}
+			if (onPermit) {
+				flags |= Flags.ON_PERMIT.getValue();
+			}
+			if (driversLicense) {
+				flags |= Flags.DRIVERS_LICENSE.getValue();
+			}
+
+			return setFlags(flags);
+		}
+
+		abstract Builder setFlags(long value);
+
+		abstract Builder setGroupId(int value);
+
+		abstract Builder setId(int value);
+
+		abstract Builder setPhone(String value);
+
+		abstract Builder setRealName(String value);
+
+		abstract Builder setSearchText(String value);
+
+		abstract Builder setTeamId(int value);
+
+		abstract Builder setTitleId(int value);
+
+		abstract Builder setUsername(String value);
+
+		abstract String username();
+
+		private String createSearchText() {
+			return realName().toLowerCase() + ' ' + username().toLowerCase() + ' ' + stripPhoneNumberChars(phone()) + ' ' + email().toLowerCase();
+		}
+
+		private static CharSequence stripPhoneNumberChars(String phoneNo) {
+			return phoneNo.replace("-", "").replace(" ", "");
+		}
 	}
 
 	public enum Flags {
