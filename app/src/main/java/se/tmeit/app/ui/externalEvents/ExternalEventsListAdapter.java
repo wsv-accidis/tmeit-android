@@ -56,11 +56,11 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
 		ExternalEvent event = mExternalEvents.get(position);
 
 		TextView dateView = (TextView) view.findViewById(R.id.event_date);
-		dateView.setText(event.getStartDate());
+		dateView.setText(event.startDate());
 
 		TextView titleView = (TextView) view.findViewById(R.id.event_title);
 		titleView.setTextColor(ContextCompat.getColor(mContext, event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
-		titleView.setText(event.getTitle());
+		titleView.setText(event.title());
 		titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventAttendingIcon(event), 0);
 
 		TextView descriptionView = (TextView) view.findViewById(R.id.event_description);
@@ -82,12 +82,12 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
 		} else {
 			builder.append(mContext.getString(R.string.event_last_signup_date))
 				.append(FORMAT_SPACE)
-				.append(event.getLastSignupDate());
+				.append(event.lastSignupDate());
 		}
 
-		builder.append(FORMAT_SEPARATOR).append(event.getNumberOfAttendees()).append(FORMAT_SPACE);
+		builder.append(FORMAT_SEPARATOR).append(event.numberOfAttendees()).append(FORMAT_SPACE);
 
-		if (1 == event.getNumberOfAttendees()) {
+		if (1 == event.numberOfAttendees()) {
 			builder.append(mContext.getString(R.string.event_attendee));
 		} else {
 			builder.append(mContext.getString(R.string.event_attendees));

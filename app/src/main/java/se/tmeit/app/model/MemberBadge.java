@@ -17,9 +17,7 @@ public abstract class MemberBadge implements Parcelable {
 	}
 
 	public static MemberBadge fromJson(JSONObject obj) throws JSONException {
-		final String title = obj.getString(Keys.TITLE);
-		final String src = obj.getString(Keys.SRC);
-		return create(title, src);
+		return create(obj.getString(Keys.TITLE), obj.getString(Keys.SRC));
 	}
 
 	public abstract String title();

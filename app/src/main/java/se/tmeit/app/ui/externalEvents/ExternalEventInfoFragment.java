@@ -39,16 +39,17 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 	private ExternalEventAttendee mCurrentAttendee;
 	private View mDetailsLayout;
 	private ExternalEvent mEvent;
+	private boolean mIsAttending;
 	private Preferences mPrefs;
 	private ProgressBar mProgressBar;
 	private Repository mRepository;
 
 	public static ExternalEventInfoFragment createInstance(ExternalEvent event) {
 		Bundle bundle = new Bundle();
-		bundle.putInt(ExternalEvent.Keys.ID, event.getId());
-		bundle.putString(ExternalEvent.Keys.TITLE, event.getTitle());
-		bundle.putString(ExternalEvent.Keys.START_DATE, event.getStartDate());
-		bundle.putString(ExternalEvent.Keys.LAST_SIGNUP, event.getLastSignupDate());
+		bundle.putInt(ExternalEvent.Keys.ID, event.id());
+		bundle.putString(ExternalEvent.Keys.TITLE, event.title());
+		bundle.putString(ExternalEvent.Keys.START_DATE, event.startDate());
+		bundle.putString(ExternalEvent.Keys.LAST_SIGNUP, event.lastSignupDate());
 
 		ExternalEventInfoFragment instance = new ExternalEventInfoFragment();
 		instance.setArguments(bundle);
@@ -113,14 +114,14 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
 		mEvent = repositoryData.getEvent();
 		mCurrentAttendee = repositoryData.getCurrentAttendee();
-		mEvent.setIsAttending(repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId()));
+		mIsAttending = repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId());
 
 		TextView bodyText = (TextView) view.findViewById(R.id.event_body);
-		bodyText.setText(mEvent.getBody());
+		bodyText.setText(mEvent.body());
 
 		TextView externalUrlText = (TextView) view.findViewById(R.id.event_external_url);
-		if (!TextUtils.isEmpty(mEvent.getExternalUrl())) {
-			externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + mEvent.getExternalUrl());
+		if (!TextUtils.isEmpty(mEvent.externalUrl())) {
+			externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + mEvent.externalUrl());
 			externalUrlText.setVisibility(View.VISIBLE);
 		} else {
 			externalUrlText.setVisibility(View.GONE);
@@ -138,7 +139,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		}
 
 		mAttendingButton.setOnClickListener(mAttendingClickedListener);
-		mAttendingButton.setText(mEvent.isAttending() ? R.string.event_attending : R.string.event_not_attending);
+		mAttendingButton.setText(mIsAttending ? R.string.event_attending : R.string.event_not_attending);
 		mAttendingButton.setEnabled(!mEvent.isPastSignup());
 		mAttendingButton.setVisibility(View.VISIBLE);
 
@@ -191,7 +192,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		@Override
 		public void onClick(View v) {
 			Bundle args = new Bundle();
-			args.putBoolean(ExternalEvent.Keys.IS_ATTENDING, mEvent.isAttending());
+			args.putBoolean(ExternalEvent.Keys.IS_ATTENDING, mIsAttending);
 			args.putString(ExternalEventAttendee.Keys.NAME, mCurrentAttendee.getName());
 			args.putString(ExternalEventAttendee.Keys.DOB, mCurrentAttendee.getDateOfBirth());
 			args.putString(ExternalEventAttendee.Keys.DRINK_PREFS, mCurrentAttendee.getDrinkPreferences());
@@ -209,14 +210,14 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		@Override
 		public void deleteClicked() {
 			setProgressBarVisible(true);
-			mRepository.attendExternalEvent(mEvent.getId(), null, mAttendingResultHandler);
+			mRepository.attendExternalEvent(mEvent.id(), null, mAttendingResultHandler);
 			mPrefs.setShouldRefreshExternalEvents(true);
 		}
 
 		@Override
 		public void saveClicked(ExternalEventAttendee attendee) {
 			setProgressBarVisible(true);
-			mRepository.attendExternalEvent(mEvent.getId(), attendee, mAttendingResultHandler);
+			mRepository.attendExternalEvent(mEvent.id(), attendee, mAttendingResultHandler);
 			mPrefs.setShouldRefreshExternalEvents(true);
 		}
 	}

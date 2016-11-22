@@ -52,13 +52,13 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
 	public static InternalEventInfoFragment createInstance(InternalEvent event) {
 		Bundle bundle = new Bundle();
-		bundle.putInt(InternalEvent.Keys.ID, event.getId());
-		bundle.putString(InternalEvent.Keys.TITLE, event.getTitle());
-		bundle.putString(InternalEvent.Keys.START_DATE, event.getStartDate());
-		bundle.putString(InternalEvent.Keys.START_TIME, event.getStartTime());
-		bundle.putString(InternalEvent.Keys.TEAM_TITLE, event.getTeamTitle());
-		bundle.putInt(InternalEvent.Keys.WORKERS_COUNT, event.getWorkersCount());
-		bundle.putInt(InternalEvent.Keys.WORKERS_MAX, event.getWorkersMax());
+		bundle.putInt(InternalEvent.Keys.ID, event.id());
+		bundle.putString(InternalEvent.Keys.TITLE, event.title());
+		bundle.putString(InternalEvent.Keys.START_DATE, event.startDate());
+		bundle.putString(InternalEvent.Keys.START_TIME, event.startTime());
+		bundle.putString(InternalEvent.Keys.TEAM_TITLE, event.teamTitle());
+		bundle.putInt(InternalEvent.Keys.WORKERS_COUNT, event.workersCount());
+		bundle.putInt(InternalEvent.Keys.WORKERS_MAX, event.workersMax());
 
 		InternalEventInfoFragment instance = new InternalEventInfoFragment();
 		instance.setArguments(bundle);
@@ -146,7 +146,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
 		mEvent = repositoryData.getEvent();
 		mCurrentWorker = getCurrentWorker(repositoryData.getWorkers());
-		setNumberOfWorkersText(yesWorkers.size(), mEvent.getWorkersMax());
+		setNumberOfWorkersText(yesWorkers.size(), mEvent.workersMax());
 
 		mWorkButton.setOnClickListener(mWorkClickedListener);
 		mWorkButton.setEnabled(!repositoryData.getEvent().isPast());
@@ -296,7 +296,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 		@Override
 		public void saveClicked(InternalEventWorker worker) {
 			setProgressBarVisible(true);
-			mRepository.workInternalEvent(mEvent.getId(), worker, mWorkingResultHandler);
+			mRepository.workInternalEvent(mEvent.id(), worker, mWorkingResultHandler);
 			mPrefs.setShouldRefreshInternalEvents(true);
 		}
 	}

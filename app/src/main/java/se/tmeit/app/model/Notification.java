@@ -1,5 +1,7 @@
 package se.tmeit.app.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.json.JSONException;
@@ -19,11 +21,11 @@ public abstract class Notification {
 		return new AutoValue_Notification(id, body, url, created);
 	}
 
-	public static Notification fromJson(JSONObject obj) {
+	public static Notification fromJson(JSONObject obj) throws JSONException {
 		return create(
-			obj.optInt(Keys.ID),
-			obj.optString(Keys.BODY),
-			obj.optString(Keys.URL),
+			obj.getInt(Keys.ID),
+			obj.getString(Keys.BODY),
+			obj.optString(Keys.URL, ""),
 			DateTimeUtils.parseIso8601(obj.optString(Keys.CREATED)));
 	}
 
@@ -33,6 +35,7 @@ public abstract class Notification {
 
 	public abstract String url();
 
+	@Nullable
 	public abstract Calendar created();
 
 	public JSONObject toJson() throws JSONException {

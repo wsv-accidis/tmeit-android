@@ -1,5 +1,7 @@
 package se.tmeit.app.model;
 
+import com.google.auto.value.AutoValue;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,155 +10,104 @@ import java.util.List;
 /**
  * Model object for internal events.
  */
-public final class InternalEvent {
-    private int mId;
-    private boolean mIsPast;
-    private boolean mIsReported;
-    private String mLocation;
-    private String mStartDate;
-    private String mStartTime;
-    private int mTeamId;
-    private String mTeamTitle;
-    private String mTitle;
-    private int mWorkersCount;
-    private int mWorkersMax;
+@AutoValue
+public abstract class InternalEvent {
+	private static InternalEvent create(
+		int id,
+		String location,
+		String startDate,
+		String startTime,
+		int teamId,
+		String teamTitle,
+		String title,
+		int workersCount,
+		int workersMax,
+		boolean isPast,
+		boolean isReported
+	) {
+		return new AutoValue_InternalEvent(
+			id,
+			location,
+			startDate,
+			startTime,
+			teamId,
+			teamTitle,
+			title,
+			workersCount,
+			workersMax,
+			isPast,
+			isReported);
+	}
 
-    public static InternalEvent fromJson(JSONObject obj) throws JSONException {
-        InternalEvent event = new InternalEvent();
-        event.setId(obj.getInt(Keys.ID));
-        event.setLocation(obj.getString(Keys.LOCATION));
-        event.setPast(obj.getBoolean(Keys.IS_PAST));
-        event.setReported(obj.optBoolean(Keys.IS_REPORTED));
-        event.setStartDate(obj.optString(Keys.START_DATE));
-        event.setStartTime(obj.optString(Keys.START_TIME));
-        event.setTeamId(obj.getInt(Keys.TEAM_ID));
-        event.setTeamTitle(obj.optString(Keys.TEAM_TITLE));
-        event.setTitle(obj.getString(Keys.TITLE));
-        event.setWorkersCount(obj.optInt(Keys.WORKERS_COUNT));
-        event.setWorkersMax(obj.optInt(Keys.WORKERS_MAX));
-        return event;
-    }
+	public static InternalEvent fromJson(JSONObject obj) throws JSONException {
+		return create(
+			obj.getInt(Keys.ID),
+			obj.getString(Keys.LOCATION),
+			obj.optString(Keys.START_DATE, ""),
+			obj.optString(Keys.START_TIME, ""),
+			obj.getInt(Keys.TEAM_ID),
+			obj.optString(Keys.TEAM_TITLE, ""),
+			obj.getString(Keys.TITLE),
+			obj.optInt(Keys.WORKERS_COUNT),
+			obj.optInt(Keys.WORKERS_MAX),
+			obj.getBoolean(Keys.IS_PAST),
+			obj.optBoolean(Keys.IS_REPORTED));
+	}
 
-    public int getId() {
-        return mId;
-    }
+	public abstract int id();
 
-    private void setId(int id) {
-        mId = id;
-    }
+	public abstract String location();
 
-    public String getLocation() {
-        return mLocation;
-    }
+	public abstract String startDate();
 
-    private void setLocation(String value) {
-        mLocation = value;
-    }
+	public abstract String startTime();
 
-    public String getStartDate() {
-        return mStartDate;
-    }
+	public abstract int teamId();
 
-    private void setStartDate(String date) {
-        mStartDate = date;
-    }
+	public abstract String teamTitle();
 
-    public String getStartTime() {
-        return mStartTime;
-    }
+	public abstract String title();
 
-    private void setStartTime(String time) {
-        mStartTime = time;
-    }
+	public abstract int workersCount();
 
-    public int getTeamId() {
-        return mTeamId;
-    }
+	public abstract int workersMax();
 
-    private void setTeamId(int value) {
-        mTeamId = value;
-    }
+	public abstract boolean isPast();
 
-    public String getTeamTitle() {
-        return mTeamTitle;
-    }
+	public abstract boolean isReported();
 
-    private void setTeamTitle(String value) {
-        mTeamTitle = value;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    private void setTitle(String value) {
-        mTitle = value;
-    }
-
-    public int getWorkersCount() {
-        return mWorkersCount;
-    }
-
-	private void setWorkersCount(int value) {
-        mWorkersCount = value;
-    }
-
-    public int getWorkersMax() {
-        return mWorkersMax;
-    }
-
-	private void setWorkersMax(int value) {
-        mWorkersMax = value;
-    }
-
-    public boolean isPast() {
-        return mIsPast;
-    }
-
-    private void setPast(boolean value) {
-        mIsPast = value;
-    }
-
-    public boolean isReported() {
-        return mIsReported;
-    }
-
-    private void setReported(boolean value) {
-        mIsReported = value;
-    }
-
-    public static class Keys {
-        public static final String ID = "id";
+	public static class Keys {
+		public static final String ID = "id";
 		private static final String IS_PAST = "is_past";
 		private static final String IS_REPORTED = "is_reported";
 		private static final String LOCATION = "location";
-        public static final String START_DATE = "start_date";
-        public static final String START_TIME = "start_time";
+		public static final String START_DATE = "start_date";
+		public static final String START_TIME = "start_time";
 		private static final String TEAM_ID = "team_id";
-        public static final String TEAM_TITLE = "team_title";
-        public static final String TITLE = "title";
-        public static final String WORKERS_COUNT = "workers_count";
-        public static final String WORKERS_MAX = "workers_max";
+		public static final String TEAM_TITLE = "team_title";
+		public static final String TITLE = "title";
+		public static final String WORKERS_COUNT = "workers_count";
+		public static final String WORKERS_MAX = "workers_max";
 
-        private Keys() {
-        }
-    }
+		private Keys() {
+		}
+	}
 
-    public static class RepositoryData {
-        private final InternalEvent mEvent;
-        private final List<InternalEventWorker> mWorkers;
+	public static class RepositoryData {
+		private final InternalEvent mEvent;
+		private final List<InternalEventWorker> mWorkers;
 
-        public RepositoryData(InternalEvent internalEvent, List<InternalEventWorker> workers) {
-            mEvent = internalEvent;
-            mWorkers = workers;
-        }
+		public RepositoryData(InternalEvent internalEvent, List<InternalEventWorker> workers) {
+			mEvent = internalEvent;
+			mWorkers = workers;
+		}
 
-        public InternalEvent getEvent() {
-            return mEvent;
-        }
+		public InternalEvent getEvent() {
+			return mEvent;
+		}
 
-        public List<InternalEventWorker> getWorkers() {
-            return mWorkers;
-        }
-    }
+		public List<InternalEventWorker> getWorkers() {
+			return mWorkers;
+		}
+	}
 }

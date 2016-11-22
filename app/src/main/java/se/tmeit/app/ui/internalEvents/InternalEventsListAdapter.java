@@ -56,14 +56,14 @@ public class InternalEventsListAdapter extends BaseAdapter {
 		InternalEvent event = mInternalEvents.get(position);
 
 		TextView dateView = (TextView) view.findViewById(R.id.event_date);
-		dateView.setText(event.getStartDate());
+		dateView.setText(event.startDate());
 
 		TextView timeView = (TextView) view.findViewById(R.id.event_time);
-		timeView.setText(event.getStartTime());
+		timeView.setText(event.startTime());
 
 		TextView titleView = (TextView) view.findViewById(R.id.event_title);
 		titleView.setTextColor(ContextCompat.getColor(mContext, event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
-		titleView.setText(event.getTitle());
+		titleView.setText(event.title());
 
 		TextView descriptionView = (TextView) view.findViewById(R.id.event_description);
 		descriptionView.setText(getEventDescription(event));
@@ -72,6 +72,6 @@ public class InternalEventsListAdapter extends BaseAdapter {
 	}
 
 	private String getEventDescription(InternalEvent event) {
-		return String.format(Locale.getDefault(), FORMAT_DESCRIPTION, event.getTeamTitle(), event.getWorkersCount(), event.getWorkersMax(), mContext.getString(R.string.event_workers));
+		return String.format(Locale.getDefault(), FORMAT_DESCRIPTION, event.teamTitle(), event.workersCount(), event.workersMax(), mContext.getString(R.string.event_workers));
 	}
 }
