@@ -1,5 +1,6 @@
 package se.tmeit.app.ui.internalEvents;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -53,6 +54,7 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 		String comment = args.getString(InternalEventWorker.Keys.COMMENT);
 
 		LayoutInflater inflater = getActivity().getLayoutInflater();
+		@SuppressLint("InflateParams")
 		View view = inflater.inflate(R.layout.dialog_internal_event_work, null);
 
 		mComment = (EditText) view.findViewById(R.id.event_work_comment);
@@ -164,17 +166,16 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 				return;
 			}
 
-			InternalEventWorker worker = new InternalEventWorker();
-			worker.setComment(mComment.getText().toString());
-			worker.setWorking(getWorkingFromOptionsIndex(mWorking));
+			InternalEventWorker.Builder builder = InternalEventWorker.builder()
+				.setComment(mComment.getText().toString())
+				.setWorking(getWorkingFromOptionsIndex(mWorking));
 
 			if (mWorkBetweenRadio.isChecked()) {
-				worker.setRange(mRangeStart, mRangeEnd);
-			} else {
-				worker.clearRange();
+				builder.setRangeStart(mRangeStart);
+				builder.setRangeEnd(mRangeEnd);
 			}
 
-			mListener.saveClicked(worker);
+			mListener.saveClicked(builder.build());
 		}
 	}
 }

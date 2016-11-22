@@ -157,7 +157,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 	private InternalEventWorker getCurrentWorker(List<InternalEventWorker> workers) {
 		int userId = mPrefs.getAuthenticatedUserId();
 		for (InternalEventWorker worker : workers) {
-			if (worker.getId() == userId) {
+			if (worker.id() == userId) {
 				return worker;
 			}
 		}
@@ -187,11 +187,11 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 			View view = layoutInflater.inflate(R.layout.list_item_internal_event_worker, null);
 
 			TextView nameText = (TextView) view.findViewById(R.id.event_worker_name);
-			String teamTitle = TextUtils.isEmpty(worker.getTeamTitle()) ? getString(R.string.event_worker_no_team_placeholder) : worker.getTeamTitle();
-			nameText.setText(String.format(WORKER_NAME_FORMAT, worker.getName(), worker.getGroupTitle(), teamTitle));
+			String teamTitle = TextUtils.isEmpty(worker.teamTitle()) ? getString(R.string.event_worker_no_team_placeholder) : worker.teamTitle();
+			nameText.setText(String.format(WORKER_NAME_FORMAT, worker.name(), worker.groupTitle(), teamTitle));
 
 			TextView commentText = (TextView) view.findViewById(R.id.event_worker_comment);
-			commentText.setText(TextUtils.isEmpty(worker.getComment()) ? "-" : worker.getComment());
+			commentText.setText(TextUtils.isEmpty(worker.comment()) ? "-" : worker.comment());
 
 			TextView rangeTextView = (TextView) view.findViewById(R.id.event_worker_range_text);
 			View rangeView = view.findViewById(R.id.event_worker_range);
@@ -200,15 +200,15 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 
 			if (worker.hasRange()) {
 				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
-				params.leftMargin = (int) Math.ceil((worker.getRangeStart() - InternalEventWorker.RANGE_MIN_HOUR) * widthHour);
-				params.width = (int) Math.ceil((worker.getRangeEnd() - worker.getRangeStart()) * widthHour);
+				params.leftMargin = (int) Math.ceil((worker.rangeStart() - InternalEventWorker.RANGE_MIN_HOUR) * widthHour);
+				params.width = (int) Math.ceil((worker.rangeEnd() - worker.rangeStart()) * widthHour);
 				rangeView.setLayoutParams(params);
 
 				rangeView.setVisibility(View.VISIBLE);
 				rangeBgView.setVisibility(View.VISIBLE);
 				rangeEmptyView.setVisibility(View.GONE);
 
-				int rangeStart = worker.getRangeStart() % 24, rangeEnd = worker.getRangeEnd() % 24;
+				int rangeStart = worker.rangeStart() % 24, rangeEnd = worker.rangeEnd() % 24;
 				rangeTextView.setText(String.format("%02d-%02d", rangeStart, rangeEnd));
 			} else {
 				rangeView.setVisibility(View.GONE);
@@ -276,12 +276,12 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 			Bundle args = new Bundle();
 			if (null != mCurrentWorker) {
 				args.putBoolean(InternalEventWorker.Keys.IS_SAVED, true);
-				args.putInt(InternalEventWorker.Keys.WORKING, InternalEventWorker.Working.toInt(mCurrentWorker.getWorking()));
-				args.putString(InternalEventWorker.Keys.COMMENT, mCurrentWorker.getComment());
+				args.putInt(InternalEventWorker.Keys.WORKING, InternalEventWorker.Working.toInt(mCurrentWorker.working()));
+				args.putString(InternalEventWorker.Keys.COMMENT, mCurrentWorker.comment());
 
 				if (mCurrentWorker.hasRange()) {
-					args.putInt(InternalEventWorker.Keys.RANGE_START, mCurrentWorker.getRangeStart());
-					args.putInt(InternalEventWorker.Keys.RANGE_END, mCurrentWorker.getRangeEnd());
+					args.putInt(InternalEventWorker.Keys.RANGE_START, mCurrentWorker.rangeStart());
+					args.putInt(InternalEventWorker.Keys.RANGE_END, mCurrentWorker.rangeEnd());
 				}
 			}
 
