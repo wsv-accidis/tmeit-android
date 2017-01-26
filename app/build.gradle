@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 	compileSdkVersion 25
-	buildToolsVersion '25.0.1'
+	buildToolsVersion '25.0.2'
 
 	defaultConfig {
 		applicationId 'se.tmeit.app'
@@ -21,9 +21,9 @@ android {
 
 dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
-	compile 'com.android.support:appcompat-v7:25.0.1'
-	compile 'com.android.support:design:25.0.1'
-	compile 'com.google.android.gms:play-services-gcm:10.0.0'
+	compile 'com.android.support:appcompat-v7:25.1.0'
+	compile 'com.android.support:design:25.1.0'
+	compile 'com.google.android.gms:play-services-gcm:10.0.1'
 	compile 'com.squareup.okhttp3:okhttp:3.4.2'
 	compile 'com.squareup.picasso:picasso:2.5.2'
 	compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
