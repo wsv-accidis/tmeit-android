@@ -38,6 +38,8 @@
     <string name="event_no_attendees_yet">Nobody is attending.</string>
     <string name="event_not_attending">Not attending</string>
     <string name="event_notes">Notes (only visible to masters)</string>
+	<string name="event_report_event">Report event</string>
+	<string name="event_report_this_event">Report this event</string>
     <string name="event_save">Save</string>
     <string name="event_work_comment">Comments</string>
     <string name="event_work_between">I can work between %1$02d:00 - %2$02d:00</string>

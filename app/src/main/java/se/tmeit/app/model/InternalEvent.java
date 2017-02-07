@@ -15,6 +15,7 @@ public abstract class InternalEvent {
 	private static InternalEvent create(
 		int id,
 		String location,
+		boolean mayEditReport,
 		String startDate,
 		String startTime,
 		int teamId,
@@ -28,6 +29,7 @@ public abstract class InternalEvent {
 		return new AutoValue_InternalEvent(
 			id,
 			location,
+			mayEditReport,
 			startDate,
 			startTime,
 			teamId,
@@ -43,6 +45,7 @@ public abstract class InternalEvent {
 		return create(
 			obj.getInt(Keys.ID),
 			obj.getString(Keys.LOCATION),
+			obj.optBoolean(Keys.MAY_EDIT_REPORT),
 			obj.optString(Keys.START_DATE, ""),
 			obj.optString(Keys.START_TIME, ""),
 			obj.getInt(Keys.TEAM_ID),
@@ -57,6 +60,8 @@ public abstract class InternalEvent {
 	public abstract int id();
 
 	public abstract String location();
+
+	public abstract boolean mayEditReport();
 
 	public abstract String startDate();
 
@@ -81,6 +86,7 @@ public abstract class InternalEvent {
 		private static final String IS_PAST = "is_past";
 		private static final String IS_REPORTED = "is_reported";
 		private static final String LOCATION = "location";
+		private static final String MAY_EDIT_REPORT = "may_edit_report";
 		public static final String START_DATE = "start_date";
 		public static final String START_TIME = "start_time";
 		private static final String TEAM_ID = "team_id";

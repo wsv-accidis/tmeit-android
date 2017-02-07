@@ -35,6 +35,8 @@
 	<string name="event_no_attendees_yet">Ingen är anmäld.</string>
 	<string name="event_not_attending">Inte anmäld</string>
 	<string name="event_notes">Övrigt (bara synligt för mästare)</string>
+	<string name="event_report_event">Avstämning</string>
+	<string name="event_report_this_event">Stäm av event</string>
 	<string name="event_save">Spara</string>
 	<string name="event_work_between">Jag kan jobba mellan %1$02d:00 - %2$02d:00</string>
 	<string name="event_work_comment">Kommentarer</string>

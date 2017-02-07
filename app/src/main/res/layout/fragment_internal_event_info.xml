@@ -15,6 +15,18 @@
         android:paddingRight="@dimen/button_bar_horizontal_margin"
         android:paddingTop="@dimen/button_bar_vertical_margin">
 
+		<Button
+			android:id="@+id/event_button_report"
+			style="?android:buttonBarButtonStyle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="40dp"
+			android:layout_marginRight="40dp"
+			android:layout_weight="1"
+			android:drawableLeft="@drawable/ic_book"
+			android:text="@string/event_report_this_event"
+			android:visibility="gone"/>
+
         <Button
             android:id="@+id/event_button_work"
             style="?android:buttonBarButtonStyle"
