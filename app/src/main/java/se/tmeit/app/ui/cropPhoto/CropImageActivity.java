@@ -240,7 +240,7 @@ public final class CropImageActivity extends MonitoredActivity {
 
 		croppedImage.recycle();
 		return outputImage;
-	}
+}
 
 	private void saveImage(Bitmap croppedImage) {
 		if (croppedImage != null) {

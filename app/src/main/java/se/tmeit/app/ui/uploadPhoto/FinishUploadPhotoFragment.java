@@ -17,6 +17,7 @@ import android.widget.Toast;
 import se.tmeit.app.R;
 import se.tmeit.app.model.Member;
 import se.tmeit.app.ui.MainActivity;
+import se.tmeit.app.ui.members.MembersListFragment;
 import se.tmeit.app.ui.members.MembersSimpleListFragment;
 
 /**
@@ -25,6 +26,7 @@ import se.tmeit.app.ui.members.MembersSimpleListFragment;
 public final class FinishUploadPhotoFragment extends Fragment implements MainActivity.HasTitle, MainActivity.HasNavigationItem {
 	private static final String CAPTURED_PHOTO_URI = "capturedPhotoUri";
 	private static final String SELECTED_USER = "selectedUser";
+	private static final String TAG = FinishUploadPhotoFragment.class.getSimpleName();
 	private final UploadPhotoResultListener mUploadResultListener = new UploadPhotoResultListener();
 	private Uri mCaptureUri;
 	private Button mFinishButton;
@@ -100,7 +102,7 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 			mProgressView.setVisibility(View.VISIBLE);
 			mProgressBar.setIndeterminate(true);
 
-			UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(getContext(), mSelectedUser, mCaptureUri, mUploadResultListener);
+			final UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(getContext(), mSelectedUser, mCaptureUri, mUploadResultListener);
 			uploadPhotoTask.execute();
 		}
 	}
@@ -128,10 +130,14 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 
 		@Override
 		public void onSuccess() {
-			Activity activity = getActivity();
+			final Activity activity = getActivity();
 			if (null != activity && isVisible() && activity instanceof MainActivity) {
-				MainActivity mainActivity = (MainActivity) activity;
-				mainActivity.popFragmentFromBackStack();
+				final Bundle bundle = getArguments();
+				bundle.remove(UploadPhotoFragment.PHOTO);
+
+				final MainActivity mainActivity = (MainActivity) activity;
+				final Fragment membersListFragment = new MembersListFragment();
+				mainActivity.openFragment(membersListFragment, false);
 			}
 
 			Toast toast = Toast.makeText(getContext(), R.string.upload_photo_succeeded, Toast.LENGTH_LONG);
