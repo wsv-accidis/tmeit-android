@@ -22,6 +22,8 @@ import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.ui.cropPhoto.CropImageActivity;
 import se.tmeit.app.utils.ImageUtils;
 
+
+
 /**
  * Fragment which allows the user to take/select a photo and upload it.
  */
@@ -31,6 +33,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 	private static final int ACTIVITY_RESULT_TAKE_PHOTO = 11;
 	private static final int BASE_OUTPUT_HEIGHT = 120;
 	private static final int BASE_OUTPUT_WIDTH = 110;
+	public static final String PHOTO = "photo";
 	private static final String IMAGES_TYPE = "image/*";
 	private static final int OUTPUT_SCALE_FACTOR = 4;
 	private static final String STATE_PENDING_IMAGE_CAPTURE_URI = "uploadPhotoPendingCaptureUri";
@@ -83,6 +86,17 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 			Log.d(TAG, "Pending crop uri = \"" + mPendingCropUri + "\".");
 		}
 
+		Bundle bundle = getArguments();
+		if(bundle != null)
+		{
+			String uri = getArguments().getString(PHOTO);
+			if(bundle != null && uri!= null){
+				Intent intent = new Intent();
+				intent.setData(Uri.parse(uri));
+				handleUploadPhotoActivityResult(ACTIVITY_RESULT_SELECT_EXISTING, intent);
+			}
+		}
+
 		Button takePhotoButton = (Button) view.findViewById(R.id.upload_photo_use_camera);
 		takePhotoButton.setOnClickListener(new TakePhotoClickListener());
 		Button selectExistingButton = (Button) view.findViewById(R.id.upload_photo_select_photo);
@@ -130,7 +144,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 		Activity activity = getActivity();
 		if (activity instanceof MainActivity) {
 			MainActivity mainActivity = (MainActivity) activity;
-			mainActivity.openFragment(finishFragment);
+			mainActivity.openFragment(finishFragment, false);
 		} else {
 			Log.e(TAG, "Activity holding fragment is not MainActivity!");
 		}

@@ -1,10 +1,8 @@
 package se.tmeit.app.ui;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -136,6 +134,31 @@ public final class MainActivity extends AppCompatActivity {
 		} else {
 			openFragment(getFragmentByNavigationItem(R.id.nav_members), false);
 		}
+		Intent intent = getIntent();
+		if(intent != null && intent.getAction().equalsIgnoreCase(Intent.ACTION_SEND))
+		{
+			setupFromIntent();
+		}
+	}
+
+	private void setupFromIntent() {
+		Intent intent = getIntent();
+		if(intent == null) {
+			return;
+		}
+		Bundle extras = intent.getExtras();
+		intent.getData();
+		ClipData data = intent.getClipData();
+		if (data != null)
+		{
+			Uri sourceURI =data.getItemAt(0).getUri();
+			extras.putString(UploadPhotoFragment.PHOTO, sourceURI.toString());
+		}
+
+		UploadPhotoFragment uploadPhotoFragment = new UploadPhotoFragment();
+		uploadPhotoFragment.setArguments(extras);
+		openFragment(uploadPhotoFragment, false);
+
 	}
 
 	@Override
