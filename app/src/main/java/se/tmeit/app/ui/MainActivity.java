@@ -1,7 +1,11 @@
 package se.tmeit.app.ui;
 
 import android.app.AlertDialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ClipData;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -134,29 +138,13 @@ public final class MainActivity extends AppCompatActivity {
 		} else {
 			openFragment(getFragmentByNavigationItem(R.id.nav_members), false);
 		}
+
 		final Intent intent = getIntent();
-		if(intent != null && intent.getAction().equalsIgnoreCase(Intent.ACTION_SEND))
-		{
-			setupFromIntent();
+		if(intent != null && intent.getAction().equalsIgnoreCase(Intent.ACTION_SEND)) {
+			setupFromIntent(intent);
 		}
 	}
 
-	private void setupFromIntent() {
-		final Intent intent = getIntent();
-		final Bundle extras = intent.getExtras();
-		intent.getData();
-		final ClipData data = intent.getClipData();
-		if (data != null)
-		{
-			final Uri sourceURI =data.getItemAt(0).getUri();
-			extras.putString(UploadPhotoFragment.PHOTO, sourceURI.toString());
-		}
-
-		final UploadPhotoFragment uploadPhotoFragment = new UploadPhotoFragment();
-		uploadPhotoFragment.setArguments(extras);
-		openFragment(uploadPhotoFragment, false);
-
-	}
 
 	@Override
 	protected void onPause() {
@@ -233,6 +221,19 @@ public final class MainActivity extends AppCompatActivity {
 			resId = R.string.app_name;
 		}
 		mTitle = getString(resId);
+	}
+
+	private void setupFromIntent(Intent intent) {
+		final Bundle extras = intent.getExtras();
+		final ClipData data = intent.getClipData();
+		if (data != null) {
+			final Uri sourceURI = data.getItemAt(0).getUri();
+			extras.putString(UploadPhotoFragment.EXTRA_PHOTO, sourceURI.toString());
+		}
+
+		final UploadPhotoFragment uploadPhotoFragment = new UploadPhotoFragment();
+		uploadPhotoFragment.setArguments(extras);
+		openFragment(uploadPhotoFragment, false);
 	}
 
 	private void startOnboardingActivity() {

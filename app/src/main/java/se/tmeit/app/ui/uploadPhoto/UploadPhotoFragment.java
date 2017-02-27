@@ -22,8 +22,6 @@ import se.tmeit.app.ui.MainActivity;
 import se.tmeit.app.ui.cropPhoto.CropImageActivity;
 import se.tmeit.app.utils.ImageUtils;
 
-
-
 /**
  * Fragment which allows the user to take/select a photo and upload it.
  */
@@ -33,7 +31,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 	private static final int ACTIVITY_RESULT_TAKE_PHOTO = 11;
 	private static final int BASE_OUTPUT_HEIGHT = 120;
 	private static final int BASE_OUTPUT_WIDTH = 110;
-	public static final String PHOTO = "photo";
+	public static final String EXTRA_PHOTO = "photo";
 	private static final String IMAGES_TYPE = "image/*";
 	private static final int OUTPUT_SCALE_FACTOR = 4;
 	private static final String STATE_PENDING_IMAGE_CAPTURE_URI = "uploadPhotoPendingCaptureUri";
@@ -87,10 +85,9 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 		}
 
 		final Bundle bundle = getArguments();
-		if(bundle != null)
-		{
-			final String uri = getArguments().getString(PHOTO);
-			if(bundle != null && uri!= null){
+		if(bundle != null) {
+			final String uri = bundle.getString(EXTRA_PHOTO);
+			if(uri != null){
 				final Intent intent = new Intent();
 				intent.setData(Uri.parse(uri));
 				handleUploadPhotoActivityResult(ACTIVITY_RESULT_SELECT_EXISTING, intent);

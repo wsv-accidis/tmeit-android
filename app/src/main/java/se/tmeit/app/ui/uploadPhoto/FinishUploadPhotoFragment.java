@@ -133,7 +133,7 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 			final Activity activity = getActivity();
 			if (null != activity && isVisible() && activity instanceof MainActivity) {
 				final Bundle bundle = getArguments();
-				bundle.remove(UploadPhotoFragment.PHOTO);
+				bundle.remove(UploadPhotoFragment.EXTRA_PHOTO);
 
 				final MainActivity mainActivity = (MainActivity) activity;
 				final Fragment membersListFragment = new MembersListFragment();
