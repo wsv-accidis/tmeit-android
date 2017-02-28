@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ClipData;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -136,7 +138,13 @@ public final class MainActivity extends AppCompatActivity {
 		} else {
 			openFragment(getFragmentByNavigationItem(R.id.nav_members), false);
 		}
+
+		final Intent intent = getIntent();
+		if(intent != null && intent.getAction().equalsIgnoreCase(Intent.ACTION_SEND)) {
+			setupFromIntent(intent);
+		}
 	}
+
 
 	@Override
 	protected void onPause() {
@@ -213,6 +221,19 @@ public final class MainActivity extends AppCompatActivity {
 			resId = R.string.app_name;
 		}
 		mTitle = getString(resId);
+	}
+
+	private void setupFromIntent(Intent intent) {
+		final Bundle extras = intent.getExtras();
+		final ClipData data = intent.getClipData();
+		if (data != null) {
+			final Uri sourceURI = data.getItemAt(0).getUri();
+			extras.putString(UploadPhotoFragment.EXTRA_PHOTO, sourceURI.toString());
+		}
+
+		final UploadPhotoFragment uploadPhotoFragment = new UploadPhotoFragment();
+		uploadPhotoFragment.setArguments(extras);
+		openFragment(uploadPhotoFragment, false);
 	}
 
 	private void startOnboardingActivity() {
