@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 	compileSdkVersion 25
-	buildToolsVersion '25.0.2'
+	buildToolsVersion '26.0.0'
 
 	defaultConfig {
 		applicationId 'se.tmeit.app'
@@ -22,15 +22,15 @@ android {
 
 dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
-	compile 'com.android.support:appcompat-v7:25.1.1'
-	compile 'com.android.support:design:25.1.1'
-	compile 'com.google.android.gms:play-services-gcm:10.0.1'
-	compile 'com.squareup.okhttp3:okhttp:3.4.2'
+	compile 'com.android.support:appcompat-v7:25.4.0'
+	compile 'com.android.support:design:25.4.0'
+	compile 'com.google.android.gms:play-services-gcm:11.0.1'
+	compile 'com.squareup.okhttp3:okhttp:3.8.0'
 	compile 'com.squareup.picasso:picasso:2.5.2'
 	compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
 	compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
-	provided 'com.google.auto.value:auto-value:1.2'
-	annotationProcessor 'com.google.auto.value:auto-value:1.2'
+	provided 'com.google.auto.value:auto-value:1.4.1'
+	annotationProcessor 'com.google.auto.value:auto-value:1.4.1'
 	annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.5'
 }
 
