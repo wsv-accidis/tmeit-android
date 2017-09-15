@@ -140,7 +140,7 @@ public final class MainActivity extends AppCompatActivity {
 		}
 
 		final Intent intent = getIntent();
-		if(intent != null && intent.getAction().equalsIgnoreCase(Intent.ACTION_SEND)) {
+		if(intent != null && Intent.ACTION_SEND.equalsIgnoreCase(intent.getAction())) {
 			setupFromIntent(intent);
 		}
 	}
