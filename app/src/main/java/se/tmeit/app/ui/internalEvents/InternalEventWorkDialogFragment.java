@@ -28,6 +28,7 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 	private static final int WORK_OPTION_MAYBE = 1;
 	private static final int WORK_OPTION_NO = 2;
 	private static final int WORK_OPTION_YES = 0;
+	private static final int MAX_COMMENT_LENGTH = 200;
 	private final RangeChangedListener mRangeChangedListener = new RangeChangedListener();
 	private final SaveButtonClickedListener mSaveClickedListener = new SaveButtonClickedListener();
 	private final OptionsSpinnerChangedListener mSpinnerChangedListener = new OptionsSpinnerChangedListener();
@@ -58,7 +59,7 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 		View view = inflater.inflate(R.layout.dialog_internal_event_work, null);
 
 		mComment = (EditText) view.findViewById(R.id.event_work_comment);
-		mComment.setText(comment);
+		mComment.setText(comment.substring(0, MAX_COMMENT_LENGTH));
 
 		mWorkLayout = view.findViewById(R.id.event_work_layout);
 		RadioButton workDontKnowRadio = (RadioButton) view.findViewById(R.id.event_work_dont_know);
