@@ -10,8 +10,7 @@ nämnd i [Sektionen för Informations- och Nanoteknik](http://insektionen.se) f�
 på Kungliga Tekniska Högskolan, KTH._
 
 ## Status
-Version 2.1 has been published to Google Play. This version changed the filters for the members
-list.
+Version 2.3 has been published to Google Play.
 
 ## Development plan
 This app is still under development but several features are functional and the app is intended
@@ -43,7 +42,6 @@ SDKs provided by Google:
 
 * [OkHttp3 HTTP & SPDY client for Android and Java](https://github.com/square/okhttp)
 * [Picasso Image downloading and caching for Android](https://github.com/square/picasso)
-* [OkHttp3 Downloader for Picasso](https://github.com/JakeWharton/picasso2-okhttp3-downloader)
 * [Android Range Seek Bar](https://github.com/anothem/android-range-seek-bar)
 * [Material Design Icons by Google](https://github.com/google/material-design-icons)
 * [AutoValue by Google](https://github.com/google/auto)
