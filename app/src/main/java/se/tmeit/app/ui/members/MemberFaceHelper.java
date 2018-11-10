@@ -3,7 +3,7 @@ package se.tmeit.app.ui.members;
 import android.content.Context;
 import android.net.Uri;
 
-import com.jakewharton.picasso.OkHttp3Downloader;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 

@@ -22,10 +22,6 @@
 			android:icon="@drawable/ic_security"
 			android:title="@string/age_check_nav_title"/>
 		<item
-			android:id="@+id/nav_notifications"
-			android:icon="@drawable/ic_notifications"
-			android:title="@string/notifications_nav_title"/>
-		<item
 			android:id="@+id/nav_about"
 			android:icon="@drawable/ic_info"
 			android:title="@string/about_nav_title"/>

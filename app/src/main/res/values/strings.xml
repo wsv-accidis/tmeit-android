@@ -102,25 +102,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="notifications_error_unspecified_gcm">There was an error registering with Google\'s messaging service. Please ensure you have Internet connectivity, then try again.</string>
-    <string name="notifications_error_unspecified_tmeit">There was an error registering with the notification service. Please ensure you have Internet connectivity, then try again.</string>
-    <string name="notifications_in_the_future">In the future, there will be more options here for what types of notifications you will receive.</string>
-    <string name="notifications_message_has_no_content">This message has no content.</string>
-    <string name="notifications_nav_title">Notifications</string>
-    <string name="notifications_x_notifications_from_tmeit">%d notifications from TMEIT</string>
-    <string name="notifications_go_to_tmeit_se">Go to TMEIT.se to check them out.</string>
-    <string name="notifications_notification_from_tmeit">Notification from TMEIT</string>
-    <string name="notifications_receive_notifications">Receive notifications</string>
-    <string name="notifications_server_is_still_processing">The server is still processing your request, please try again in a moment.</string>
-    <string name="notifications_success">Success!</string>
-    <string name="notifications_your_device_does_not_support">Your device does not support Google Play Services. Notifications are unavailable.</string>
-
-    <string name="onboarding_authenticating_please_wait">Authenticating, please wait.</string>
+	<string name="onboarding_authenticating_please_wait">Authenticating, please wait.</string>
     <string name="onboarding_log_in_using_kth_id">Log in using KTH ID</string>
     <string name="onboarding_log_in_without_kth_id">I don\'t have a KTH ID</string>
     <string name="onboarding_lets_try_that_again">Let\'s try that again</string>
-    <string name="onboarding_scanning_emu_continue">Continue</string>
-    <string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. You will need to log in to an existing account.</string>
+	<string name="onboarding_welcome_this_seems_to_be_the_first_time">Welcome! This seems to be your first time using this app. You will need to log in to an existing account.</string>
 
     <string name="repository_error_unspecified_network">There was an error contacting the server. Please ensure you have Internet connectivity, then try again.</string>
     <string name="repository_error_unspecified_protocol">An unexpected error occurred while downloading. Make sure you have the latest version of this app.</string>

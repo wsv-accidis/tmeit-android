@@ -16,7 +16,6 @@ import java.util.List;
 public abstract class InternalEventWorker {
 	public final static int RANGE_MAX_HOUR = 29;
 	public final static int RANGE_MIN_HOUR = 8;
-	public final static int MAX_COMMENT_LENGTH = 200;
 
 	public static Builder builder() {
 		return new AutoValue_InternalEventWorker.Builder()
@@ -41,7 +40,7 @@ public abstract class InternalEventWorker {
 
 	public static InternalEventWorker fromJson(JSONObject json) throws JSONException {
 		InternalEventWorker.Builder builder = builder()
-			.setComment(json.optString(Keys.COMMENT, "").substring(0, MAX_COMMENT_LENGTH))
+			.setComment(json.optString(Keys.COMMENT, ""))
 			.setGroupTitle(json.optString(Keys.GROUP_TITLE, ""))
 			.setId(json.optInt(Keys.ID))
 			.setName(json.optString(Keys.NAME, ""))

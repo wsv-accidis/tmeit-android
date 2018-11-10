@@ -1,16 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 26
+	compileSdkVersion 28
 
 	defaultConfig {
 		applicationId 'se.tmeit.app'
 		minSdkVersion 16
-		targetSdkVersion 26
+		targetSdkVersion 28
 		versionCode 17
 		versionName '2.3'
 		resConfigs 'en', 'sv'
 	}
+
 	buildTypes {
 		release {
 			minifyEnabled false
@@ -20,17 +21,15 @@ android {
 }
 
 dependencies {
-	implementation fileTree(dir: 'libs', include: ['*.jar'])
-	implementation 'com.android.support:appcompat-v7:26.1.0'
-	implementation 'com.android.support:design:26.1.0'
-	implementation 'com.google.android.gms:play-services-gcm:15.0.1'
-	implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-	implementation 'com.squareup.picasso:picasso:2.5.2'
-	implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+	implementation 'com.android.support:appcompat-v7:28.0.0'
+	implementation 'com.android.support:design:28.0.0'
+	implementation 'com.google.android.gms:play-services-gcm:16.0.0'
+	implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+	implementation 'com.squareup.picasso:picasso:2.71828'
 	implementation 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
-	compileOnly 'com.google.auto.value:auto-value:1.5.2'
-	annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
-	annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.5'
+	compileOnly 'com.google.auto.value:auto-value-annotations:1.6.2'
+	annotationProcessor 'com.google.auto.value:auto-value:1.6.2'
+	annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 }
 
 allprojects {
@@ -40,5 +39,3 @@ allprojects {
 		}
 	}
 }
-
-apply plugin: 'com.google.gms.google-services'

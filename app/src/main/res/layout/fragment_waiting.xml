@@ -6,7 +6,7 @@
              android:background="@drawable/bg_insektionen"
              android:paddingLeft="@dimen/activity_horizontal_margin"
              android:paddingRight="@dimen/activity_horizontal_margin"
-             tools:context=".onboarding.WaitingFragment">
+             tools:context=".ui.onboarding.WaitingFragment">
 
     <LinearLayout
         android:id="@+id/onboarding_waiting_layout"

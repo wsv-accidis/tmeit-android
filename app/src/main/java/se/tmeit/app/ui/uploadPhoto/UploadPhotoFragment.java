@@ -125,7 +125,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 	}
 
 	private Uri createTemporaryImageFile() throws IOException {
-		return ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+		return ImageUtils.createTemporaryImageFile(getContext());
 	}
 
 	private void handleCropPhotoActivityResult() {
@@ -165,7 +165,7 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 
 		try {
 			Log.i(TAG, "Captured/selected photo from uri = \"" + sourceUri + "\".");
-			mPendingCropUri = ImageUtils.createTemporaryImageFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+			mPendingCropUri = ImageUtils.createTemporaryImageFile(getContext());
 			Log.d(TAG, "Created crop uri = \"" + mPendingCropUri + "\".");
 
 			Intent cropIntent = new Intent(getContext(), CropImageActivity.class);

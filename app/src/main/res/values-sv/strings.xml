@@ -93,24 +93,10 @@
 	<string name="navigation_drawer_close">Stäng navigation</string>
 	<string name="navigation_drawer_open">Öppna navigation</string>
 
-	<string name="notifications_error_unspecified_gcm">Det gick inte att ansluta till Googles meddelandetjänst. Kontrollera att du har nätåtkomst och försök sedan igen.</string>
-	<string name="notifications_error_unspecified_tmeit">Det gick inte att ansluta till meddelandetjänsten. Kontrollera att du har nätåtkomst och försök sedan igen.</string>
-	<string name="notifications_go_to_tmeit_se">Läs mer på TMEIT.se.</string>
-	<string name="notifications_in_the_future">I framtiden kommer det att gå att välja vilka meddelanden du vill ta emot.</string>
-	<string name="notifications_message_has_no_content">Detta meddelande saknar innehåll.</string>
-	<string name="notifications_nav_title">Meddelanden</string>
-	<string name="notifications_notification_from_tmeit">Meddelande från TMEIT</string>
-	<string name="notifications_receive_notifications">Ta emot meddelanden</string>
-	<string name="notifications_server_is_still_processing">Servern hanterar fortfarande din begäran, vänligen försök om en stund.</string>
-	<string name="notifications_success">Klart!</string>
-	<string name="notifications_x_notifications_from_tmeit">%d meddelanden från TMEIT</string>
-	<string name="notifications_your_device_does_not_support">Din enhet har inte stöd för Google Play-tjänster. Du kan inte ta emot meddelanden.</string>
-
 	<string name="onboarding_authenticating_please_wait">Loggar in, vänta lite.</string>
 	<string name="onboarding_lets_try_that_again">Prova igen</string>
 	<string name="onboarding_log_in_using_kth_id">Logga in med KTH-ID</string>
 	<string name="onboarding_log_in_without_kth_id">Jag har inte något KTH-ID</string>
-	<string name="onboarding_scanning_emu_continue">Fortsätt</string>
 	<string name="onboarding_welcome_this_seems_to_be_the_first_time">Välkommen! Det verkar som om du använder appen för första gången. Du måste logga in med ditt konto.</string>
 
 	<string name="repository_error_unspecified_network">Det gick inte att kontakta servern. Kontrollera att du har nätåtkomst och försök sedan igen.</string>

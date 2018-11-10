@@ -1,11 +1,9 @@
 package se.tmeit.app.ui;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ClipData;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +12,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -28,14 +25,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import se.tmeit.app.R;
-import se.tmeit.app.notifications.GcmRegistration;
 import se.tmeit.app.services.AuthenticationResultHandler;
 import se.tmeit.app.services.ServiceAuthenticator;
 import se.tmeit.app.storage.Preferences;
 import se.tmeit.app.ui.externalEvents.ExternalEventsListFragment;
 import se.tmeit.app.ui.internalEvents.InternalEventsListFragment;
 import se.tmeit.app.ui.members.MembersListFragment;
-import se.tmeit.app.ui.notifications.NotificationsFragment;
 import se.tmeit.app.ui.onboarding.OnboardingActivity;
 import se.tmeit.app.ui.uploadPhoto.UploadPhotoFragment;
 import se.tmeit.app.utils.AndroidUtils;
@@ -43,7 +38,6 @@ import se.tmeit.app.utils.AndroidUtils;
 public final class MainActivity extends AppCompatActivity {
 	private static final String STATE_LAST_OPENED_FRAGMENT = "openMainActivityFragment";
 	private static final String TAG = MainActivity.class.getSimpleName();
-	private final BroadcastReceiver mGcmRegistrationBroadcastReceiver = new GcmRegistrationBroadcastReceiver();
 	private final Handler mHandler = new Handler();
 	private boolean mHasShownNetworkAlert;
 	private DrawerLayout mNavigationDrawer;
@@ -140,16 +134,9 @@ public final class MainActivity extends AppCompatActivity {
 		}
 
 		final Intent intent = getIntent();
-		if(intent != null && Intent.ACTION_SEND.equalsIgnoreCase(intent.getAction())) {
+		if (intent != null && Intent.ACTION_SEND.equalsIgnoreCase(intent.getAction())) {
 			setupFromIntent(intent);
 		}
-	}
-
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
 	}
 
 	@Override
@@ -167,9 +154,6 @@ public final class MainActivity extends AppCompatActivity {
 			// TODO Perhaps we don't need to call this if we already did a few seconds ago (e.g. screen rotation)
 			validateAndRegisterServicesIfNeeded();
 		}
-
-		LocalBroadcastManager.getInstance(this)
-			.registerReceiver(mGcmRegistrationBroadcastReceiver, new IntentFilter(GcmRegistration.REGISTRATION_COMPLETE_BROADCAST));
 	}
 
 	@Override
@@ -195,8 +179,6 @@ public final class MainActivity extends AppCompatActivity {
 				return new InternalEventsListFragment();
 			case R.id.nav_members:
 				return new MembersListFragment();
-			case R.id.nav_notifications:
-				return new NotificationsFragment();
 			case R.id.nav_upload_photo:
 				return new UploadPhotoFragment();
 		}
@@ -292,17 +274,6 @@ public final class MainActivity extends AppCompatActivity {
 			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
 			if (null != fragment) {
 				updateViewFromFragment(fragment);
-			}
-		}
-	}
-
-	private final class GcmRegistrationBroadcastReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-			if (fragment instanceof NotificationsFragment) {
-				NotificationsFragment notificationsFragment = (NotificationsFragment) fragment;
-				notificationsFragment.refreshNotificationsState();
 			}
 		}
 	}
