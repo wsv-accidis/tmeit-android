@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -94,16 +94,16 @@ public final class UploadPhotoFragment extends Fragment implements MainActivity.
 			}
 		}
 
-		Button takePhotoButton = (Button) view.findViewById(R.id.upload_photo_use_camera);
+		Button takePhotoButton = view.findViewById(R.id.upload_photo_use_camera);
 		takePhotoButton.setOnClickListener(new TakePhotoClickListener());
-		Button selectExistingButton = (Button) view.findViewById(R.id.upload_photo_select_photo);
+		Button selectExistingButton = view.findViewById(R.id.upload_photo_select_photo);
 		selectExistingButton.setOnClickListener(new SelectExistingClickListener());
 
 		return view;
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 		if (null != mPendingCaptureUri) {
 			outState.putString(STATE_PENDING_IMAGE_CAPTURE_URI, mPendingCaptureUri.toString());

@@ -113,19 +113,22 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		View view = inflater.inflate(R.layout.fragment_member_info, container, false);
 
 		Bundle args = getArguments();
-		TextView realNameText = (TextView) view.findViewById(R.id.member_real_name);
+		if (args == null) {
+			return view;
+		}
+		TextView realNameText = view.findViewById(R.id.member_real_name);
 		realNameText.setText(args.getString(Member.Keys.REAL_NAME));
 
-		TextView usernameText = (TextView) view.findViewById(R.id.member_username);
+		TextView usernameText = view.findViewById(R.id.member_username);
 		usernameText.setText(args.getString(Member.Keys.USERNAME));
 
-		TextView titleText = (TextView) view.findViewById(R.id.member_title);
+		TextView titleText = view.findViewById(R.id.member_title);
 		setTextWithPrefix(titleText, R.string.member_title, args.getString(Member.Keys.TITLE_TEXT));
 
-		TextView teamText = (TextView) view.findViewById(R.id.member_team);
+		TextView teamText = view.findViewById(R.id.member_team);
 		setTextWithPrefix(teamText, R.string.member_team, args.getString(Member.Keys.TEAM_TEXT));
 
-		ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
+		ImageView imageView = view.findViewById(R.id.member_face);
 		List<String> faces = args.getStringArrayList(Member.Keys.FACES);
 		if (null != faces && !faces.isEmpty()) {
 			mFaceHelper.picasso(faces)
@@ -138,7 +141,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		}
 
 		final String email = args.getString(Member.Keys.EMAIL);
-		Button emailButton = (Button) view.findViewById(R.id.member_button_email);
+		Button emailButton = view.findViewById(R.id.member_button_email);
 		if (!TextUtils.isEmpty(email)) {
 			emailButton.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -152,8 +155,8 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		}
 
 		final String phoneNo = args.getString(Member.Keys.PHONE);
-		Button smsButton = (Button) view.findViewById(R.id.member_button_message);
-		Button callButton = (Button) view.findViewById(R.id.member_button_call);
+		Button smsButton = view.findViewById(R.id.member_button_message);
+		Button callButton = view.findViewById(R.id.member_button_call);
 
 		if (!TextUtils.isEmpty(phoneNo)) {
 			smsButton.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +185,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		setTextWithPrefixIfNotEmpty(view, R.id.member_vraq, R.string.member_vraq, args.getString(Member.Keys.DATE_VRAQ));
 
 		int experiencePoints = args.getInt(Member.Keys.EXPERIENCE_POINTS);
-		TextView experienceText = (TextView) view.findViewById(R.id.member_experience);
+		TextView experienceText = view.findViewById(R.id.member_experience);
 		if (experiencePoints >= EXPERIENCE_MIN) {
 			setTextWithPrefix(experienceText, R.string.member_exp, String.format(getString(R.string.member_points_format), experiencePoints));
 			experienceText.setVisibility(View.VISIBLE);
@@ -191,7 +194,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		}
 
 		List<MemberBadge> experienceBadges = args.getParcelableArrayList(Member.Keys.EXPERIENCE_BADGES);
-		LinearLayout badgesLayout = (LinearLayout) view.findViewById(R.id.member_badges);
+		LinearLayout badgesLayout = view.findViewById(R.id.member_badges);
 		if (null != experienceBadges && !experienceBadges.isEmpty()) {
 			initializeListOfBadges(badgesLayout, experienceBadges);
 		} else {
@@ -219,7 +222,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 	}
 
 	private void addMemberAsContact() {
-		if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)) {
+		if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_CONTACTS)) {
 			requestPermissions(new String[]{Manifest.permission.WRITE_CONTACTS}, WRITE_CONTACTS_PERMISSION_REQUEST_ID);
 		} else {
 			Bundle args = getArguments();
@@ -238,7 +241,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 	private void initializeListOfBadges(LinearLayout layout, List<MemberBadge> badges) {
 		layout.removeAllViews();
 
-		Picasso picasso = new Picasso.Builder(getContext())
+		Picasso picasso = new Picasso.Builder(requireContext())
 			.downloader(new OkHttp3Downloader(TmeitHttpClient.getInstance()))
 			.build();
 
@@ -246,10 +249,10 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		for (MemberBadge badge : badges) {
 			View view = layoutInflater.inflate(R.layout.list_item_member_badge, layout, false);
 
-			TextView titleText = (TextView) view.findViewById(R.id.badge_title);
+			TextView titleText = view.findViewById(R.id.badge_title);
 			titleText.setText(badge.title());
 
-			ImageView imageView = (ImageView) view.findViewById(R.id.badge_image);
+			ImageView imageView = view.findViewById(R.id.badge_image);
 			picasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(badge.src()).build())
 				.resizeDimen(R.dimen.tmeit_member_badge_size, R.dimen.tmeit_member_badge_size)
 				.centerInside()
@@ -263,13 +266,13 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 		String prefixStr = getString(prefixResId);
 		SpannableString teamStr = new SpannableString(prefixStr + " " + str);
 		teamStr.setSpan(new RelativeSizeSpan(0.8f), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		int foregroundColor = ContextCompat.getColor(getContext(), R.color.insektionen);
+		int foregroundColor = ContextCompat.getColor(requireContext(), R.color.insektionen);
 		teamStr.setSpan(new ForegroundColorSpan(foregroundColor), 0, prefixStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		textView.setText(teamStr);
 	}
 
 	private void setTextWithPrefixIfNotEmpty(View view, int textViewId, int prefixResId, String str) {
-		TextView textView = (TextView) view.findViewById(textViewId);
+		TextView textView = view.findViewById(textViewId);
 
 		if (!TextUtils.isEmpty(str)) {
 			setTextWithPrefix(textView, prefixResId, str);

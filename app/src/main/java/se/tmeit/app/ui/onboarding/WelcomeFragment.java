@@ -19,7 +19,7 @@ public final class WelcomeFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_welcome, container, false);
 
-		Button logInWithKthButton = (Button) view.findViewById(R.id.onboarding_log_in_kth_button);
+		Button logInWithKthButton = view.findViewById(R.id.onboarding_log_in_kth_button);
 		logInWithKthButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -29,7 +29,7 @@ public final class WelcomeFragment extends Fragment {
 			}
 		});
 
-		Button logInWithoutKthButton = (Button) view.findViewById(R.id.onboarding_log_in_without_kth_button);
+		Button logInWithoutKthButton = view.findViewById(R.id.onboarding_log_in_without_kth_button);
 		logInWithoutKthButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -86,13 +86,13 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 		View view = inflater.inflate(R.layout.fragment_internal_event_info, container, false);
 
 		Bundle args = getArguments();
-		TextView titleText = (TextView) view.findViewById(R.id.event_title);
+		TextView titleText = view.findViewById(R.id.event_title);
 		titleText.setText(args.getString(InternalEvent.Keys.TITLE));
 
-		TextView startDateText = (TextView) view.findViewById(R.id.event_start_date);
+		TextView startDateText = view.findViewById(R.id.event_start_date);
 		startDateText.setText(args.getString(InternalEvent.Keys.START_DATE) + ' ' + args.getString(InternalEvent.Keys.START_TIME));
 
-		mNumberOfWorkersText = (TextView) view.findViewById(R.id.event_number_of_workers);
+		mNumberOfWorkersText = view.findViewById(R.id.event_number_of_workers);
 		int workersCount = args.getInt(InternalEvent.Keys.WORKERS_COUNT), workersMax = args.getInt(InternalEvent.Keys.WORKERS_MAX);
 		setNumberOfWorkersText(workersCount, workersMax);
 
@@ -100,15 +100,15 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 		if (TextUtils.isEmpty(teamTitle)) {
 			teamTitle = getString(R.string.members_no_team_placeholder);
 		}
-		TextView teamText = (TextView) view.findViewById(R.id.event_team);
+		TextView teamText = view.findViewById(R.id.event_team);
 		teamText.setText(teamTitle);
 
 		mDivider = view.findViewById(R.id.event_divider);
 		mYesLayout = view.findViewById(R.id.event_workers_yes_layout);
 		mMaybeLayout = view.findViewById(R.id.event_workers_maybe_layout);
 		mNoLayout = view.findViewById(R.id.event_workers_no_layout);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.event_progress_bar);
-		mWorkButton = (Button) view.findViewById(R.id.event_button_work);
+		mProgressBar = view.findViewById(R.id.event_progress_bar);
+		mWorkButton = view.findViewById(R.id.event_button_work);
 
 		beginLoad(false);
 
@@ -132,9 +132,9 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 			return;
 		}
 
-		LinearLayout yesList = (LinearLayout) view.findViewById(R.id.event_workers_yes),
-			maybeList = (LinearLayout) view.findViewById(R.id.event_workers_maybe),
-			noList = (LinearLayout) view.findViewById(R.id.event_workers_no);
+		LinearLayout yesList = view.findViewById(R.id.event_workers_yes),
+			maybeList = view.findViewById(R.id.event_workers_maybe),
+			noList = view.findViewById(R.id.event_workers_no);
 
 		List<InternalEventWorker> yesWorkers = InternalEventWorker.filterByWorking(repositoryData.getWorkers(), InternalEventWorker.Working.YES),
 			maybeWorkers = InternalEventWorker.filterByWorking(repositoryData.getWorkers(), InternalEventWorker.Working.MAYBE),
@@ -186,14 +186,14 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 		for (InternalEventWorker worker : workers) {
 			View view = layoutInflater.inflate(R.layout.list_item_internal_event_worker, null);
 
-			TextView nameText = (TextView) view.findViewById(R.id.event_worker_name);
+			TextView nameText = view.findViewById(R.id.event_worker_name);
 			String teamTitle = TextUtils.isEmpty(worker.teamTitle()) ? getString(R.string.event_worker_no_team_placeholder) : worker.teamTitle();
 			nameText.setText(String.format(WORKER_NAME_FORMAT, worker.name(), worker.groupTitle(), teamTitle));
 
-			TextView commentText = (TextView) view.findViewById(R.id.event_worker_comment);
+			TextView commentText = view.findViewById(R.id.event_worker_comment);
 			commentText.setText(TextUtils.isEmpty(worker.comment()) ? "-" : worker.comment());
 
-			TextView rangeTextView = (TextView) view.findViewById(R.id.event_worker_range_text);
+			TextView rangeTextView = view.findViewById(R.id.event_worker_range_text);
 			View rangeView = view.findViewById(R.id.event_worker_range);
 			View rangeBgView = view.findViewById(R.id.event_worker_range_bg);
 			View rangeEmptyView = view.findViewById(R.id.event_worker_range_empty);

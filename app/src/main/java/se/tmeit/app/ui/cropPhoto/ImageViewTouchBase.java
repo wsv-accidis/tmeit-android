@@ -29,7 +29,7 @@ import android.widget.ImageView;
 /*
  * Modified from original in AOSP.
  */
-public abstract class ImageViewTouchBase extends ImageView {
+public abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatImageView {
 	private static final float SCALE_RATE = 1.25F;
 	protected final RotateBitmap mBitmapDisplayed = new RotateBitmap(null, 0);
 	private final Matrix mDisplayMatrix = new Matrix();

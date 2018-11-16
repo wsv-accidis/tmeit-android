@@ -69,7 +69,7 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 
 		Member member = mFilteredList.get(position);
 
-		ImageView imageView = (ImageView) view.findViewById(R.id.member_face);
+		ImageView imageView = view.findViewById(R.id.member_face);
 		List<String> faces = member.faces();
 		if (!faces.isEmpty()) {
 			mFaceHelper.picasso(faces)
@@ -81,21 +81,21 @@ public final class MembersListAdapter extends BaseAdapter implements Filterable 
 			mFaceHelper.placeholder().into(imageView);
 		}
 
-		TextView nameView = (TextView) view.findViewById(R.id.member_real_name);
+		TextView nameView = view.findViewById(R.id.member_real_name);
 		nameView.setText(member.realName());
 
-		TextView titleTextView = (TextView) view.findViewById(R.id.member_title);
+		TextView titleTextView = view.findViewById(R.id.member_title);
 		titleTextView.setText(member.titleText(mContext, mMembers));
 
-		TextView teamTextView = (TextView) view.findViewById(R.id.member_team);
+		TextView teamTextView = view.findViewById(R.id.member_team);
 		teamTextView.setText(member.teamText(mContext, mMembers));
 
-		TextView phoneTextView = (TextView) view.findViewById(R.id.member_phone);
+		TextView phoneTextView = view.findViewById(R.id.member_phone);
 		if (null != phoneTextView) {
 			phoneTextView.setText(member.phone());
 		}
 
-		TextView emailTextView = (TextView) view.findViewById(R.id.member_email);
+		TextView emailTextView = view.findViewById(R.id.member_email);
 		if (null != emailTextView) {
 			emailTextView.setText(member.email());
 		}

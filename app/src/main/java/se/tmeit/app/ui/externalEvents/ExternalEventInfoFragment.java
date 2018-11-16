@@ -77,17 +77,17 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		View view = inflater.inflate(R.layout.fragment_external_event_info, container, false);
 
 		Bundle args = getArguments();
-		TextView titleText = (TextView) view.findViewById(R.id.event_title);
+		TextView titleText = view.findViewById(R.id.event_title);
 		titleText.setText(args.getString(ExternalEvent.Keys.TITLE));
 
-		TextView startDateText = (TextView) view.findViewById(R.id.event_start_date);
+		TextView startDateText = view.findViewById(R.id.event_start_date);
 		startDateText.setText(args.getString(ExternalEvent.Keys.START_DATE));
 
-		TextView lastSignupText = (TextView) view.findViewById(R.id.event_last_signup);
+		TextView lastSignupText = view.findViewById(R.id.event_last_signup);
 		lastSignupText.setText(getString(R.string.event_last_signup_date) + FORMAT_SPACE + args.getString(ExternalEvent.Keys.LAST_SIGNUP));
 
-		mAttendingButton = (Button) view.findViewById(R.id.event_button_attending);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.event_progress_bar);
+		mAttendingButton = view.findViewById(R.id.event_button_attending);
+		mProgressBar = view.findViewById(R.id.event_progress_bar);
 		mDetailsLayout = view.findViewById(R.id.event_details_layout);
 
 		beginLoad(false);
@@ -116,10 +116,10 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		mCurrentAttendee = repositoryData.getCurrentAttendee();
 		mIsAttending = repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId());
 
-		TextView bodyText = (TextView) view.findViewById(R.id.event_body);
+		TextView bodyText = view.findViewById(R.id.event_body);
 		bodyText.setText(mEvent.body());
 
-		TextView externalUrlText = (TextView) view.findViewById(R.id.event_external_url);
+		TextView externalUrlText = view.findViewById(R.id.event_external_url);
 		if (!TextUtils.isEmpty(mEvent.externalUrl())) {
 			externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + mEvent.externalUrl());
 			externalUrlText.setVisibility(View.VISIBLE);
@@ -128,7 +128,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		}
 
 		List<ExternalEventAttendee> attendees = repositoryData.getAttendees();
-		LinearLayout attendeesLayout = (LinearLayout) view.findViewById(R.id.event_attendees);
+		LinearLayout attendeesLayout = view.findViewById(R.id.event_attendees);
 		View noAttendeesText = view.findViewById(R.id.event_no_attendees);
 		if (null != attendees && !attendees.isEmpty()) {
 			noAttendeesText.setVisibility(View.GONE);

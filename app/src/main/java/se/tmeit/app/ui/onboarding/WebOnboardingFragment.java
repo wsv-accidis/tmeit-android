@@ -39,7 +39,7 @@ public final class WebOnboardingFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_web, container, false);
 
-		WebView webView = (WebView) view.findViewById(R.id.web_view);
+		WebView webView = view.findViewById(R.id.web_view);
 		WebSettings settings = webView.getSettings();
 		settings.setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new CaptureJsInterface(), "CAPTURE");

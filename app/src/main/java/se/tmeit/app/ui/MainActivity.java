@@ -111,16 +111,16 @@ public final class MainActivity extends AppCompatActivity {
 		mPrefs = new Preferences(this);
 		mTitle = getTitle();
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		mNavigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mNavigationDrawer = findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mNavigationDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		mNavigationDrawer.addDrawerListener(toggle);
 		mNavigationDrawer.addDrawerListener(new NavigationDrawerListener());
 		toggle.syncState();
 
-		mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+		mNavigationView = findViewById(R.id.nav_view);
 		mNavigationView.setNavigationItemSelectedListener(new NavigationListener());
 
 		FragmentManager fragmentManager = getSupportFragmentManager();
@@ -208,7 +208,7 @@ public final class MainActivity extends AppCompatActivity {
 	private void setupFromIntent(Intent intent) {
 		final Bundle extras = intent.getExtras();
 		final ClipData data = intent.getClipData();
-		if (data != null) {
+		if (data != null && extras != null) {
 			final Uri sourceURI = data.getItemAt(0).getUri();
 			extras.putString(UploadPhotoFragment.EXTRA_PHOTO, sourceURI.toString());
 		}
@@ -319,16 +319,16 @@ public final class MainActivity extends AppCompatActivity {
 
 	private final class NavigationDrawerListener implements DrawerLayout.DrawerListener {
 		@Override
-		public void onDrawerClosed(View drawerView) {
+		public void onDrawerClosed(@NonNull View drawerView) {
 		}
 
 		@Override
-		public void onDrawerOpened(View drawerView) {
+		public void onDrawerOpened(@NonNull View drawerView) {
 			AndroidUtils.hideSoftKeyboard(MainActivity.this, getCurrentFocus());
 		}
 
 		@Override
-		public void onDrawerSlide(View drawerView, float slideOffset) {
+		public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 		}
 
 		@Override
@@ -346,7 +346,7 @@ public final class MainActivity extends AppCompatActivity {
 				Log.e(TAG, "Trying to navigate to unrecognized fragment.");
 			}
 
-			DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+			DrawerLayout drawer = findViewById(R.id.drawer_layout);
 			drawer.closeDrawer(GravityCompat.START);
 			return true;
 		}

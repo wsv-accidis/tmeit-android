@@ -55,15 +55,15 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
 
 		ExternalEvent event = mExternalEvents.get(position);
 
-		TextView dateView = (TextView) view.findViewById(R.id.event_date);
+		TextView dateView = view.findViewById(R.id.event_date);
 		dateView.setText(event.startDate());
 
-		TextView titleView = (TextView) view.findViewById(R.id.event_title);
+		TextView titleView = view.findViewById(R.id.event_title);
 		titleView.setTextColor(ContextCompat.getColor(mContext, event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
 		titleView.setText(event.title());
 		titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventAttendingIcon(event), 0);
 
-		TextView descriptionView = (TextView) view.findViewById(R.id.event_description);
+		TextView descriptionView = view.findViewById(R.id.event_description);
 		descriptionView.setText(getEventDescription(event));
 		descriptionView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventSignupIcon(event), 0);
 

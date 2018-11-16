@@ -62,7 +62,7 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 		Bundle args = getArguments();
 		if (args.containsKey(CAPTURED_PHOTO_URI)) {
 			mCaptureUri = Uri.parse(args.getString(CAPTURED_PHOTO_URI));
-			ImageView imageView = (ImageView) view.findViewById(R.id.upload_photo_image);
+			ImageView imageView = view.findViewById(R.id.upload_photo_image);
 			imageView.setImageURI(mCaptureUri);
 		}
 
@@ -72,9 +72,9 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 
 		mFinishView = view.findViewById(R.id.upload_photo_finish_layout);
 		mProgressView = view.findViewById(R.id.upload_photo_progress_layout);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.upload_photo_progress_bar);
+		mProgressBar = view.findViewById(R.id.upload_photo_progress_bar);
 
-		mFinishButton = (Button) view.findViewById(R.id.upload_photo_finish_button);
+		mFinishButton = view.findViewById(R.id.upload_photo_finish_button);
 		mFinishButton.setEnabled(!TextUtils.isEmpty(mSelectedUser));
 		mFinishButton.setOnClickListener(new OnFinishClickedListener());
 
@@ -131,9 +131,11 @@ public final class FinishUploadPhotoFragment extends Fragment implements MainAct
 		@Override
 		public void onSuccess() {
 			final Activity activity = getActivity();
-			if (null != activity && isVisible() && activity instanceof MainActivity) {
+			if (isVisible() && activity instanceof MainActivity) {
 				final Bundle bundle = getArguments();
-				bundle.remove(UploadPhotoFragment.EXTRA_PHOTO);
+				if (bundle != null) {
+					bundle.remove(UploadPhotoFragment.EXTRA_PHOTO);
+				}
 
 				final MainActivity mainActivity = (MainActivity) activity;
 				final Fragment membersListFragment = new MembersListFragment();

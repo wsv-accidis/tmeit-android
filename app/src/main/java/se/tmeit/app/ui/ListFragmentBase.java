@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.widget.ListAdapter;
@@ -43,7 +44,7 @@ public abstract class ListFragmentBase extends ListFragment {
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		if (null != getView()) {
 			mListState = getListView().onSaveInstanceState();
 			outState.putParcelable(getStateKey(), mListState);

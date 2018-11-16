@@ -55,17 +55,17 @@ public class InternalEventsListAdapter extends BaseAdapter {
 
 		InternalEvent event = mInternalEvents.get(position);
 
-		TextView dateView = (TextView) view.findViewById(R.id.event_date);
+		TextView dateView = view.findViewById(R.id.event_date);
 		dateView.setText(event.startDate());
 
-		TextView timeView = (TextView) view.findViewById(R.id.event_time);
+		TextView timeView = view.findViewById(R.id.event_time);
 		timeView.setText(event.startTime());
 
-		TextView titleView = (TextView) view.findViewById(R.id.event_title);
+		TextView titleView = view.findViewById(R.id.event_title);
 		titleView.setTextColor(ContextCompat.getColor(mContext, event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
 		titleView.setText(event.title());
 
-		TextView descriptionView = (TextView) view.findViewById(R.id.event_description);
+		TextView descriptionView = view.findViewById(R.id.event_description);
 		descriptionView.setText(getEventDescription(event));
 
 		return view;

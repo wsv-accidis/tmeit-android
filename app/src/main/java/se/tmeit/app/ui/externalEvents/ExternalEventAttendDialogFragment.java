@@ -41,15 +41,15 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 		@SuppressLint("InflateParams")
 		View view = inflater.inflate(R.layout.dialog_external_event_attend, null);
 
-		EditText nameText = (EditText) view.findViewById(R.id.event_attending_name);
+		EditText nameText = view.findViewById(R.id.event_attending_name);
 		nameText.setText(name);
-		mDobText = (EditText) view.findViewById(R.id.event_attending_dob);
+		mDobText = view.findViewById(R.id.event_attending_dob);
 		mDobText.setText(dob);
-		mDrinkPrefsText = (EditText) view.findViewById(R.id.event_attending_drink_prefs);
+		mDrinkPrefsText = view.findViewById(R.id.event_attending_drink_prefs);
 		mDrinkPrefsText.setText(drinkPrefs);
-		mFoodPrefsText = (EditText) view.findViewById(R.id.event_attending_food_prefs);
+		mFoodPrefsText = view.findViewById(R.id.event_attending_food_prefs);
 		mFoodPrefsText.setText(foodPrefs);
-		mNotesText = (EditText) view.findViewById(R.id.event_attending_notes);
+		mNotesText = view.findViewById(R.id.event_attending_notes);
 		mNotesText.setText(notes);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
