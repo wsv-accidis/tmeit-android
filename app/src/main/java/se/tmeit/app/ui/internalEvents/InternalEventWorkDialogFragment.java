@@ -1,6 +1,7 @@
 package se.tmeit.app.ui.internalEvents;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 import se.tmeit.app.R;
+import se.tmeit.app.model.InternalEvent;
 import se.tmeit.app.model.InternalEventWorker;
 
 /**
@@ -46,6 +48,10 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 		mWorkBetweenString = getString(R.string.event_work_between);
 
 		final Bundle args = getArguments();
+		if (args == null) {
+			throw new RuntimeException("InternalEventWorkDialogFragment need arguments for creation!");
+		}
+
 		boolean isSaved = args.getBoolean(InternalEventWorker.Keys.IS_SAVED, false);
 		boolean hasRange = args.containsKey(InternalEventWorker.Keys.RANGE_START) && args.containsKey(InternalEventWorker.Keys.RANGE_END);
 		mRangeStart = hasRange ? args.getInt(InternalEventWorker.Keys.RANGE_START) : (InternalEventWorker.RANGE_MIN_HOUR + 2);
@@ -53,16 +59,21 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 		int working = args.containsKey(InternalEventWorker.Keys.WORKING) ? args.getInt(InternalEventWorker.Keys.WORKING) : WORK_OPTION_YES;
 		String comment = args.getString(InternalEventWorker.Keys.COMMENT);
 
-		LayoutInflater inflater = getActivity().getLayoutInflater();
+		Activity activity = getActivity();
+		if (activity == null) {
+			throw new RuntimeException("InternalEventWorkDialogFragment not connected to activity!");
+		}
+
+		LayoutInflater inflater = activity.getLayoutInflater();
 		@SuppressLint("InflateParams")
 		View view = inflater.inflate(R.layout.dialog_internal_event_work, null);
 
-		mComment = (EditText) view.findViewById(R.id.event_work_comment);
+		mComment = view.findViewById(R.id.event_work_comment);
 		mComment.setText(comment);
 
 		mWorkLayout = view.findViewById(R.id.event_work_layout);
-		RadioButton workDontKnowRadio = (RadioButton) view.findViewById(R.id.event_work_dont_know);
-		mWorkBetweenRadio = (RadioButton) view.findViewById(R.id.event_work_between);
+		RadioButton workDontKnowRadio = view.findViewById(R.id.event_work_dont_know);
+		mWorkBetweenRadio = view.findViewById(R.id.event_work_between);
 		refreshWorkBetweenText();
 
 		if (hasRange || !isSaved) {
@@ -71,15 +82,15 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 			workDontKnowRadio.setChecked(true);
 		}
 
-		@SuppressWarnings("unchecked")
-		RangeSeekBar<Integer> rangeBar = (RangeSeekBar<Integer>) view.findViewById(R.id.event_work_range);
+		RangeSeekBar<Integer> rangeBar = view.findViewById(R.id.event_work_range);
+		rangeBar.setRangeValues(InternalEventWorker.RANGE_MIN_HOUR, InternalEventWorker.RANGE_MAX_HOUR);
 		rangeBar.setSelectedMinValue(mRangeStart);
 		rangeBar.setSelectedMaxValue(mRangeEnd);
 		rangeBar.setNotifyWhileDragging(true);
 		rangeBar.setOnRangeSeekBarChangeListener(mRangeChangedListener);
 
-		Spinner optionsSpinner = (Spinner) view.findViewById(R.id.event_work_options);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.event_work_options, R.layout.spinner_item);
+		Spinner optionsSpinner = view.findViewById(R.id.event_work_options);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.event_work_options, R.layout.spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		optionsSpinner.setAdapter(adapter);
 		optionsSpinner.setOnItemSelectedListener(mSpinnerChangedListener);
