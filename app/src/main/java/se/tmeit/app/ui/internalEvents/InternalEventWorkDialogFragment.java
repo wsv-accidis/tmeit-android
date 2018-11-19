@@ -30,9 +30,11 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 	private static final int WORK_OPTION_MAYBE = 1;
 	private static final int WORK_OPTION_NO = 2;
 	private static final int WORK_OPTION_YES = 0;
+
 	private final RangeChangedListener mRangeChangedListener = new RangeChangedListener();
 	private final SaveButtonClickedListener mSaveClickedListener = new SaveButtonClickedListener();
 	private final OptionsSpinnerChangedListener mSpinnerChangedListener = new OptionsSpinnerChangedListener();
+
 	private EditText mComment;
 	private InternalEventWorkDialogListener mListener;
 	private int mRangeEnd;
@@ -48,31 +50,24 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 		mWorkBetweenString = getString(R.string.event_work_between);
 
 		final Bundle args = getArguments();
-		if (args == null) {
-			throw new RuntimeException("InternalEventWorkDialogFragment need arguments for creation!");
-		}
+		final boolean isSaved = args.getBoolean(InternalEventWorker.Keys.IS_SAVED, false);
+		final boolean hasRange = args.containsKey(InternalEventWorker.Keys.RANGE_START) && args.containsKey(InternalEventWorker.Keys.RANGE_END);
+		final int working = args.containsKey(InternalEventWorker.Keys.WORKING) ? args.getInt(InternalEventWorker.Keys.WORKING) : WORK_OPTION_YES;
+		final String comment = args.getString(InternalEventWorker.Keys.COMMENT);
 
-		boolean isSaved = args.getBoolean(InternalEventWorker.Keys.IS_SAVED, false);
-		boolean hasRange = args.containsKey(InternalEventWorker.Keys.RANGE_START) && args.containsKey(InternalEventWorker.Keys.RANGE_END);
 		mRangeStart = hasRange ? args.getInt(InternalEventWorker.Keys.RANGE_START) : (InternalEventWorker.RANGE_MIN_HOUR + 2);
 		mRangeEnd = hasRange ? args.getInt(InternalEventWorker.Keys.RANGE_END) : (InternalEventWorker.RANGE_MAX_HOUR - 2);
-		int working = args.containsKey(InternalEventWorker.Keys.WORKING) ? args.getInt(InternalEventWorker.Keys.WORKING) : WORK_OPTION_YES;
-		String comment = args.getString(InternalEventWorker.Keys.COMMENT);
 
-		Activity activity = getActivity();
-		if (activity == null) {
-			throw new RuntimeException("InternalEventWorkDialogFragment not connected to activity!");
-		}
-
-		LayoutInflater inflater = activity.getLayoutInflater();
+		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		@SuppressLint("InflateParams")
-		View view = inflater.inflate(R.layout.dialog_internal_event_work, null);
+		final View view = inflater.inflate(R.layout.dialog_internal_event_work, null);
 
 		mComment = view.findViewById(R.id.event_work_comment);
 		mComment.setText(comment);
 
 		mWorkLayout = view.findViewById(R.id.event_work_layout);
-		RadioButton workDontKnowRadio = view.findViewById(R.id.event_work_dont_know);
+
+		final RadioButton workDontKnowRadio = view.findViewById(R.id.event_work_dont_know);
 		mWorkBetweenRadio = view.findViewById(R.id.event_work_between);
 		refreshWorkBetweenText();
 
@@ -82,21 +77,21 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 			workDontKnowRadio.setChecked(true);
 		}
 
-		RangeSeekBar<Integer> rangeBar = view.findViewById(R.id.event_work_range);
+		final RangeSeekBar<Integer> rangeBar = view.findViewById(R.id.event_work_range);
 		rangeBar.setRangeValues(InternalEventWorker.RANGE_MIN_HOUR, InternalEventWorker.RANGE_MAX_HOUR);
 		rangeBar.setSelectedMinValue(mRangeStart);
 		rangeBar.setSelectedMaxValue(mRangeEnd);
 		rangeBar.setNotifyWhileDragging(true);
 		rangeBar.setOnRangeSeekBarChangeListener(mRangeChangedListener);
 
-		Spinner optionsSpinner = view.findViewById(R.id.event_work_options);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.event_work_options, R.layout.spinner_item);
+		final Spinner optionsSpinner = view.findViewById(R.id.event_work_options);
+		final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.event_work_options, R.layout.spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		optionsSpinner.setAdapter(adapter);
 		optionsSpinner.setOnItemSelectedListener(mSpinnerChangedListener);
 		optionsSpinner.setSelection(getOptionsIndexFromWorking(working));
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setView(view)
 			.setPositiveButton(R.string.event_save, mSaveClickedListener)
 			.setNegativeButton(android.R.string.cancel, null);
@@ -168,8 +163,9 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			if (mRangeStart >= mRangeEnd) {
-				Toast toast = Toast.makeText(getContext(), getString(R.string.event_work_zero_hours), Toast.LENGTH_LONG);
+				final Toast toast = Toast.makeText(getContext(), getString(R.string.event_work_zero_hours), Toast.LENGTH_LONG);
 				toast.show();
+
 				return;
 			}
 
@@ -177,7 +173,7 @@ public final class InternalEventWorkDialogFragment extends DialogFragment {
 				return;
 			}
 
-			InternalEventWorker.Builder builder = InternalEventWorker.builder()
+			final InternalEventWorker.Builder builder = InternalEventWorker.builder()
 				.setComment(mComment.getText().toString())
 				.setWorking(getWorkingFromOptionsIndex(mWorking));
 
