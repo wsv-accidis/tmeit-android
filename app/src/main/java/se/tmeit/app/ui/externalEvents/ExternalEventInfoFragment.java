@@ -45,13 +45,13 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 	private Repository mRepository;
 
 	public static ExternalEventInfoFragment createInstance(ExternalEvent event) {
-		Bundle bundle = new Bundle();
+		final Bundle bundle = new Bundle();
 		bundle.putInt(ExternalEvent.Keys.ID, event.id());
 		bundle.putString(ExternalEvent.Keys.TITLE, event.title());
 		bundle.putString(ExternalEvent.Keys.START_DATE, event.startDate());
 		bundle.putString(ExternalEvent.Keys.LAST_SIGNUP, event.lastSignupDate());
 
-		ExternalEventInfoFragment instance = new ExternalEventInfoFragment();
+		final ExternalEventInfoFragment instance = new ExternalEventInfoFragment();
 		instance.setArguments(bundle);
 		return instance;
 	}
@@ -74,16 +74,16 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_external_event_info, container, false);
+		final View view = inflater.inflate(R.layout.fragment_external_event_info, container, false);
 
-		Bundle args = getArguments();
-		TextView titleText = view.findViewById(R.id.event_title);
+		final Bundle args = getArguments();
+		final TextView titleText = view.findViewById(R.id.event_title);
 		titleText.setText(args.getString(ExternalEvent.Keys.TITLE));
 
-		TextView startDateText = view.findViewById(R.id.event_start_date);
+		final TextView startDateText = view.findViewById(R.id.event_start_date);
 		startDateText.setText(args.getString(ExternalEvent.Keys.START_DATE));
 
-		TextView lastSignupText = view.findViewById(R.id.event_last_signup);
+		final TextView lastSignupText = view.findViewById(R.id.event_last_signup);
 		lastSignupText.setText(getString(R.string.event_last_signup_date) + FORMAT_SPACE + args.getString(ExternalEvent.Keys.LAST_SIGNUP));
 
 		mAttendingButton = view.findViewById(R.id.event_button_attending);
@@ -98,16 +98,16 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 	private void beginLoad(boolean noCache) {
 		setProgressBarVisible(true);
 
-		Bundle args = getArguments();
+		final Bundle args = getArguments();
 		int id = args.getInt(ExternalEvent.Keys.ID);
 
-		String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
+		final String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
 		mRepository = new Repository(username, serviceAuth);
 		mRepository.getExternalEventDetails(id, noCache, mRepositoryResultHandler);
 	}
 
 	private void finishLoad(ExternalEvent.RepositoryData repositoryData) {
-		View view = getView();
+		final View view = getView();
 		if (null == view) {
 			return;
 		}
@@ -116,10 +116,10 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 		mCurrentAttendee = repositoryData.getCurrentAttendee();
 		mIsAttending = repositoryData.isUserAttending(mPrefs.getAuthenticatedUserId());
 
-		TextView bodyText = view.findViewById(R.id.event_body);
+		final TextView bodyText = view.findViewById(R.id.event_body);
 		bodyText.setText(mEvent.body());
 
-		TextView externalUrlText = view.findViewById(R.id.event_external_url);
+		final TextView externalUrlText = view.findViewById(R.id.event_external_url);
 		if (!TextUtils.isEmpty(mEvent.externalUrl())) {
 			externalUrlText.setText(getString(R.string.event_more_information_at_url) + ' ' + mEvent.externalUrl());
 			externalUrlText.setVisibility(View.VISIBLE);
@@ -127,9 +127,10 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 			externalUrlText.setVisibility(View.GONE);
 		}
 
-		List<ExternalEventAttendee> attendees = repositoryData.getAttendees();
-		LinearLayout attendeesLayout = view.findViewById(R.id.event_attendees);
-		View noAttendeesText = view.findViewById(R.id.event_no_attendees);
+		final List<ExternalEventAttendee> attendees = repositoryData.getAttendees();
+		final LinearLayout attendeesLayout = view.findViewById(R.id.event_attendees);
+		final View noAttendeesText = view.findViewById(R.id.event_no_attendees);
+
 		if (null != attendees && !attendees.isEmpty()) {
 			noAttendeesText.setVisibility(View.GONE);
 			attendeesLayout.setVisibility(View.VISIBLE);
@@ -150,14 +151,14 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 	private void initializeListOfAttendees(LinearLayout layout, List<ExternalEventAttendee> attendees) {
 		layout.removeAllViews();
 
-		LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+		final LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 		for (ExternalEventAttendee attendee : attendees) {
-			TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, layout, false);
+			final TextView view = (TextView) layoutInflater.inflate(R.layout.list_item_external_event_attendee, layout, false);
+			final StringBuilder builder = new StringBuilder();
 
-			StringBuilder builder = new StringBuilder();
 			builder.append(attendee.name());
 
-			boolean hasDrinkPrefs = !TextUtils.isEmpty(attendee.drinkPreferences()),
+			final boolean hasDrinkPrefs = !TextUtils.isEmpty(attendee.drinkPreferences()),
 				hasFoodPrefs = !TextUtils.isEmpty(attendee.foodPreferences());
 
 			if (hasDrinkPrefs || hasFoodPrefs) {
@@ -192,7 +193,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 	private final class AttendingButtonClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			Bundle args = new Bundle();
+			final Bundle args = new Bundle();
 			args.putBoolean(ExternalEvent.Keys.IS_ATTENDING, mIsAttending);
 			args.putString(ExternalEventAttendee.Keys.NAME, mCurrentAttendee.name());
 			args.putString(ExternalEventAttendee.Keys.DOB, mCurrentAttendee.dateOfBirth());
@@ -200,7 +201,7 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 			args.putString(ExternalEventAttendee.Keys.FOOD_PREFS, mCurrentAttendee.foodPreferences());
 			args.putString(ExternalEventAttendee.Keys.NOTES, mCurrentAttendee.notes());
 
-			ExternalEventAttendDialogFragment dialog = new ExternalEventAttendDialogFragment();
+			final ExternalEventAttendDialogFragment dialog = new ExternalEventAttendDialogFragment();
 			dialog.setArguments(args);
 			dialog.setListener(mAttendingDialogListener);
 			dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());
@@ -229,10 +230,11 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					Activity activity = getActivity();
+					final Activity activity = getActivity();
 					if (null != activity && isVisible()) {
 						setProgressBarVisible(false);
-						Toast toast = Toast.makeText(getActivity(), getString(errorMessage), Toast.LENGTH_LONG);
+
+						final Toast toast = Toast.makeText(getActivity(), getString(errorMessage), Toast.LENGTH_LONG);
 						toast.show();
 					}
 				}
@@ -258,10 +260,11 @@ public final class ExternalEventInfoFragment extends Fragment implements MainAct
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					Activity activity = getActivity();
+					final Activity activity = getActivity();
 					if (null != activity && isVisible()) {
 						setProgressBarVisible(false);
-						Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
+
+						final Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
 						toast.show();
 					}
 				}

@@ -47,7 +47,7 @@ public final class MainActivity extends AppCompatActivity {
 	private CharSequence mTitle;
 
 	public static void showNoNetworkAlert(Context context) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(R.string.network_error_not_available)
 			.setTitle(R.string.network_error_not_available_title)
 			.setPositiveButton(android.R.string.ok, null);
@@ -83,10 +83,10 @@ public final class MainActivity extends AppCompatActivity {
 	}
 
 	public void openFragment(Fragment fragment, boolean addToBackStack) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		Fragment oldFragment = fragmentManager.findFragmentById(R.id.container);
+		final FragmentManager fragmentManager = getSupportFragmentManager();
+		final Fragment oldFragment = fragmentManager.findFragmentById(R.id.container);
 
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		final FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.container, fragment);
 		transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
@@ -99,7 +99,7 @@ public final class MainActivity extends AppCompatActivity {
 	}
 
 	public void popFragmentFromBackStack() {
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		final FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.popBackStack();
 	}
 
@@ -111,11 +111,11 @@ public final class MainActivity extends AppCompatActivity {
 		mPrefs = new Preferences(this);
 		mTitle = getTitle();
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
+		final Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		mNavigationDrawer = findViewById(R.id.drawer_layout);
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mNavigationDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+		final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mNavigationDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 		mNavigationDrawer.addDrawerListener(toggle);
 		mNavigationDrawer.addDrawerListener(new NavigationDrawerListener());
 		toggle.syncState();
@@ -123,11 +123,11 @@ public final class MainActivity extends AppCompatActivity {
 		mNavigationView = findViewById(R.id.nav_view);
 		mNavigationView.setNavigationItemSelectedListener(new NavigationListener());
 
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		final FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.addOnBackStackChangedListener(new BackStackChangedListener());
 
 		if (null != savedInstanceState) {
-			Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
+			final Fragment lastFragment = fragmentManager.getFragment(savedInstanceState, STATE_LAST_OPENED_FRAGMENT);
 			openFragment(lastFragment, false);
 		} else {
 			openFragment(getFragmentByNavigationItem(R.id.nav_members), false);
@@ -160,8 +160,8 @@ public final class MainActivity extends AppCompatActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+		final FragmentManager fragmentManager = getSupportFragmentManager();
+		final Fragment fragment = fragmentManager.findFragmentById(R.id.container);
 		if (null != fragment) {
 			fragmentManager.putFragment(outState, STATE_LAST_OPENED_FRAGMENT, fragment);
 		}
@@ -191,7 +191,7 @@ public final class MainActivity extends AppCompatActivity {
 	}
 
 	private void restoreActionBar() {
-		ActionBar actionBar = getSupportActionBar();
+		final ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayShowTitleEnabled(true);
 			actionBar.setTitle(mTitle);
@@ -219,19 +219,19 @@ public final class MainActivity extends AppCompatActivity {
 	}
 
 	private void startOnboardingActivity() {
-		Intent intent = new Intent(this, OnboardingActivity.class);
+		final Intent intent = new Intent(this, OnboardingActivity.class);
 		startActivity(intent);
 		finish();
 	}
 
 	private void updateViewFromFragment(Fragment fragment) {
 		if (fragment instanceof HasNavigationItem) {
-			HasNavigationItem fragmentWithNavItem = (HasNavigationItem) fragment;
+			final HasNavigationItem fragmentWithNavItem = (HasNavigationItem) fragment;
 			mNavigationView.setCheckedItem(fragmentWithNavItem.getItemId());
 		}
 
 		if (fragment instanceof HasTitle) {
-			HasTitle fragmentWithTitle = (HasTitle) fragment;
+			final HasTitle fragmentWithTitle = (HasTitle) fragment;
 			setMainTitle(fragmentWithTitle.getTitle());
 		} else {
 			setMainTitle(0);
@@ -249,8 +249,8 @@ public final class MainActivity extends AppCompatActivity {
 	}
 
 	private void validateAndRegisterServicesIfNeeded() {
-		String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
-		ServiceAuthenticator authenticator = new ServiceAuthenticator();
+		final String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
+		final ServiceAuthenticator authenticator = new ServiceAuthenticator();
 		authenticator.authenticateFromCredentials(username, serviceAuth, new MainAuthenticationResultHandler());
 	}
 
@@ -271,7 +271,7 @@ public final class MainActivity extends AppCompatActivity {
 	private final class BackStackChangedListener implements FragmentManager.OnBackStackChangedListener {
 		@Override
 		public void onBackStackChanged() {
-			Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+			final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
 			if (null != fragment) {
 				updateViewFromFragment(fragment);
 			}
@@ -339,15 +339,16 @@ public final class MainActivity extends AppCompatActivity {
 	private final class NavigationListener implements NavigationView.OnNavigationItemSelectedListener {
 		@Override
 		public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-			Fragment fragment = getFragmentByNavigationItem(item.getItemId());
+			final Fragment fragment = getFragmentByNavigationItem(item.getItemId());
 			if (null != fragment) {
 				openFragment(fragment);
 			} else {
 				Log.e(TAG, "Trying to navigate to unrecognized fragment.");
 			}
 
-			DrawerLayout drawer = findViewById(R.id.drawer_layout);
+			final DrawerLayout drawer = findViewById(R.id.drawer_layout);
 			drawer.closeDrawer(GravityCompat.START);
+
 			return true;
 		}
 	}

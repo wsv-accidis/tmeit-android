@@ -39,7 +39,7 @@ public abstract class ListFragmentBase extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
+		final String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
 		getDataFromRepository(new Repository(username, serviceAuth));
 	}
 
@@ -86,7 +86,7 @@ public abstract class ListFragmentBase extends ListFragment {
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				Activity activity = getActivity();
+				final Activity activity = getActivity();
 				if (null != activity && isVisible()) {
 					initializeList();
 					Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);

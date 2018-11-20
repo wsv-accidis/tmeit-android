@@ -60,8 +60,9 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 		bundle.putInt(InternalEvent.Keys.WORKERS_COUNT, event.workersCount());
 		bundle.putInt(InternalEvent.Keys.WORKERS_MAX, event.workersMax());
 
-		InternalEventInfoFragment instance = new InternalEventInfoFragment();
+		final InternalEventInfoFragment instance = new InternalEventInfoFragment();
 		instance.setArguments(bundle);
+
 		return instance;
 	}
 
@@ -85,22 +86,23 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_internal_event_info, container, false);
 
-		Bundle args = getArguments();
-		TextView titleText = view.findViewById(R.id.event_title);
+		final Bundle args = getArguments();
+		final TextView titleText = view.findViewById(R.id.event_title);
 		titleText.setText(args.getString(InternalEvent.Keys.TITLE));
 
-		TextView startDateText = view.findViewById(R.id.event_start_date);
+		final TextView startDateText = view.findViewById(R.id.event_start_date);
 		startDateText.setText(args.getString(InternalEvent.Keys.START_DATE) + ' ' + args.getString(InternalEvent.Keys.START_TIME));
 
 		mNumberOfWorkersText = view.findViewById(R.id.event_number_of_workers);
-		int workersCount = args.getInt(InternalEvent.Keys.WORKERS_COUNT), workersMax = args.getInt(InternalEvent.Keys.WORKERS_MAX);
+		final int workersCount = args.getInt(InternalEvent.Keys.WORKERS_COUNT), workersMax = args.getInt(InternalEvent.Keys.WORKERS_MAX);
 		setNumberOfWorkersText(workersCount, workersMax);
 
 		String teamTitle = args.getString(InternalEvent.Keys.TEAM_TITLE);
 		if (TextUtils.isEmpty(teamTitle)) {
 			teamTitle = getString(R.string.members_no_team_placeholder);
 		}
-		TextView teamText = view.findViewById(R.id.event_team);
+
+		final TextView teamText = view.findViewById(R.id.event_team);
 		teamText.setText(teamTitle);
 
 		mDivider = view.findViewById(R.id.event_divider);
@@ -118,25 +120,25 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 	private void beginLoad(boolean noCache) {
 		setProgressBarVisible(true);
 
-		Bundle args = getArguments();
-		int id = args.getInt(ExternalEvent.Keys.ID);
+		final Bundle args = getArguments();
+		final int id = args.getInt(ExternalEvent.Keys.ID);
+		final String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
 
-		String username = mPrefs.getAuthenticatedUserName(), serviceAuth = mPrefs.getServiceAuthentication();
 		mRepository = new Repository(username, serviceAuth);
 		mRepository.getInternalEventDetails(id, noCache, mRepositoryResultHandler);
 	}
 
 	private void finishLoad(InternalEvent.RepositoryData repositoryData) {
-		View view = getView();
+		final View view = getView();
 		if (null == view) {
 			return;
 		}
 
-		LinearLayout yesList = view.findViewById(R.id.event_workers_yes),
+		final LinearLayout yesList = view.findViewById(R.id.event_workers_yes),
 			maybeList = view.findViewById(R.id.event_workers_maybe),
 			noList = view.findViewById(R.id.event_workers_no);
 
-		List<InternalEventWorker> yesWorkers = InternalEventWorker.filterByWorking(repositoryData.getWorkers(), InternalEventWorker.Working.YES),
+		final List<InternalEventWorker> yesWorkers = InternalEventWorker.filterByWorking(repositoryData.getWorkers(), InternalEventWorker.Working.YES),
 			maybeWorkers = InternalEventWorker.filterByWorking(repositoryData.getWorkers(), InternalEventWorker.Working.MAYBE),
 			noWorkers = InternalEventWorker.filterByWorking(repositoryData.getWorkers(), InternalEventWorker.Working.NO);
 
@@ -155,7 +157,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 	}
 
 	private InternalEventWorker getCurrentWorker(List<InternalEventWorker> workers) {
-		int userId = mPrefs.getAuthenticatedUserId();
+		final int userId = mPrefs.getAuthenticatedUserId();
 		for (InternalEventWorker worker : workers) {
 			if (worker.id() == userId) {
 				return worker;
@@ -171,35 +173,36 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 			return;
 		}
 
-		View mainView = getView();
+		final View mainView = getView();
 		if (null == mainView) {
 			return;
 		}
 
-		int marginWidth = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-		int listWidth = mainView.getWidth() - 2 * marginWidth;
-		double widthHour = listWidth / (double) (InternalEventWorker.RANGE_MAX_HOUR - InternalEventWorker.RANGE_MIN_HOUR);
+		final int marginWidth = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+		final int listWidth = mainView.getWidth() - 2 * marginWidth;
+		final double widthHour = listWidth / (double) (InternalEventWorker.RANGE_MAX_HOUR - InternalEventWorker.RANGE_MIN_HOUR);
 
 		listView.removeAllViews();
 
-		LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+		final LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 		for (InternalEventWorker worker : workers) {
-			View view = layoutInflater.inflate(R.layout.list_item_internal_event_worker, null);
+			final View view = layoutInflater.inflate(R.layout.list_item_internal_event_worker, null);
 
-			TextView nameText = view.findViewById(R.id.event_worker_name);
-			String teamTitle = TextUtils.isEmpty(worker.teamTitle()) ? getString(R.string.event_worker_no_team_placeholder) : worker.teamTitle();
+			final TextView nameText = view.findViewById(R.id.event_worker_name);
+			final String teamTitle = TextUtils.isEmpty(worker.teamTitle()) ? getString(R.string.event_worker_no_team_placeholder) : worker.teamTitle();
 			nameText.setText(String.format(WORKER_NAME_FORMAT, worker.name(), worker.groupTitle(), teamTitle));
 
-			TextView commentText = view.findViewById(R.id.event_worker_comment);
+			final TextView commentText = view.findViewById(R.id.event_worker_comment);
 			commentText.setText(TextUtils.isEmpty(worker.comment()) ? "-" : worker.comment());
 
-			TextView rangeTextView = view.findViewById(R.id.event_worker_range_text);
-			View rangeView = view.findViewById(R.id.event_worker_range);
-			View rangeBgView = view.findViewById(R.id.event_worker_range_bg);
-			View rangeEmptyView = view.findViewById(R.id.event_worker_range_empty);
+			final TextView rangeTextView = view.findViewById(R.id.event_worker_range_text);
+			final View rangeView = view.findViewById(R.id.event_worker_range);
+			final View rangeBgView = view.findViewById(R.id.event_worker_range_bg);
+			final View rangeEmptyView = view.findViewById(R.id.event_worker_range_empty);
 
 			if (worker.hasRange()) {
-				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
+				final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rangeView.getLayoutParams();
+
 				params.leftMargin = (int) Math.ceil((worker.rangeStart() - InternalEventWorker.RANGE_MIN_HOUR) * widthHour);
 				params.width = (int) Math.ceil((worker.rangeEnd() - worker.rangeStart()) * widthHour);
 				rangeView.setLayoutParams(params);
@@ -208,7 +211,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 				rangeBgView.setVisibility(View.VISIBLE);
 				rangeEmptyView.setVisibility(View.GONE);
 
-				int rangeStart = worker.rangeStart() % 24, rangeEnd = worker.rangeEnd() % 24;
+				final int rangeStart = worker.rangeStart() % 24, rangeEnd = worker.rangeEnd() % 24;
 				rangeTextView.setText(String.format("%02d-%02d", rangeStart, rangeEnd));
 			} else {
 				rangeView.setVisibility(View.GONE);
@@ -223,7 +226,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 	}
 
 	private void setNumberOfWorkersText(int workersCount, int workersMax) {
-		String workersStr = getString(workersMax == 1 ? R.string.event_worker : R.string.event_workers);
+		final String workersStr = getString(workersMax == 1 ? R.string.event_worker : R.string.event_workers);
 		mNumberOfWorkersText.setText(String.valueOf(workersCount) + ' ' + getString(R.string.event_workers_of) + ' ' + String.valueOf(workersMax) + ' ' + workersStr);
 	}
 
@@ -246,7 +249,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					Activity activity = getActivity();
+					final Activity activity = getActivity();
 					if (null != activity && isVisible()) {
 						setProgressBarVisible(false);
 						Toast toast = Toast.makeText(activity, getString(errorMessage), Toast.LENGTH_LONG);
@@ -273,7 +276,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 	private final class WorkButtonClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			Bundle args = new Bundle();
+			final Bundle args = new Bundle();
 			if (null != mCurrentWorker) {
 				args.putBoolean(InternalEventWorker.Keys.IS_SAVED, true);
 				args.putInt(InternalEventWorker.Keys.WORKING, InternalEventWorker.Working.toInt(mCurrentWorker.working()));
@@ -285,7 +288,7 @@ public final class InternalEventInfoFragment extends Fragment implements MainAct
 				}
 			}
 
-			InternalEventWorkDialogFragment dialog = new InternalEventWorkDialogFragment();
+			final InternalEventWorkDialogFragment dialog = new InternalEventWorkDialogFragment();
 			dialog.setArguments(args);
 			dialog.setListener(mWorkDialogListener);
 			dialog.show(getFragmentManager(), ExternalEventAttendDialogFragment.class.getSimpleName());

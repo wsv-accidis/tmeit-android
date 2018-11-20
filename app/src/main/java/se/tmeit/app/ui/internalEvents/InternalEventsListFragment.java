@@ -39,12 +39,14 @@ public final class InternalEventsListFragment extends ListFragmentBase implement
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		if (position >= 0 && position < mListAdapter.getCount()) {
-			InternalEvent event = (InternalEvent) mListAdapter.getItem(position);
-			Fragment eventInfoFragment = InternalEventInfoFragment.createInstance(event);
-			Activity activity = getActivity();
+			final InternalEvent event = (InternalEvent) mListAdapter.getItem(position);
+			final Fragment eventInfoFragment = InternalEventInfoFragment.createInstance(event);
+			final Activity activity = getActivity();
+
 			if (activity instanceof MainActivity) {
 				saveInstanceState();
-				MainActivity mainActivity = (MainActivity) activity;
+
+				final MainActivity mainActivity = (MainActivity) activity;
 				mainActivity.openFragment(eventInfoFragment);
 			} else {
 				Log.e(TAG, "Activity holding fragment is not MainActivity!");

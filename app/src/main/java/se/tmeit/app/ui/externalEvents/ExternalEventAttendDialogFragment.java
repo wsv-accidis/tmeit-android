@@ -30,18 +30,18 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		final Bundle args = getArguments();
-		boolean isAttending = args.getBoolean(ExternalEvent.Keys.IS_ATTENDING);
-		String name = args.getString(ExternalEventAttendee.Keys.NAME);
-		String dob = args.getString(ExternalEventAttendee.Keys.DOB);
-		String drinkPrefs = args.getString(ExternalEventAttendee.Keys.DRINK_PREFS);
-		String foodPrefs = args.getString(ExternalEventAttendee.Keys.FOOD_PREFS);
-		String notes = args.getString(ExternalEventAttendee.Keys.NOTES);
+		final boolean isAttending = args.getBoolean(ExternalEvent.Keys.IS_ATTENDING);
+		final String name = args.getString(ExternalEventAttendee.Keys.NAME);
+		final String dob = args.getString(ExternalEventAttendee.Keys.DOB);
+		final String drinkPrefs = args.getString(ExternalEventAttendee.Keys.DRINK_PREFS);
+		final String foodPrefs = args.getString(ExternalEventAttendee.Keys.FOOD_PREFS);
+		final String notes = args.getString(ExternalEventAttendee.Keys.NOTES);
 
-		LayoutInflater inflater = getActivity().getLayoutInflater();
+		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		@SuppressLint("InflateParams")
-		View view = inflater.inflate(R.layout.dialog_external_event_attend, null);
+		final View view = inflater.inflate(R.layout.dialog_external_event_attend, null);
 
-		EditText nameText = view.findViewById(R.id.event_attending_name);
+		final EditText nameText = view.findViewById(R.id.event_attending_name);
 		nameText.setText(name);
 		mDobText = view.findViewById(R.id.event_attending_dob);
 		mDobText.setText(dob);
@@ -52,7 +52,7 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 		mNotesText = view.findViewById(R.id.event_attending_notes);
 		mNotesText.setText(notes);
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setView(view)
 			.setPositiveButton(R.string.event_save, mSaveClickedListener)
 			.setNegativeButton(android.R.string.cancel, null);
@@ -88,7 +88,7 @@ public final class ExternalEventAttendDialogFragment extends DialogFragment {
 				return;
 			}
 
-			ExternalEventAttendee attendee = ExternalEventAttendee.builder()
+			final ExternalEventAttendee attendee = ExternalEventAttendee.builder()
 				.setDateOfBirth(mDobText.getText().toString())
 				.setDrinkPreferences(mDrinkPrefsText.getText().toString())
 				.setFoodPreferences(mFoodPrefsText.getText().toString())
