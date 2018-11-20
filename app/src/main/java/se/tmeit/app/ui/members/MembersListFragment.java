@@ -2,6 +2,7 @@ package se.tmeit.app.ui.members;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -116,15 +117,15 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 
 		// Put the internal list container inside our custom container
 		View outerContainer = inflater.inflate(R.layout.fragment_members_list, root, false);
-		FrameLayout innerContainer = (FrameLayout) outerContainer.findViewById(R.id.members_list_container);
+		FrameLayout innerContainer = outerContainer.findViewById(R.id.members_list_container);
 		innerContainer.addView(listContainer);
 
 		// Put the custom container inside the root
 		root.addView(outerContainer, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-		mSearchText = (EditText) outerContainer.findViewById(R.id.members_search);
+		mSearchText = outerContainer.findViewById(R.id.members_search);
 		mSearchText.addTextChangedListener(new SearchChangedListener());
-		mClearSearchButton = (ImageButton) outerContainer.findViewById(R.id.members_search_clear);
+		mClearSearchButton = outerContainer.findViewById(R.id.members_search_clear);
 		mClearSearchButton.setOnClickListener(new ClearSearchClickedListener());
 
 		if (null != savedInstanceState) {
@@ -173,7 +174,7 @@ public final class MembersListFragment extends ListFragmentBase implements MainA
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 		if (null != mSearchQuery) {
 			outState.putString(STATE_SEARCH_QUERY, mSearchQuery);

@@ -23,10 +23,10 @@ public final class WaitingFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_waiting, container, false);
 
 		mErrorLayout = view.findViewById(R.id.onboarding_error_layout);
-		mErrorText = (TextView) view.findViewById(R.id.onboarding_error_text);
+		mErrorText = view.findViewById(R.id.onboarding_error_text);
 		mWaitLayout = view.findViewById(R.id.onboarding_waiting_layout);
 
-		Button tryAgainButton = (Button) view.findViewById(R.id.onboarding_try_again_button);
+		Button tryAgainButton = view.findViewById(R.id.onboarding_try_again_button);
 		tryAgainButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

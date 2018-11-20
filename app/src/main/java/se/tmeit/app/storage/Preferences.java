@@ -120,8 +120,9 @@ public final class Preferences {
         }
 
         try {
-            Set<Integer> result = new HashSet<>();
-            JSONArray array = new JSONArray(str);
+            final Set<Integer> result = new HashSet<>();
+            final JSONArray array = new JSONArray(str);
+
             for (int i = 0; i < array.length(); i++) {
                 result.add(array.getInt(i));
             }
@@ -137,7 +138,7 @@ public final class Preferences {
             return "";
         }
 
-        JSONArray array = new JSONArray();
+        final JSONArray array = new JSONArray();
         for (Integer value : values) {
             array.put(value);
         }

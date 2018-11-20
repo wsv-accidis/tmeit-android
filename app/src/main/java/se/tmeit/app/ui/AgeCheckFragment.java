@@ -36,8 +36,8 @@ public final class AgeCheckFragment extends Fragment implements MainActivity.Has
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_age_check, container, false);
-		mBirthDateText = (TextView) view.findViewById(R.id.age_check_birthdate);
+		final View view = inflater.inflate(R.layout.fragment_age_check, container, false);
+		mBirthDateText = view.findViewById(R.id.age_check_birthdate);
 		return view;
 	}
 
@@ -56,7 +56,7 @@ public final class AgeCheckFragment extends Fragment implements MainActivity.Has
 
 	private void updateBirthDate() {
 		if (null != mBirthDateText) {
-			Calendar calendar = Calendar.getInstance();
+			final Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.YEAR, -18);
 			mBirthDateText.setText(mDateFormat.format(calendar.getTime()));
 		}

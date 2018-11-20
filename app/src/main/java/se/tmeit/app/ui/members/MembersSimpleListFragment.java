@@ -111,7 +111,7 @@ public final class MembersSimpleListFragment extends ListFragmentBase {
 			}
 
 			Member item = mMembers.get(position);
-			TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+			TextView text1 = view.findViewById(android.R.id.text1);
 			text1.setText(item.realName());
 
 			view.setTag(item);

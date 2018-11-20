@@ -53,17 +53,17 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
 			view = convertView;
 		}
 
-		ExternalEvent event = mExternalEvents.get(position);
+		final ExternalEvent event = mExternalEvents.get(position);
 
-		TextView dateView = (TextView) view.findViewById(R.id.event_date);
+		final TextView dateView = view.findViewById(R.id.event_date);
 		dateView.setText(event.startDate());
 
-		TextView titleView = (TextView) view.findViewById(R.id.event_title);
+		final TextView titleView = view.findViewById(R.id.event_title);
 		titleView.setTextColor(ContextCompat.getColor(mContext, event.isPast() ? android.R.color.tertiary_text_light : android.R.color.primary_text_light));
 		titleView.setText(event.title());
 		titleView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventAttendingIcon(event), 0);
 
-		TextView descriptionView = (TextView) view.findViewById(R.id.event_description);
+		final TextView descriptionView = view.findViewById(R.id.event_description);
 		descriptionView.setText(getEventDescription(event));
 		descriptionView.setCompoundDrawablesWithIntrinsicBounds(0, 0, getEventSignupIcon(event), 0);
 
@@ -75,7 +75,7 @@ public final class ExternalEventsListAdapter extends BaseAdapter {
 	}
 
 	private String getEventDescription(ExternalEvent event) {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 
 		if (event.isPastSignup()) {
 			builder.append(mContext.getString(R.string.event_last_signup_passed));

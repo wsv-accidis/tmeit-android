@@ -56,7 +56,7 @@ public final class MembersFilterDialogFragment extends DialogFragment {
 
 		@SuppressLint("InflateParams")
 		View view = inflater.inflate(R.layout.dialog_members_filter, null);
-		LinearLayout listLayout = (LinearLayout) view.findViewById(R.id.members_filter_list);
+		LinearLayout listLayout = view.findViewById(R.id.members_filter_list);
 
 		Bundle args = getArguments();
 		Map<Integer, String> groupsMap = (Map<Integer, String>) args.getSerializable(ARG_GROUPS);
@@ -81,7 +81,7 @@ public final class MembersFilterDialogFragment extends DialogFragment {
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putSerializable(ARG_GROUPS_FILTERED, getSelected(mGroupBoxes));
 		outState.putSerializable(ARG_TEAMS_FILTERED, getSelected(mTeamBoxes));
@@ -104,7 +104,7 @@ public final class MembersFilterDialogFragment extends DialogFragment {
 			Map.Entry<Integer, String> team = (i < teams.length ? (Map.Entry<Integer, String>) teams[i] : null);
 
 			ViewGroup row = (ViewGroup) inflater.inflate(R.layout.list_item_members_filter, listLayout, false);
-			CheckBox checkBox1 = (CheckBox) row.findViewById(R.id.members_filter_check1);
+			CheckBox checkBox1 = row.findViewById(R.id.members_filter_check1);
 			if (null != group) {
 				checkBox1.setTag(group.getKey());
 				checkBox1.setText(group.getValue());
@@ -113,7 +113,7 @@ public final class MembersFilterDialogFragment extends DialogFragment {
 				checkBox1.setVisibility(View.INVISIBLE);
 			}
 
-			CheckBox checkBox2 = (CheckBox) row.findViewById(R.id.members_filter_check2);
+			CheckBox checkBox2 = row.findViewById(R.id.members_filter_check2);
 			if (null != team) {
 				checkBox2.setTag(team.getKey());
 				checkBox2.setText(team.getValue());

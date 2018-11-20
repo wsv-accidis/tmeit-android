@@ -34,9 +34,9 @@ public final class ServiceAuthenticator {
             return;
         }
 
-        int indexOfSeparator = authCode.indexOf(SERVICE_AUTH_SEPARATOR);
-        String username = authCode.substring(0, indexOfSeparator).toLowerCase();
-        String serviceAuth = authCode.substring(indexOfSeparator + 1);
+        final int indexOfSeparator = authCode.indexOf(SERVICE_AUTH_SEPARATOR);
+        final String username = authCode.substring(0, indexOfSeparator).toLowerCase();
+        final String serviceAuth = authCode.substring(indexOfSeparator + 1);
 
         authenticate(username, serviceAuth, resultHandler);
     }
@@ -52,7 +52,7 @@ public final class ServiceAuthenticator {
 
     private void authenticate(String username, String serviceAuth, AuthenticationResultHandler resultHandler) {
         try {
-            Request request = new Request.Builder()
+            final Request request = new Request.Builder()
                     .url(TmeitServiceConfig.SERVICE_BASE_URL + "ValidateAuth.php")
                     .post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForValidateAuth(username, serviceAuth)))
                     .build();
@@ -67,7 +67,7 @@ public final class ServiceAuthenticator {
     }
 
 	private Call enqueueRequest(Request request, Callback callback) {
-		Call call = TmeitHttpClient.getInstance().newCall(request);
+		final Call call = TmeitHttpClient.getInstance().newCall(request);
 		call.enqueue(callback);
 		return call;
 	}
@@ -100,7 +100,7 @@ public final class ServiceAuthenticator {
     }
 
     private static String createJsonForValidateAuth(String username, String serviceAuth) throws JSONException {
-        JSONObject json = new JSONObject();
+        final JSONObject json = new JSONObject();
         json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, serviceAuth);
         json.put(TmeitServiceConfig.USERNAME_KEY, username);
         return json.toString();
@@ -127,7 +127,7 @@ public final class ServiceAuthenticator {
         public void onResponse(Call call, Response response) throws IOException {
             Log.i(TAG, "Authentication response received with HTTP status = " + response.code() + ".");
 
-            JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
+            final JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
             if (null == responseBody) {
                 Log.e(TAG, "Got empty response from authentication request.");
                 mResultHandler.onProtocolError(R.string.auth_error_unspecified_protocol);

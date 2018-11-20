@@ -28,14 +28,13 @@ public final class AboutFragment extends Fragment implements MainActivity.HasTit
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_about, container, false);
+		final View view = inflater.inflate(R.layout.fragment_about, container, false);
 
-		TextView aboutText = (TextView) view.findViewById(R.id.about_text);
+		final TextView aboutText = view.findViewById(R.id.about_text);
 		aboutText.setMovementMethod(LinkMovementMethod.getInstance());
 
-		// TODO Use format string
-		TextView versionText = (TextView) view.findViewById(R.id.version_text);
-		versionText.setText("v" + AndroidUtils.getAppVersionName(getActivity()));
+		final TextView versionText = view.findViewById(R.id.version_text);
+		versionText.setText(String.format("v%s", AndroidUtils.getAppVersionName(getActivity())));
 
 		return view;
 	}

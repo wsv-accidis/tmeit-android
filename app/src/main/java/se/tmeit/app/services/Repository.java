@@ -43,7 +43,7 @@ public final class Repository {
 
 	public void attendExternalEvent(int id, ExternalEventAttendee attendee, RepositoryResultHandler<Void> resultHandler) {
 		try {
-			Request request = new Request.Builder()
+			final Request request = new Request.Builder()
 				.url(TmeitServiceConfig.SERVICE_BASE_URL + "AttendExternalEvent.php")
 				.post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForAttendExternalEvent(id, attendee)))
 				.build();
@@ -56,7 +56,7 @@ public final class Repository {
 	}
 
 	public void getExternalEventDetails(int id, boolean noCache, RepositoryResultHandler<ExternalEvent.RepositoryData> resultHandler) {
-		Request.Builder requestBuilder = getRequestBuilder("GetExternalEventDetails.php/" + id);
+		final Request.Builder requestBuilder = getRequestBuilder("GetExternalEventDetails.php/" + id);
 		if (noCache) {
 			requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
 		}
@@ -64,7 +64,7 @@ public final class Repository {
 	}
 
 	public void getExternalEvents(RepositoryResultHandler<List<ExternalEvent>> resultHandler, boolean noCache) {
-		Request.Builder requestBuilder = getRequestBuilder("GetExternalEvents.php");
+		final Request.Builder requestBuilder = getRequestBuilder("GetExternalEvents.php");
 		if (noCache) {
 			requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
 		}
@@ -72,7 +72,7 @@ public final class Repository {
 	}
 
 	public void getInternalEventDetails(int id, boolean noCache, RepositoryResultHandler<InternalEvent.RepositoryData> resultHandler) {
-		Request.Builder requestBuilder = getRequestBuilder("GetEventDetails.php/" + id);
+		final Request.Builder requestBuilder = getRequestBuilder("GetEventDetails.php/" + id);
 		if (noCache) {
 			requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
 		}
@@ -80,7 +80,7 @@ public final class Repository {
 	}
 
 	public void getInternalEvents(RepositoryResultHandler<List<InternalEvent>> resultHandler, boolean noCache) {
-		Request.Builder requestBuilder = getRequestBuilder("GetEvents.php");
+		final Request.Builder requestBuilder = getRequestBuilder("GetEvents.php");
 		if (noCache) {
 			requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
 		}
@@ -88,7 +88,7 @@ public final class Repository {
 	}
 
 	public void getMembers(RepositoryResultHandler<Member.RepositoryData> resultHandler, boolean noCache) {
-		Request.Builder requestBuilder = getRequestBuilder("GetMembers.php");
+		final Request.Builder requestBuilder = getRequestBuilder("GetMembers.php");
 		if (noCache) {
 			requestBuilder.cacheControl(CacheControl.FORCE_NETWORK);
 		}
@@ -97,7 +97,7 @@ public final class Repository {
 
 	public void workInternalEvent(int id, InternalEventWorker worker, RepositoryResultHandler<Void> resultHandler) {
 		try {
-			Request request = new Request.Builder()
+			final Request request = new Request.Builder()
 				.url(TmeitServiceConfig.SERVICE_BASE_URL + "WorkEvent.php")
 				.post(RequestBody.create(TmeitServiceConfig.JSON_MEDIA_TYPE, createJsonForWorkInternalEvent(id, worker)))
 				.build();
@@ -110,7 +110,7 @@ public final class Repository {
 	}
 
 	private Map<Integer, String> deserializeIdTitleMap(JSONArray jsonArray) throws JSONException {
-		Map<Integer, String> result = new LinkedHashMap<>();
+		final Map<Integer, String> result = new LinkedHashMap<>();
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject obj = jsonArray.getJSONObject(i);
 			result.put(obj.getInt(Keys.ID), obj.getString(Keys.TITLE));
@@ -119,13 +119,13 @@ public final class Repository {
 	}
 
 	private String createJsonForAttendExternalEvent(int id, ExternalEventAttendee attendee) throws JSONException {
-		JSONObject json = new JSONObject();
+		final JSONObject json = new JSONObject();
 		json.put(TmeitServiceConfig.USERNAME_KEY, mUsername);
 		json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, mServiceAuth);
 		json.put(Keys.EVENT_ID, id);
 
 		if (null != attendee) {
-			JSONObject attending = new JSONObject();
+			final JSONObject attending = new JSONObject();
 			attending.put(Keys.DOB, attendee.dateOfBirth());
 			attending.put(Keys.DRINK_PREFS, attendee.drinkPreferences());
 			attending.put(Keys.FOOD_PREFS, attendee.foodPreferences());
@@ -137,7 +137,7 @@ public final class Repository {
 	}
 
 	private String createJsonForWorkInternalEvent(int id, InternalEventWorker worker) throws JSONException {
-		JSONObject json = new JSONObject();
+		final JSONObject json = new JSONObject();
 		json.put(TmeitServiceConfig.USERNAME_KEY, mUsername);
 		json.put(TmeitServiceConfig.SERVICE_AUTH_KEY, mServiceAuth);
 		json.put(Keys.EVENT_ID, id);
@@ -153,7 +153,7 @@ public final class Repository {
 	}
 
 	private Call enqueueRequest(Request request, Callback callback) {
-		Call call = TmeitHttpClient.getInstance().newCall(request);
+		final Call call = TmeitHttpClient.getInstance().newCall(request);
 		call.enqueue(callback);
 		return call;
 	}
@@ -183,9 +183,10 @@ public final class Repository {
 
 		@Override
 		protected ExternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-			JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
-			JSONObject jsonAttendee = responseBody.getJSONObject(Keys.ATTENDEE);
-			JSONArray jsonAttendees = responseBody.getJSONArray(Keys.ATTENDEES);
+			final JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
+			final JSONObject jsonAttendee = responseBody.getJSONObject(Keys.ATTENDEE);
+			final JSONArray jsonAttendees = responseBody.getJSONArray(Keys.ATTENDEES);
+
 			return new ExternalEvent.RepositoryData(ExternalEvent.fromJson(jsonEvent),
 				ExternalEventAttendee.fromJson(jsonAttendee),
 				ExternalEventAttendee.fromJsonArray(jsonAttendees));
@@ -201,11 +202,11 @@ public final class Repository {
 
 		@Override
 		protected List<ExternalEvent> getResult(JSONObject responseBody) throws JSONException {
-			JSONArray jsonArray = responseBody.getJSONArray(EVENTS);
+			final JSONArray jsonArray = responseBody.getJSONArray(EVENTS);
 
-			ArrayList<ExternalEvent> events = new ArrayList<>();
+			final ArrayList<ExternalEvent> events = new ArrayList<>();
 			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject json = jsonArray.getJSONObject(i);
+				final JSONObject json = jsonArray.getJSONObject(i);
 				events.add(ExternalEvent.fromJson(json));
 			}
 
@@ -220,8 +221,9 @@ public final class Repository {
 
 		@Override
 		protected InternalEvent.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-			JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
-			JSONArray jsonWorkers = responseBody.getJSONArray(Keys.WORKERS);
+			final JSONObject jsonEvent = responseBody.getJSONObject(Keys.EVENT);
+			final JSONArray jsonWorkers = responseBody.getJSONArray(Keys.WORKERS);
+
 			return new InternalEvent.RepositoryData(InternalEvent.fromJson(jsonEvent),
 				InternalEventWorker.fromJsonArray(jsonWorkers));
 		}
@@ -236,11 +238,11 @@ public final class Repository {
 
 		@Override
 		protected List<InternalEvent> getResult(JSONObject responseBody) throws JSONException {
-			JSONArray jsonArray = responseBody.getJSONArray(EVENTS);
+			final JSONArray jsonArray = responseBody.getJSONArray(EVENTS);
 
-			ArrayList<InternalEvent> events = new ArrayList<>();
+			final ArrayList<InternalEvent> events = new ArrayList<>();
 			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject json = jsonArray.getJSONObject(i);
+				final JSONObject json = jsonArray.getJSONObject(i);
 				events.add(InternalEvent.fromJson(json));
 			}
 
@@ -255,15 +257,14 @@ public final class Repository {
 
 		@Override
 		protected Member.RepositoryData getResult(JSONObject responseBody) throws JSONException {
-			Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(Keys.GROUPS));
-			Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TEAMS));
-			Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TITLES));
+			final Map<Integer, String> groups = deserializeIdTitleMap(responseBody.getJSONArray(Keys.GROUPS));
+			final Map<Integer, String> teams = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TEAMS));
+			final Map<Integer, String> titles = deserializeIdTitleMap(responseBody.getJSONArray(Keys.TITLES));
+			final JSONArray jsonArray = responseBody.getJSONArray(Keys.USERS);
 
-			JSONArray jsonArray = responseBody.getJSONArray(Keys.USERS);
-
-			ArrayList<Member> members = new ArrayList<>();
+			final ArrayList<Member> members = new ArrayList<>();
 			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject json = jsonArray.getJSONObject(i);
+				final JSONObject json = jsonArray.getJSONObject(i);
 				members.add(Member.fromJson(json));
 			}
 
@@ -295,9 +296,9 @@ public final class Repository {
 			}
 
 			try {
-				JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
+				final JSONObject responseBody = TmeitServiceConfig.getJsonBody(response, TAG);
 				if (null != responseBody) {
-					TResult result = getResult(responseBody);
+					final TResult result = getResult(responseBody);
 					mResultHandler.onSuccess(result);
 				} else {
 					mResultHandler.onError(R.string.repository_error_unspecified_protocol);

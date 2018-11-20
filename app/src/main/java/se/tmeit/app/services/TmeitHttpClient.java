@@ -29,8 +29,8 @@ public final class TmeitHttpClient {
 	public static void initialize(Context context) {
 		initializeProvider(context);
 
-		OkHttpClient.Builder builder = new OkHttpClient.Builder();
-		Cache cache = initializeCache(context);
+		final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+		final Cache cache = initializeCache(context);
 		if (null != cache) {
 			builder.cache(cache);
 		}
@@ -40,8 +40,8 @@ public final class TmeitHttpClient {
 
 	private static Cache initializeCache(Context context) {
 		try {
-			File cacheDirectory = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
-			Cache cache = new Cache(cacheDirectory, CACHE_SIZE);
+			final File cacheDirectory = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
+			final Cache cache = new Cache(cacheDirectory, CACHE_SIZE);
 			Log.d(TAG, "HTTP response cache was initialized.");
 			return cache;
 		} catch (Exception ex) {
