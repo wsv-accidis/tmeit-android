@@ -19,9 +19,9 @@ import se.tmeit.app.R;
  * Onboarding by logging in using SAML authentication or TMEIT.se local login.
  */
 public final class WebOnboardingFragment extends Fragment {
-	private static final String CAPTURE_URL = "https://tmeit-se.loopiasecure.com/wiki/Special:TmeitServiceAuth/direct";
-	private static final String LOGIN_NORMAL_URL = "https://tmeit-se.loopiasecure.com/w/index.php?title=Special:Inloggning&returnto=Special%3ATmeitServiceAuth%2Fdirect";
-	private static final String LOGIN_SAML_URL = "https://tmeit-se.loopiasecure.com/w/index.php?title=Special:SAMLAuth&returnto=Special%3ATmeitServiceAuth%2Fdirect";
+	private static final String CAPTURE_URL = "https://tmeit.se/wiki/Special:TmeitServiceAuth/direct";
+	private static final String LOGIN_NORMAL_URL = "https://tmeit.se/w/index.php?title=Special:Inloggning&returnto=Special%3ATmeitServiceAuth%2Fdirect";
+	private static final String LOGIN_SAML_URL = "https://tmeit.se/w/index.php?title=Special:SAMLAuth&returnto=Special%3ATmeitServiceAuth%2Fdirect";
 	private static final String LOGIN_URL_KEY = "loginUrl";
 	private static final String TAG = WebOnboardingFragment.class.getSimpleName();
 	protected OnboardingResultHandler mResultHandler;
