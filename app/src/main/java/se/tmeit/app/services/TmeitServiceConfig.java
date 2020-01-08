@@ -17,11 +17,7 @@ public final class TmeitServiceConfig {
 	private static final String ERROR_MESSAGE_KEY = "errorMessage";
     public static final String IMAGE_BASE64_KEY = "image_base64";
     public static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
-    public static final String MAX_COUNT_KEY = "maxCount";
-    public static final String NEW_SINCE_KEY = "newSince";
-    public static final String REGISTRATION_ID_KEY = "registrationId";
-	private static final String ROOT_URL = "https://tmeit.se/";
-    public static final String ROOT_URL_INSECURE = "http://tmeit.se/";
+	public static final String ROOT_URL = "https://tmeit.se/";
     public static final String SERVICE_AUTH_KEY = "serviceAuth";
     public static final String SERVICE_BASE_URL = ROOT_URL + "w/tmeit-ws/";
     private static final String SUCCESS_KEY = "success";

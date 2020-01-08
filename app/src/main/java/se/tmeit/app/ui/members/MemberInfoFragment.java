@@ -253,7 +253,7 @@ public final class MemberInfoFragment extends Fragment implements MainActivity.H
 			titleText.setText(badge.title());
 
 			ImageView imageView = view.findViewById(R.id.badge_image);
-			picasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL_INSECURE).buildUpon().path(badge.src()).build())
+			picasso.load(Uri.parse(TmeitServiceConfig.ROOT_URL).buildUpon().path(badge.src()).build())
 				.resizeDimen(R.dimen.tmeit_member_badge_size, R.dimen.tmeit_member_badge_size)
 				.centerInside()
 				.into(imageView);
