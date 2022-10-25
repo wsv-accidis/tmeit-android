@@ -1,3 +1,12 @@
+ARCHIVED
+========
+
+This app is archived and unpublished from Google Play. This repository is only here for
+archival purposes, and may be deleted eventually. The app no longer works, since the
+associated website and services have been taken down.
+
+Original README follows below.
+
 TMEIT for Android
 =================
 
